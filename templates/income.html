@@ -1,14 +1,8 @@
 ﻿{% extends "base.html" %}
 {% block title %}Freelance Vault - SkillVault{% endblock %}
 {% block content %}
-<div class="page">
+<div class="page page-centered">
   <div class="page-header"><div><div class="page-title">Freelance Vault</div><div class="page-subtitle">Track payment methods, linked jobs, paid skills, and full transaction history.</div></div><a href="{{ url_for('add_income') }}" class="btn btn-primary">Log Transaction</a></div>
-
-  <div class="quick-filters">
-    <a href="{{ url_for('income', type='income') }}" class="quick-chip {% if vault_filters.type == 'income' %}active{% endif %}">Income Only</a>
-    <a href="{{ url_for('income', type='expense') }}" class="quick-chip {% if vault_filters.type == 'expense' %}active{% endif %}">Expense Only</a>
-    <a href="{{ url_for('income', payment_method='Auto-Linked') }}" class="quick-chip {% if vault_filters.payment_method == 'Auto-Linked' %}active{% endif %}">Auto-Linked</a>
-  </div>
 
   <form method="get" class="filter-row">
     <input type="text" name="q" placeholder="Search description" value="{{ vault_filters.q }}">
@@ -44,10 +38,16 @@
   <div class="stats-grid"><div class="card"><div class="card-title">Average Income</div><div class="card-value green text-mono">PHP {{ '{:,.2f}'.format(income_stats.avg_income) }}</div></div><div class="card"><div class="card-title">Average Expense</div><div class="card-value text-red text-mono">PHP {{ '{:,.2f}'.format(income_stats.avg_expense) }}</div></div><div class="card"><div class="card-title">History Entries</div><div class="card-value text-mono">{{ user.income_txns | length }}</div></div></div>
 
   {% if user.income_txns %}
-    <div class="section-header"><div class="section-title">Transaction History</div><span style="font-size: 12px; color: var(--text-muted);">{{ filtered_txns | length }} shown</span></div>
-    <form method="post" action="{{ url_for('bulk_delete_income') }}" id="bulk-delete-form">
-      <div class="table-actions"><button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete selected transactions?')">Delete Selected</button></div>
-      <div class="table-wrap"><table><thead><tr><th style="width: 34px;"><input type="checkbox" id="select-all-txns" aria-label="Select all"></th><th>Date</th><th>Type</th><th>Method</th><th>Description</th><th>Job</th><th>Skill(s)</th><th style="text-align: right;">Amount</th><th style="width: 52px;"></th></tr></thead><tbody>{% for txn in filtered_txns|reverse %}<tr><td><input type="checkbox" name="txn_ids" value="{{ txn.id }}" class="txn-checkbox" aria-label="Select {{ txn.description }}"></td><td style="font-family: var(--mono); font-size: 12px; color: var(--text-muted);">{{ txn.date }}</td><td>{% if txn.type == 'income' %}<span class="badge badge-offer">Income</span>{% else %}<span class="badge badge-rejected">Expense</span>{% endif %}</td><td><span class="rel-chip">{{ txn.payment_method }}</span></td><td style="font-weight: 500;">{{ txn.description }}</td><td style="font-size: 12px; color: var(--text-muted);">{% if txn.job_id and job_lookup.get(txn.job_id) %}{{ job_lookup.get(txn.job_id).company }} · {{ job_lookup.get(txn.job_id).role }}{% elif job_by_txn.get(txn.id) %}{{ job_by_txn.get(txn.id).company }} · {{ job_by_txn.get(txn.id).role }}{% else %}—{% endif %}</td><td>{% if txn.skill_ids %}{% for skill_id in txn.skill_ids %}{% if skill_lookup.get(skill_id) %}<span class="rel-chip">{{ skill_lookup.get(skill_id).name }}</span>{% endif %}{% endfor %}{% else %}<span style="font-size: 12px; color: var(--text-muted);">—</span>{% endif %}</td><td style="text-align: right; font-family: var(--mono); font-weight: 600; color: {% if txn.type == 'income' %}var(--green){% else %}var(--red){% endif %};">{{ '+' if txn.type == 'income' else '-' }}PHP {{ '{:,.2f}'.format(txn.amount) }}</td><td><details class="entry-menu"><summary aria-label="Transaction actions">...</summary><div class="entry-menu-list"><a href="{{ url_for('edit_income', txn_id=txn.id) }}">Edit</a><button type="submit" formaction="{{ url_for('delete_income', txn_id=txn.id) }}" formmethod="post" onclick="return confirm('Remove this transaction?')">Delete</button></div></details></td></tr>{% endfor %}</tbody></table></div>
+    <div class="section-header">
+      <div class="section-title">Transaction History</div>
+      <div class="flex gap-8" style="align-items: center;">
+        <span style="font-size: 12px; color: var(--text-muted);">{{ filtered_txns | length }} shown</span>
+        <button type="button" class="btn btn-ghost btn-sm" id="tx-edit-toggle" aria-pressed="false">Edit</button>
+      </div>
+    </div>
+    <form method="post" action="{{ url_for('bulk_delete_income') }}" id="bulk-delete-form" class="bulk-edit-mode">
+      <div class="table-actions bulk-edit-button"><button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete selected transactions?')">Delete Selected</button></div>
+      <div class="table-wrap"><table><thead><tr><th class="bulk-edit-hidden" style="width: 34px;"><input type="checkbox" id="select-all-txns" aria-label="Select all"></th><th>Date</th><th>Type</th><th>Method</th><th>Description</th><th>Job</th><th>Skill(s)</th><th style="text-align: right;">Amount</th><th style="width: 52px;"></th></tr></thead><tbody>{% for txn in filtered_txns|reverse %}<tr><td class="bulk-edit-hidden"><input type="checkbox" name="txn_ids" value="{{ txn.id }}" class="txn-checkbox" aria-label="Select {{ txn.description }}"></td><td style="font-family: var(--mono); font-size: 12px; color: var(--text-muted);">{{ txn.date }}</td><td>{% if txn.type == 'income' %}<span class="badge badge-offer">Income</span>{% else %}<span class="badge badge-rejected">Expense</span>{% endif %}</td><td><span class="rel-chip">{{ txn.payment_method }}</span></td><td style="font-weight: 500;">{{ txn.description }}</td><td style="font-size: 12px; color: var(--text-muted);">{% if txn.job_id and job_lookup.get(txn.job_id) %}{{ job_lookup.get(txn.job_id).company }} · {{ job_lookup.get(txn.job_id).role }}{% elif job_by_txn.get(txn.id) %}{{ job_by_txn.get(txn.id).company }} · {{ job_by_txn.get(txn.id).role }}{% else %}—{% endif %}</td><td>{% if txn.skill_ids %}{% for skill_id in txn.skill_ids %}{% if skill_lookup.get(skill_id) %}<span class="rel-chip">{{ skill_lookup.get(skill_id).name }}</span>{% endif %}{% endfor %}{% else %}<span style="font-size: 12px; color: var(--text-muted);">—</span>{% endif %}</td><td style="text-align: right; font-family: var(--mono); font-weight: 600; color: {% if txn.type == 'income' %}var(--green){% else %}var(--red){% endif %};">{{ '+' if txn.type == 'income' else '-' }}PHP {{ '{:,.2f}'.format(txn.amount) }}</td><td><details class="entry-menu"><summary aria-label="Transaction actions">...</summary><div class="entry-menu-list"><a href="{{ url_for('edit_income', txn_id=txn.id) }}">Edit</a><button type="submit" formaction="{{ url_for('delete_income', txn_id=txn.id) }}" formmethod="post" onclick="return confirm('Remove this transaction?')">Delete</button></div></details></td></tr>{% endfor %}</tbody></table></div>
     </form>
     {% if not filtered_txns %}<div class="card empty-state" style="margin-top: 16px;"><div class="empty-state-icon">Filter</div><p>No vault entries matched the selected filters.</p><a href="{{ url_for('income') }}" class="btn btn-ghost">Clear Filters</a></div>{% endif %}
   {% else %}
@@ -57,8 +57,24 @@
 
 <script>
   (function () {
+    const editToggle = document.getElementById("tx-edit-toggle");
+    const bulkForm = document.getElementById("bulk-delete-form");
     const selectAll = document.getElementById("select-all-txns");
     const rowChecks = Array.from(document.querySelectorAll(".txn-checkbox"));
+    if (editToggle && bulkForm) {
+      const setMode = (isEditing) => {
+        bulkForm.classList.toggle("bulk-edit-active", isEditing);
+        bulkForm.classList.toggle("bulk-edit-mode", !isEditing);
+        editToggle.setAttribute("aria-pressed", isEditing ? "true" : "false");
+        editToggle.textContent = isEditing ? "Done" : "Edit";
+      };
+
+      setMode(false);
+      editToggle.addEventListener("click", () => {
+        setMode(!bulkForm.classList.contains("bulk-edit-active"));
+      });
+    }
+
     if (!selectAll || rowChecks.length === 0) return;
 
     selectAll.addEventListener("change", () => {

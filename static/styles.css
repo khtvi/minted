@@ -60,6 +60,10 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: radial-gradient(1200px 600px at 20% -10%, rgba(255, 201, 38, 0.18), transparent 60%),
     radial-gradient(900px 500px at 80% 0%, rgba(249, 96, 21, 0.16), transparent 55%),
@@ -70,6 +74,7 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   transition: background 0.3s ease, color 0.3s ease;
+  animation: page-enter 0.18s ease-out;
 }
 
 /* ──────────────────────────────────────────
@@ -208,12 +213,17 @@ nav a.nav-brand.active {
 ────────────────────────────────────────── */
 .page {
   display: grid;
-  align-items: center;
-  justify-content: center;
+  align-items: start;
+  justify-content: stretch;
   width: 100%;
   max-width: none;
   margin: 0;
   padding: 24px clamp(16px, 2.4vw, 34px) 36px;
+}
+
+.page.page-centered {
+  max-width: 1280px;
+  margin-inline: auto;
 }
 
 @media (max-width: 1024px) {
@@ -420,6 +430,7 @@ nav a.nav-brand.active {
   inset: 0;
   z-index: 400;
   pointer-events: none;
+  background: rgba(0, 0, 0, 0.28);
 }
 
 .tour-spotlight {
@@ -433,7 +444,7 @@ nav a.nav-brand.active {
 .tour-popover {
   position: fixed;
   max-width: 280px;
-  background: var(--card);
+  background: rgba(15, 28, 19, 0.98);
   border: 1px solid var(--border-light);
   border-radius: 14px;
   padding: 14px 16px;
@@ -520,7 +531,8 @@ nav a.nav-brand.active {
 ────────────────────────────────────────── */
 .flash-wrap {
   position: fixed;
-  top: 72px;
+  top: auto;
+  bottom: 24px;
   right: 24px;
   left: auto;
   transform: none;
@@ -1124,6 +1136,11 @@ select option {
   100% { transform: translateX(100%); }
 }
 
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .is-loading .card,
 .is-loading .skill-card,
 .is-loading .table-wrap,
@@ -1371,6 +1388,7 @@ select option {
 .entry-menu summary {
   list-style: none;
   cursor: pointer;
+  user-select: none;
   border: 1px solid var(--border);
   border-radius: 8px;
   width: 32px;
@@ -1390,6 +1408,10 @@ select option {
 .entry-menu[open] summary {
   border-color: var(--border-light);
   color: var(--text);
+}
+
+.entry-menu[open] .entry-menu-list {
+  display: block;
 }
 
 .entry-menu-list {
@@ -1418,6 +1440,14 @@ select option {
   cursor: pointer;
 }
 
+.entry-menu-list form {
+  margin: 0;
+}
+
+.entry-menu-list button {
+  display: block;
+}
+
 .entry-menu-list a:hover,
 .entry-menu-list button:hover {
   background: var(--surface);
@@ -1432,6 +1462,26 @@ select option {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.bulk-edit-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bulk-edit-mode .bulk-edit-hidden,
+.bulk-edit-mode .bulk-edit-button {
+  display: none;
+}
+
+.bulk-edit-active .bulk-edit-hidden,
+.bulk-edit-active .bulk-edit-button {
+  display: revert;
+}
+
+.bulk-edit-hidden {
+  display: none;
 }
 
 .job-status-mobile {

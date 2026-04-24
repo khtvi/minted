@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Edit Skill - SkillVault{% endblock %}
+{% block content %}
+<div class="page page-centered">
+  <div class="page-header"><div><div class="page-title">Edit Skill</div><div class="page-subtitle">Refine the category and level for this skill.</div></div><a href="{{ url_for('skills') }}" class="btn btn-ghost">Back</a></div>
+  <div class="page-split">
+    <div>
+      <div class="page-tip"><strong>Suggestion:</strong> Keep the skill name stable and only update its category or level when your usage changes.</div>
+      <div class="form-card"><form method="post"><div class="form-group"><label for="name">Skill Name</label><input type="text" id="name" name="name" value="{{ skill.name }}" required autofocus></div><div class="form-group"><label for="category">Category</label><select id="category" name="category" required>{% for cat in categories %}<option value="{{ cat }}" {% if skill.category == cat %}selected{% endif %}>{{ cat }}</option>{% endfor %}</select></div><div class="form-group"><label for="level">Current Level</label><select id="level" name="level" required>{% for level in levels %}<option value="{{ level }}" {% if skill.level == level %}selected{% endif %}>{{ level }}</option>{% endfor %}</select></div><button type="submit" class="btn btn-primary w-full">Save Changes</button></form></div>
+    </div>
+    <aside class="side-panel">
+      <div class="side-title">Skill balance</div>
+      <div class="side-pill">{{ skill.balance }}h available</div>
+      <div class="side-title">Study history</div>
+      <div class="side-pill">{{ skill.hours_deposited }}h deposited</div>
+      <div class="side-title" style="margin-top: 14px;">Quick wins</div>
+      <ul class="side-list">
+        <li>Use a specific category that matches your portfolio.</li>
+        <li>Adjust the level to match your current confidence.</li>
+        <li>Keep the name short so it stays readable in lists.</li>
+      </ul>
+    </aside>
+  </div>
+</div>
+{% endblock %}

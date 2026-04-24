@@ -1,23 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Job Ledger - SkillVault{% endblock %}
 {% block content %}
-<div class="page">
+<div class="page page-centered">
   <div class="page-header">
     <div>
       <div class="page-title">Job Ledger</div>
       <div class="page-subtitle">Every application is a transaction. Track your conversion rate.</div>
     </div>
     <div class="flex gap-8">
-      <a href="{{ url_for('download_pdf') }}" class="btn btn-ghost btn-sm">Download PDF</a>
       <a href="{{ url_for('add_job') }}" class="btn btn-primary">Log Application</a>
     </div>
-  </div>
-
-  <div class="quick-filters">
-    <a href="{{ url_for('jobs', status='Sent') }}" class="quick-chip {% if job_filters.status == 'Sent' %}active{% endif %}">Sent</a>
-    <a href="{{ url_for('jobs', status='Interviewed') }}" class="quick-chip {% if job_filters.status == 'Interviewed' %}active{% endif %}">Interviewed</a>
-    <a href="{{ url_for('jobs', status='Offer') }}" class="quick-chip {% if job_filters.status == 'Offer' %}active{% endif %}">Offer</a>
-    <a href="{{ url_for('jobs', status='Rejected') }}" class="quick-chip {% if job_filters.status == 'Rejected' %}active{% endif %}">Rejected</a>
   </div>
 
   <form method="get" class="filter-row">
@@ -63,9 +55,20 @@
           <div class="kanban-cards">
             {% for job in column_jobs %}
               <div class="job-card" data-job-card data-job-id="{{ job.id }}">
-                <div class="job-card-drag" draggable="true">
-                  <div class="job-card-title">{{ job.company }}</div>
-                  <div class="job-card-role">{{ job.role }}</div>
+                <div style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start;">
+                  <div class="job-card-drag" draggable="true" style="flex: 1;">
+                    <div class="job-card-title">{{ job.company }}</div>
+                    <div class="job-card-role">{{ job.role }}</div>
+                  </div>
+                  <details class="entry-menu">
+                    <summary aria-label="Job actions">...</summary>
+                    <div class="entry-menu-list">
+                      <a href="{{ url_for('edit_job', job_id=job.id) }}">Edit</a>
+                      <form method="post" action="{{ url_for('delete_job', job_id=job.id) }}">
+                        <button type="submit" onclick="return confirm('Remove this application?')">Delete</button>
+                      </form>
+                    </div>
+                  </details>
                 </div>
                 <div class="job-meta">
                   <span>{{ job.job_type }}</span>
@@ -114,9 +117,6 @@
                       <button type="submit" class="btn btn-ghost btn-sm">Send to Vault</button>
                     </form>
                   {% endif %}
-                  <form method="post" action="{{ url_for('delete_job', job_id=job.id) }}" onsubmit="return confirm('Remove this application?')">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                  </form>
                 </div>
               </div>
             {% endfor %}
