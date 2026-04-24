@@ -8,49 +8,7 @@
   {% block head %}{% endblock %}
 </head>
 <body>
-  <div class="dot-strip" aria-hidden="true">
-    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-  </div>
-  <div class="promo-strip">
-    YOUR CAREER COLLECTION IS LIVE! TRACK SKILLS, JOBS, AND VAULT FLOW IN ONE BOARD.
-  </div>
-
   <div class="site-shell">
-
-  <nav>
-    <a href="/" class="nav-brand">Skill<span>Vault</span></a>
-    {% if session.get('username') %}
-      <a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active"{% endif %}>Dashboard</a>
-      <a href="{{ url_for('skills') }}" data-tour-target="skills-nav" {% if request.endpoint in ['skills','skill_detail','add_skill','transfer_skill'] %}class="active"{% endif %}>Skills</a>
-      <a href="{{ url_for('jobs') }}" data-tour-target="jobs-nav" {% if request.endpoint in ['jobs','add_job','update_job'] %}class="active"{% endif %}>Jobs</a>
-      <a href="{{ url_for('income') }}" data-tour-target="vault-nav" {% if request.endpoint in ['income','add_income'] %}class="active"{% endif %}>Vault</a>
-    {% endif %}
-    {% if session.get('username') %}
-      <div class="nav-sep"></div>
-      <a href="{{ url_for('user_profile') }}" class="nav-user">{{ session.get('display_name') or session.get('username') }}</a>
-      <a href="{{ url_for('logout') }}">Logout</a>
-      <button class="theme-toggle theme-toggle-inline" id="theme-toggle" type="button" aria-label="Toggle theme">
-        <svg class="theme-icon icon-sun" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 4.5a1 1 0 0 1 1 1V7a1 1 0 0 1-2 0V5.5a1 1 0 0 1 1-1Zm0 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7.5-3.5a1 1 0 0 1 1 1v.5a1 1 0 1 1-2 0V13a1 1 0 0 1 1-1ZM4.5 12a1 1 0 0 1 1 1v.5a1 1 0 1 1-2 0V13a1 1 0 0 1 1-1Zm11.25 5.25a1 1 0 0 1 1.41 0l.35.35a1 1 0 1 1-1.41 1.41l-.35-.35a1 1 0 0 1 0-1.41Zm-7.1 0a1 1 0 0 1 0 1.41l-.35.35a1 1 0 1 1-1.41-1.41l.35-.35a1 1 0 0 1 1.41 0ZM17.16 6.84a1 1 0 0 1 1.41 0l.35.35a1 1 0 0 1-1.41 1.41l-.35-.35a1 1 0 0 1 0-1.41Zm-11.32 0a1 1 0 0 1 0 1.41l-.35.35A1 1 0 0 1 4.08 7.2l.35-.35a1 1 0 0 1 1.41 0Z" fill="currentColor"/>
-        </svg>
-        <svg class="theme-icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20.4 14.9A8.5 8.5 0 0 1 9.1 3.6a1 1 0 0 0-1.3-1.2A10 10 0 1 0 21.6 16a1 1 0 0 0-1.2-1.1Z" fill="currentColor"/>
-        </svg>
-      </button>
-    {% else %}
-      <a href="{{ url_for('login') }}">Login</a>
-      <a href="{{ url_for('register') }}">Register</a>
-      <div class="nav-sep"></div>
-      <button class="theme-toggle theme-toggle-inline" id="theme-toggle" type="button" aria-label="Toggle theme">
-        <svg class="theme-icon icon-sun" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 4.5a1 1 0 0 1 1 1V7a1 1 0 0 1-2 0V5.5a1 1 0 0 1 1-1Zm0 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7.5-3.5a1 1 0 0 1 1 1v.5a1 1 0 1 1-2 0V13a1 1 0 0 1 1-1ZM4.5 12a1 1 0 0 1 1 1v.5a1 1 0 1 1-2 0V13a1 1 0 0 1 1-1Zm11.25 5.25a1 1 0 0 1 1.41 0l.35.35a1 1 0 1 1-1.41 1.41l-.35-.35a1 1 0 0 1 0-1.41Zm-7.1 0a1 1 0 0 1 0 1.41l-.35.35a1 1 0 1 1-1.41-1.41l.35-.35a1 1 0 0 1 1.41 0ZM17.16 6.84a1 1 0 0 1 1.41 0l.35.35a1 1 0 0 1-1.41 1.41l-.35-.35a1 1 0 0 1 0-1.41Zm-11.32 0a1 1 0 0 1 0 1.41l-.35.35A1 1 0 0 1 4.08 7.2l.35-.35a1 1 0 0 1 1.41 0Z" fill="currentColor"/>
-        </svg>
-        <svg class="theme-icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20.4 14.9A8.5 8.5 0 0 1 9.1 3.6a1 1 0 0 0-1.3-1.2A10 10 0 1 0 21.6 16a1 1 0 0 0-1.2-1.1Z" fill="currentColor"/>
-        </svg>
-      </button>
-    {% endif %}
-  </nav>
 
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -65,27 +23,6 @@
   <main class="site-main">
     {% block content %}{% endblock %}
   </main>
-
-  <footer class="site-footer">
-    <div class="site-footer-grid">
-      <div>
-        <div class="site-footer-head">Explore</div>
-        <div class="site-footer-links">
-          <a href="{{ url_for('index') }}">Home</a>
-          {% if session.get('username') %}
-            <a href="{{ url_for('dashboard') }}">Dashboard</a>
-            <a href="{{ url_for('skills') }}">Skills</a>
-            <a href="{{ url_for('jobs') }}">Jobs</a>
-            <a href="{{ url_for('income') }}">Vault</a>
-          {% else %}
-            <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{ url_for('register') }}">Register</a>
-          {% endif %}
-        </div>
-      </div>
-      <div class="site-footer-brand">Skill<span>Vault</span></div>
-    </div>
-  </footer>
 </div>
 
   <script>
