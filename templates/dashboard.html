@@ -1,0 +1,61 @@
+﻿{% extends "base.html" %}
+{% block title %}Dashboard - SkillVault{% endblock %}
+{% block content %}
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Dashboard</div>
+      <div class="page-subtitle">Career capital overview for @{{ user.username }}</div>
+    </div>
+    <div class="flex gap-8">
+      <a href="{{ url_for('download_csv') }}" class="btn btn-ghost btn-sm">Download CSV</a>
+      <a href="{{ url_for('download_pdf') }}" class="btn btn-ghost btn-sm">Download PDF</a>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="card"><div class="card-title">Total Study Hours</div><div class="card-value accent text-mono">{{ user.total_study_hours() }}h</div><div class="card-label">across {{ user.skills | length }} skill(s)</div></div>
+    <div class="card"><div class="card-title">Job Applications</div><div class="card-value violet text-mono">{{ user.jobs | length }}</div><div class="card-label">{{ user.job_conversion_rate() }}% response rate</div></div>
+    <div class="card"><div class="card-title">Vault Balance</div><div class="card-value {% if user.income_balance() >= 0 %}green{% else %}text-red{% endif %} text-mono">PHP {{ '{:,.2f}'.format(user.income_balance()) }}</div><div class="card-label">net earnings</div></div>
+    <div class="card"><div class="card-title">Total Earned</div><div class="card-value text-mono">PHP {{ '{:,.2f}'.format(user.total_income()) }}</div><div class="card-label">PHP {{ '{:,.2f}'.format(user.total_expenses()) }} expenses</div></div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;" class="dashboard-grid">
+    <div>
+      <div class="section-header"><div class="section-title">Skill Bank</div><a href="{{ url_for('skills') }}" class="btn btn-ghost btn-sm">View All -></a></div>
+      {% if user.skills %}
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          {% for skill in user.skills[:5] %}
+          <a href="{{ url_for('skill_detail', skill_id=skill.id) }}" style="text-decoration:none;">
+            <div class="card" style="padding: 14px 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;"><span style="font-weight: 600; font-size: 14px; color: var(--text);">{{ skill.name }}</span><span class="text-mono text-accent" style="font-size: 16px; font-weight: 600;">{{ skill.balance }}h</span></div>
+              {% if skill.hours_deposited > 0 %}<div class="progress-bar"><div class="progress-fill" style="width: {{ [((skill.balance / skill.hours_deposited) * 100)|int, 100]|min }}%"></div></div>{% endif %}
+              <div class="skill-meta mt-8"><span style="color: var(--text-muted);">Studied <span>{{ skill.hours_deposited }}h</span></span><span style="color: var(--text-muted);">Deployed <span>{{ skill.hours_withdrawn }}h</span></span></div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="card empty-state" style="padding: 32px;"><div class="empty-state-icon">Skill</div><p>No skills yet. Start building your bank.</p><a href="{{ url_for('add_skill') }}" class="btn btn-primary">Add First Skill</a></div>
+      {% endif %}
+    </div>
+    <div>
+      <div class="section-header"><div class="section-title">Recent Applications</div><a href="{{ url_for('jobs') }}" class="btn btn-ghost btn-sm">View All -></a></div>
+      {% if user.jobs %}
+        <div class="table-wrap" style="margin-bottom: 24px;"><table><thead><tr><th>Company</th><th>Role</th><th>Status</th></tr></thead><tbody>{% for job in user.jobs[-5:]|reverse %}<tr><td style="font-weight: 600;">{{ job.company }}</td><td style="color: var(--text-muted);">{{ job.role }}</td><td><span class="badge badge-{{ job.status.lower() }}">{{ job.status }}</span></td></tr>{% endfor %}</tbody></table></div>
+      {% else %}
+        <div class="card empty-state" style="padding: 24px; margin-bottom: 24px;"><div class="empty-state-icon">Jobs</div><p>No applications logged yet.</p><a href="{{ url_for('add_job') }}" class="btn btn-primary">Log First Application</a></div>
+      {% endif %}
+      <div class="section-header"><div class="section-title">Recent Vault Activity</div><a href="{{ url_for('income') }}" class="btn btn-ghost btn-sm">View All -></a></div>
+      {% if user.income_txns %}
+        <div style="display: flex; flex-direction: column; gap: 6px;">{% for txn in user.income_txns[-4:]|reverse %}<div class="card" style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;"><div><div style="font-size: 13px; font-weight: 500; color: var(--text);">{{ txn.description }}</div><div style="font-size: 11px; color: var(--text-muted); font-family: var(--mono);">{{ txn.date }}</div></div><div class="text-mono" style="font-weight: 600; {% if txn.type == 'income' %}color: var(--green){% else %}color: var(--red){% endif %};">{{ '+' if txn.type == 'income' else '-' }}PHP {{ '{:,.2f}'.format(txn.amount) }}</div></div>{% endfor %}</div>
+      {% else %}
+        <div class="card empty-state" style="padding: 24px;"><div class="empty-state-icon">Vault</div><p>No income or expenses logged yet.</p><a href="{{ url_for('add_income') }}" class="btn btn-primary">Log First Entry</a></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>@media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr !important; } }</style>
+{% endblock %}

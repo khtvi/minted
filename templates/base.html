@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}SkillVault{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-brand">Skill<span>Vault</span></a>
+    {% if session.get('username') %}
+      <a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active"{% endif %}>Dashboard</a>
+      <a href="{{ url_for('skills') }}" {% if request.endpoint in ['skills','skill_detail','add_skill','transfer_skill'] %}class="active"{% endif %}>Skills</a>
+      <a href="{{ url_for('jobs') }}" {% if request.endpoint in ['jobs','add_job','update_job'] %}class="active"{% endif %}>Jobs</a>
+      <a href="{{ url_for('income') }}" {% if request.endpoint in ['income','add_income'] %}class="active"{% endif %}>Vault</a>
+      <div class="nav-sep"></div>
+      <span class="nav-user">@{{ session.get('username') }}</span>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+      <div class="nav-sep"></div>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('register') }}">Register</a>
+    {% endif %}
+  </nav>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-wrap">
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+
+</body>
+</html>
