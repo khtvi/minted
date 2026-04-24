@@ -208,8 +208,6 @@ nav a.nav-brand.active {
 ────────────────────────────────────────── */
 .page {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
   width: 75%;
   max-width: none;
   margin: 0;
