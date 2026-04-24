@@ -4,9 +4,10 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import wraps
-import json, os, csv, io, uuid
+import json, os, csv, io, uuid, time
+from storage import SQLiteUserStore
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app = Flask(
@@ -15,8 +16,14 @@ app = Flask(
     static_folder=os.path.join(BASE_DIR, "static"),
 )
 app.secret_key = os.environ.get("SECRET_KEY", "minted-dev-key-changeme")
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.environ.get("SESSION_COOKIE_SECURE", "").strip() == "1",
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=12),
+)
 
-def resolve_data_file():
+def resolve_legacy_data_file():
     configured = os.environ.get("DATA_FILE", "").strip()
     if configured:
         return configured
@@ -28,7 +35,22 @@ def resolve_data_file():
     return os.path.join(BASE_DIR, "storage.json")
 
 
-DATA_FILE = resolve_data_file()
+def resolve_db_file():
+    configured = os.environ.get("DB_FILE", "").strip()
+    if configured:
+        return configured
+
+    render_disk = os.environ.get("RENDER_DISK_PATH", "").strip()
+    if render_disk:
+        return os.path.join(render_disk, "storage.db")
+
+    return os.path.join(BASE_DIR, "storage.db")
+
+
+LEGACY_DATA_FILE = resolve_legacy_data_file()
+DB_FILE = resolve_db_file()
+STORE = SQLiteUserStore(DB_FILE)
+STORE.migrate_from_json(LEGACY_DATA_FILE)
 SKILL_CATEGORIES = [
     "Programming", "Cybersecurity", "Design", "Admin / VA",
     "Marketing", "Data", "Writing", "Other",
@@ -49,6 +71,11 @@ PAYMENT_METHODS = [
     "Other",
     "Auto-Linked",
 ]
+PASSWORD_MIN_LEN = 8
+PASSWORD_MAX_LEN = 10
+LOGIN_WINDOW_SECONDS = 10 * 60
+MAX_LOGIN_ATTEMPTS = 8
+FAILED_LOGIN_ATTEMPTS = {}
 
 
 def normalize_date(value):
@@ -68,6 +95,46 @@ def normalize_skill_ids(skill_ids, skill_lookup):
             normalized.append(skill_id)
             seen.add(skill_id)
     return normalized
+
+
+def is_valid_password_length(value):
+    return PASSWORD_MIN_LEN <= len(value) <= PASSWORD_MAX_LEN
+
+
+def client_ip():
+    forwarded = request.headers.get("X-Forwarded-For", "").strip()
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.remote_addr or "unknown"
+
+
+def _login_bucket(identifier):
+    return f"{client_ip()}::{(identifier or '').lower()}"
+
+
+def _prune_attempts(values, now_ts):
+    return [stamp for stamp in values if now_ts - stamp < LOGIN_WINDOW_SECONDS]
+
+
+def login_rate_limited(identifier):
+    now_ts = time.time()
+    bucket = _login_bucket(identifier)
+    attempts = _prune_attempts(FAILED_LOGIN_ATTEMPTS.get(bucket, []), now_ts)
+    FAILED_LOGIN_ATTEMPTS[bucket] = attempts
+    return len(attempts) >= MAX_LOGIN_ATTEMPTS
+
+
+def mark_login_failure(identifier):
+    now_ts = time.time()
+    bucket = _login_bucket(identifier)
+    attempts = _prune_attempts(FAILED_LOGIN_ATTEMPTS.get(bucket, []), now_ts)
+    attempts.append(now_ts)
+    FAILED_LOGIN_ATTEMPTS[bucket] = attempts
+
+
+def clear_login_failures(identifier):
+    bucket = _login_bucket(identifier)
+    FAILED_LOGIN_ATTEMPTS.pop(bucket, None)
 
 
 class Skill:
@@ -363,39 +430,19 @@ users = []
 
 def load_users():
     global users
-    if os.path.exists(DATA_FILE):
-        try:
-            with open(DATA_FILE, "r", encoding="utf-8") as file:
-                content = file.read().strip()
-                if not content:
-                    users = []
-                    return
-                data = json.loads(content)
-                users = [User.from_dict(item) for item in data]
-        except (OSError, json.JSONDecodeError, KeyError, ValueError) as exc:
-            print(f"Error loading data: {exc}")
-            users = []
-    else:
+    try:
+        data = STORE.read_users()
+        users = [User.from_dict(item) for item in data]
+    except (OSError, json.JSONDecodeError, KeyError, ValueError, RuntimeError) as exc:
+        print(f"Error loading data from DB: {exc}")
         users = []
 
 
 def save_users():
-    data_dir = os.path.dirname(DATA_FILE)
-    if data_dir:
-        os.makedirs(data_dir, exist_ok=True)
-
-    temp_file = f"{DATA_FILE}.tmp"
     try:
-        with open(temp_file, "w", encoding="utf-8") as file:
-            json.dump([user.to_dict() for user in users], file, indent=2)
-        os.replace(temp_file, DATA_FILE)
-    except OSError as exc:
-        if os.path.exists(temp_file):
-            try:
-                os.remove(temp_file)
-            except OSError:
-                pass
-        raise RuntimeError(f"Failed to save data file at {DATA_FILE}: {exc}") from exc
+        STORE.write_users([user.to_dict() for user in users])
+    except (OSError, RuntimeError) as exc:
+        raise RuntimeError(f"Failed to save data in DB at {DB_FILE}: {exc}") from exc
 
 
 def find_user_by_username(username):
@@ -418,6 +465,27 @@ def find_user_by_login(identifier):
 
 
 load_users()
+
+
+@app.after_request
+def apply_security_headers(response):
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+    response.headers.setdefault(
+        "Content-Security-Policy",
+        "default-src 'self'; "
+        "img-src 'self' data:; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' data: https://fonts.gstatic.com; "
+        "script-src 'self' 'unsafe-inline'; "
+        "connect-src 'self'; "
+        "frame-ancestors 'self'; "
+        "base-uri 'self'; "
+        "form-action 'self'",
+    )
+    return response
 
 
 def current_user():
@@ -464,6 +532,13 @@ def register():
             flash("PINs do not match.", "error")
             return redirect(url_for("register"))
 
+        if not is_valid_password_length(pin):
+            flash(
+                f"Password must be {PASSWORD_MIN_LEN} to {PASSWORD_MAX_LEN} characters long.",
+                "error",
+            )
+            return redirect(url_for("register"))
+
         if find_user_by_login(email):
             flash("Email already in use.", "error")
             return redirect(url_for("register"))
@@ -485,11 +560,17 @@ def login():
     if request.method == "POST":
         login_id = request.form["login_id"].strip()
         pin = request.form["pin"].strip()
+        if login_rate_limited(login_id):
+            flash("Too many login attempts. Please wait a few minutes and try again.", "error")
+            return redirect(url_for("login"))
+
         user = find_user_by_login(login_id)
 
         if user and user.verify_pin(pin):
+            clear_login_failures(login_id)
             session["username"] = user.username
             session["display_name"] = user.name or user.username
+            session.permanent = True
             flash(f"Welcome back, {user.name or user.username}!", "success")
             if user.username.lower() == "admin":
                 return redirect(url_for("admin"))
@@ -497,6 +578,7 @@ def login():
                 return redirect(url_for("welcome"))
             return redirect(url_for("dashboard"))
 
+        mark_login_failure(login_id)
         flash("Invalid email/username or PIN.", "error")
         return redirect(url_for("login"))
 
@@ -551,6 +633,13 @@ def user_profile():
 
             if new_pin != confirm_pin:
                 flash("New PINs do not match.", "error")
+                return redirect(url_for("user_profile"))
+
+            if not is_valid_password_length(new_pin):
+                flash(
+                    f"Password must be {PASSWORD_MIN_LEN} to {PASSWORD_MAX_LEN} characters long.",
+                    "error",
+                )
                 return redirect(url_for("user_profile"))
 
             user.set_pin(new_pin)
