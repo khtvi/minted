@@ -1006,14 +1006,14 @@ select option {
 }
 
 .hero-actions {
-  display: flex;
+  display: grid;
   gap: 12px;
-  justify-content: flex-start;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
 .hero .page-tip {
-  justify-content: flex-start;
+  justify-content: center;
   text-align: left;
 }
 
