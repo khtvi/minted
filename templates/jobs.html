@@ -13,6 +13,13 @@
     </div>
   </div>
 
+  <div class="quick-filters">
+    <a href="{{ url_for('jobs', status='Sent') }}" class="quick-chip {% if job_filters.status == 'Sent' %}active{% endif %}">Sent</a>
+    <a href="{{ url_for('jobs', status='Interviewed') }}" class="quick-chip {% if job_filters.status == 'Interviewed' %}active{% endif %}">Interviewed</a>
+    <a href="{{ url_for('jobs', status='Offer') }}" class="quick-chip {% if job_filters.status == 'Offer' %}active{% endif %}">Offer</a>
+    <a href="{{ url_for('jobs', status='Rejected') }}" class="quick-chip {% if job_filters.status == 'Rejected' %}active{% endif %}">Rejected</a>
+  </div>
+
   <form method="get" class="filter-row">
     <input type="text" name="q" placeholder="Search company, role, platform" value="{{ job_filters.q }}">
     <select name="status">

@@ -39,6 +39,16 @@ JOB_TYPES = [
     "Internship", "Temporary", "Project-based", "Other",
 ]
 VALID_TXN_TYPES = {"income", "expense"}
+PAYMENT_METHODS = [
+    "Savings Account",
+    "Checking Account",
+    "Bank Transfer",
+    "E-Wallet",
+    "Cash",
+    "Credit Card",
+    "Other",
+    "Auto-Linked",
+]
 
 
 def normalize_date(value):
@@ -202,13 +212,24 @@ class JobApplication:
 
 
 class IncomeTransaction:
-    def __init__(self, txn_type, amount, description, date=None, txn_id=None, skill_ids=None, job_id=""):
+    def __init__(
+        self,
+        txn_type,
+        amount,
+        description,
+        date=None,
+        txn_id=None,
+        skill_ids=None,
+        job_id="",
+        payment_method="Other",
+    ):
         self.id = txn_id if txn_id else str(uuid.uuid4())[:8]
         self.type = txn_type if txn_type in VALID_TXN_TYPES else "income"
         self.amount = float(amount)
         self.description = description
         self.skill_ids = skill_ids if isinstance(skill_ids, list) else []
         self.job_id = job_id or ""
+        self.payment_method = payment_method if payment_method in PAYMENT_METHODS else "Other"
         self.date = normalize_date(date) if date else datetime.now().strftime("%Y-%m-%d")
         if not self.date:
             self.date = datetime.now().strftime("%Y-%m-%d")
@@ -221,6 +242,7 @@ class IncomeTransaction:
             "description": self.description,
             "skill_ids": self.skill_ids,
             "job_id": self.job_id,
+            "payment_method": self.payment_method,
             "date": self.date,
         }
 
@@ -234,6 +256,7 @@ class IncomeTransaction:
             txn_id=data["id"],
             skill_ids=data.get("skill_ids", []),
             job_id=data.get("job_id", ""),
+            payment_method=data.get("payment_method", "Other"),
         )
         if not isinstance(txn.skill_ids, list):
             txn.skill_ids = []
@@ -626,6 +649,17 @@ def skill_detail(skill_id):
 
     if request.method == "POST":
         action = request.form.get("action")
+
+        if action == "update_level":
+            level = request.form.get("level", "").strip()
+            if level not in SKILL_LEVELS:
+                flash("Invalid skill level.", "error")
+                return redirect(url_for("skill_detail", skill_id=skill_id))
+            skill.level = level
+            save_users()
+            flash(f"Skill level updated to {level}.", "success")
+            return redirect(url_for("skill_detail", skill_id=skill_id))
+
         hours = request.form.get("hours", "0")
         note = request.form.get("note", "").strip()
 
@@ -652,7 +686,77 @@ def skill_detail(skill_id):
 
         return redirect(url_for("skill_detail", skill_id=skill_id))
 
-    return render_template("skill_detail.html", user=user, skill=skill)
+    return render_template("skill_detail.html", user=user, skill=skill, levels=SKILL_LEVELS)
+
+
+@app.route("/skills/<skill_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_skill(skill_id):
+    user = current_user()
+    skill = user.get_skill(skill_id)
+
+    if not skill:
+        flash("Skill not found.", "error")
+        return redirect(url_for("skills"))
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        category = request.form.get("category", "").strip()
+        level = request.form.get("level", "").strip()
+
+        if not name:
+            flash("Skill name is required.", "error")
+            return redirect(url_for("edit_skill", skill_id=skill_id))
+        if category not in SKILL_CATEGORIES:
+            flash("Please select a valid skill category.", "error")
+            return redirect(url_for("edit_skill", skill_id=skill_id))
+        if level not in SKILL_LEVELS:
+            flash("Please select a valid skill level.", "error")
+            return redirect(url_for("edit_skill", skill_id=skill_id))
+
+        for existing in user.skills:
+            if existing.id != skill.id and existing.name.lower() == name.lower():
+                flash("A skill with that name already exists.", "error")
+                return redirect(url_for("edit_skill", skill_id=skill_id))
+
+        skill.name = name
+        skill.category = category
+        skill.level = level
+        save_users()
+        flash("Skill updated.", "success")
+        return redirect(url_for("skills"))
+
+    return render_template(
+        "edit_skill.html",
+        user=user,
+        skill=skill,
+        categories=SKILL_CATEGORIES,
+        levels=SKILL_LEVELS,
+    )
+
+
+@app.route("/skills/<skill_id>/delete", methods=["POST"])
+@login_required
+def delete_skill(skill_id):
+    user = current_user()
+    skill = user.get_skill(skill_id)
+    if not skill:
+        flash("Skill not found.", "error")
+        return redirect(url_for("skills"))
+
+    user.skills.remove(skill)
+
+    for job in user.jobs:
+        if skill_id in job.skill_ids:
+            job.skill_ids = [item for item in job.skill_ids if item != skill_id]
+
+    for txn in user.income_txns:
+        if skill_id in txn.skill_ids:
+            txn.skill_ids = [item for item in txn.skill_ids if item != skill_id]
+
+    save_users()
+    flash("Skill removed.", "success")
+    return redirect(url_for("skills"))
 
 
 @app.route("/skills/transfer", methods=["GET", "POST"])
@@ -816,6 +920,99 @@ def add_job():
     )
 
 
+@app.route("/jobs/<job_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_job(job_id):
+    user = current_user()
+    job = user.get_job(job_id)
+    skill_lookup = {skill.id: skill for skill in user.skills}
+
+    if not job:
+        flash("Application not found.", "error")
+        return redirect(url_for("jobs"))
+
+    if request.method == "POST":
+        company = request.form.get("company", "").strip()
+        role = request.form.get("role", "").strip()
+        date = request.form.get("date_applied", "").strip()
+        platform = request.form.get("platform", "").strip()
+        time_invested = request.form.get("time_invested", "0").strip()
+        cert_used = request.form.get("cert_used", "").strip()
+        notes = request.form.get("notes", "").strip()
+        job_type = request.form.get("job_type", "").strip()
+        expected_amount = request.form.get("expected_amount", "").strip()
+        earned_amount = request.form.get("earned_amount", "").strip()
+        status = request.form.get("status", "").strip()
+        skill_ids = normalize_skill_ids(request.form.getlist("skill_ids"), skill_lookup)
+
+        if not company or not role:
+            flash("Company and role are required.", "error")
+            return redirect(url_for("edit_job", job_id=job_id))
+        if job_type and job_type not in JOB_TYPES:
+            flash("Please select a valid job type.", "error")
+            return redirect(url_for("edit_job", job_id=job_id))
+        if status and status not in JobApplication.STATUSES:
+            flash("Please select a valid status.", "error")
+            return redirect(url_for("edit_job", job_id=job_id))
+
+        normalized_date = normalize_date(date)
+        if date and not normalized_date:
+            flash("Date applied must be a valid date.", "error")
+            return redirect(url_for("edit_job", job_id=job_id))
+
+        try:
+            time_invested = float(time_invested)
+            if time_invested < 0:
+                raise ValueError
+        except ValueError:
+            flash("Time invested must be 0 or greater.", "error")
+            return redirect(url_for("edit_job", job_id=job_id))
+
+        try:
+            expected_amount = float(expected_amount) if expected_amount else 0.0
+            earned_amount = float(earned_amount) if earned_amount else 0.0
+            if expected_amount < 0 or earned_amount < 0:
+                raise ValueError
+        except ValueError:
+            flash("Expected and earned amounts must be 0 or greater.", "error")
+            return redirect(url_for("edit_job", job_id=job_id))
+
+        job.company = company
+        job.role = role
+        if normalized_date:
+            job.date_applied = normalized_date
+        job.platform = platform
+        job.time_invested = time_invested
+        job.cert_used = cert_used
+        job.notes = notes
+        job.job_type = job_type or "Other"
+        job.expected_amount = expected_amount
+        job.earned_amount = earned_amount
+        job.skill_ids = skill_ids
+        if status:
+            job.status = status
+
+        if job.income_txn_id:
+            linked_txn = next((txn for txn in user.income_txns if txn.id == job.income_txn_id), None)
+            if linked_txn:
+                linked_txn.description = f"{job.company} - {job.role}"
+                linked_txn.skill_ids = list(job.skill_ids)
+                linked_txn.job_id = job.id
+
+        save_users()
+        flash("Application updated.", "success")
+        return redirect(url_for("jobs"))
+
+    return render_template(
+        "edit_job.html",
+        user=user,
+        job=job,
+        skills=user.skills,
+        statuses=JobApplication.STATUSES,
+        job_types=JOB_TYPES,
+    )
+
+
 @app.route("/jobs/<job_id>/update", methods=["POST"])
 @login_required
 def update_job(job_id):
@@ -839,6 +1036,7 @@ def update_job(job_id):
                     datetime.now().strftime("%Y-%m-%d"),
                     skill_ids=list(job.skill_ids),
                     job_id=job.id,
+                    payment_method="Auto-Linked",
                 )
                 user.income_txns.append(txn)
                 job.income_txn_id = txn.id
@@ -901,6 +1099,7 @@ def send_job_income(job_id):
         datetime.now().strftime("%Y-%m-%d"),
         skill_ids=list(job.skill_ids),
         job_id=job.id,
+        payment_method="Auto-Linked",
     )
     user.income_txns.append(txn)
     job.income_txn_id = txn.id
@@ -918,6 +1117,8 @@ def delete_job(job_id):
         for txn in user.income_txns:
             if txn.job_id == job.id:
                 txn.job_id = ""
+                if txn.description == f"{job.company} - {job.role}":
+                    txn.description = txn.description.replace(f"{job.company} - {job.role}", "Unlinked job income")
         user.jobs.remove(job)
         save_users()
         flash("Application removed.", "success")
@@ -935,6 +1136,7 @@ def income():
     type_filter = request.args.get("type", "").strip()
     skill_filter = request.args.get("skill_id", "").strip()
     job_filter = request.args.get("job_id", "").strip()
+    payment_filter = request.args.get("payment_method", "").strip()
 
     filtered_txns = list(user.income_txns)
     if query:
@@ -945,6 +1147,13 @@ def income():
         filtered_txns = [txn for txn in filtered_txns if skill_filter in txn.skill_ids]
     if job_filter and job_filter in job_lookup:
         filtered_txns = [txn for txn in filtered_txns if txn.job_id == job_filter]
+    if payment_filter and payment_filter in PAYMENT_METHODS:
+        filtered_txns = [txn for txn in filtered_txns if txn.payment_method == payment_filter]
+
+    income_txns = [txn for txn in user.income_txns if txn.type == "income"]
+    expense_txns = [txn for txn in user.income_txns if txn.type == "expense"]
+    avg_income = round(sum(txn.amount for txn in income_txns) / len(income_txns), 2) if income_txns else 0.0
+    avg_expense = round(sum(txn.amount for txn in expense_txns) / len(expense_txns), 2) if expense_txns else 0.0
 
     job_by_txn = {job.income_txn_id: job for job in user.jobs if job.income_txn_id}
     return render_template(
@@ -953,13 +1162,21 @@ def income():
         filtered_txns=filtered_txns,
         skills=user.skills,
         jobs=user.jobs,
+        payment_methods=PAYMENT_METHODS,
         skill_lookup=skill_lookup,
         job_lookup=job_lookup,
+        income_stats={
+            "income_count": len(income_txns),
+            "expense_count": len(expense_txns),
+            "avg_income": avg_income,
+            "avg_expense": avg_expense,
+        },
         vault_filters={
             "q": raw_query,
             "type": type_filter,
             "skill_id": skill_filter,
             "job_id": job_filter,
+            "payment_method": payment_filter,
         },
         job_by_txn=job_by_txn,
     )
@@ -979,6 +1196,7 @@ def add_income():
         date = request.form.get("date", "").strip()
         skill_ids = normalize_skill_ids(request.form.getlist("skill_ids"), skill_lookup)
         job_id = request.form.get("job_id", "").strip()
+        payment_method = request.form.get("payment_method", "Other").strip()
 
         if txn_type not in VALID_TXN_TYPES:
             flash("Invalid transaction type.", "error")
@@ -990,6 +1208,10 @@ def add_income():
 
         if job_id and job_id not in job_lookup:
             flash("Selected job was not found.", "error")
+            return redirect(url_for("add_income"))
+
+        if payment_method not in PAYMENT_METHODS:
+            flash("Invalid payment method.", "error")
             return redirect(url_for("add_income"))
 
         normalized_date = normalize_date(date)
@@ -1005,7 +1227,15 @@ def add_income():
             flash("Amount must be a positive number.", "error")
             return redirect(url_for("add_income"))
 
-        txn = IncomeTransaction(txn_type, amount, description, normalized_date, skill_ids=skill_ids, job_id=job_id)
+        txn = IncomeTransaction(
+            txn_type,
+            amount,
+            description,
+            normalized_date,
+            skill_ids=skill_ids,
+            job_id=job_id,
+            payment_method=payment_method,
+        )
         user.income_txns.append(txn)
 
         if job_id:
@@ -1025,8 +1255,112 @@ def add_income():
         user=user,
         skills=user.skills,
         jobs=user.jobs,
+        payment_methods=PAYMENT_METHODS,
         today=datetime.now().strftime("%Y-%m-%d"),
     )
+
+
+@app.route("/income/<txn_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_income(txn_id):
+    user = current_user()
+    skill_lookup = {skill.id: skill for skill in user.skills}
+    job_lookup = {job.id: job for job in user.jobs}
+    txn = next((item for item in user.income_txns if item.id == txn_id), None)
+
+    if not txn:
+        flash("Transaction not found.", "error")
+        return redirect(url_for("income"))
+
+    if request.method == "POST":
+        txn_type = request.form.get("type", txn.type).strip()
+        amount_raw = request.form.get("amount", str(txn.amount)).strip()
+        description = request.form.get("description", txn.description).strip()
+        date = request.form.get("date", txn.date).strip()
+        skill_ids = normalize_skill_ids(request.form.getlist("skill_ids"), skill_lookup)
+        job_id = request.form.get("job_id", "").strip()
+        payment_method = request.form.get("payment_method", txn.payment_method).strip()
+
+        if txn_type not in VALID_TXN_TYPES:
+            flash("Invalid transaction type.", "error")
+            return redirect(url_for("edit_income", txn_id=txn_id))
+        if not description:
+            flash("Description is required.", "error")
+            return redirect(url_for("edit_income", txn_id=txn_id))
+        if job_id and job_id not in job_lookup:
+            flash("Selected job was not found.", "error")
+            return redirect(url_for("edit_income", txn_id=txn_id))
+        if payment_method not in PAYMENT_METHODS:
+            flash("Invalid payment method.", "error")
+            return redirect(url_for("edit_income", txn_id=txn_id))
+
+        normalized_date = normalize_date(date)
+        if date and not normalized_date:
+            flash("Date must be a valid date.", "error")
+            return redirect(url_for("edit_income", txn_id=txn_id))
+
+        try:
+            amount = float(amount_raw)
+            if amount <= 0:
+                raise ValueError
+        except ValueError:
+            flash("Amount must be a positive number.", "error")
+            return redirect(url_for("edit_income", txn_id=txn_id))
+
+        txn.type = txn_type
+        txn.amount = amount
+        txn.description = description
+        txn.date = normalized_date or txn.date
+        txn.skill_ids = skill_ids
+        txn.job_id = job_id
+        txn.payment_method = payment_method
+
+        for job in user.jobs:
+            if job.income_txn_id == txn.id and job.id != job_id:
+                job.income_txn_id = ""
+        if job_id:
+            linked_job = job_lookup.get(job_id)
+            if linked_job and txn_type == "income":
+                linked_job.income_txn_id = txn.id
+
+        save_users()
+        flash("Transaction updated.", "success")
+        return redirect(url_for("income"))
+
+    return render_template(
+        "edit_income.html",
+        user=user,
+        txn=txn,
+        skills=user.skills,
+        jobs=user.jobs,
+        payment_methods=PAYMENT_METHODS,
+    )
+
+
+@app.route("/income/bulk-delete", methods=["POST"])
+@login_required
+def bulk_delete_income():
+    user = current_user()
+    selected_ids = set(request.form.getlist("txn_ids"))
+    if not selected_ids:
+        flash("No transactions selected.", "error")
+        return redirect(url_for("income"))
+
+    before = len(user.income_txns)
+    user.income_txns = [txn for txn in user.income_txns if txn.id not in selected_ids]
+
+    removed_count = before - len(user.income_txns)
+    if removed_count <= 0:
+        flash("No matching transactions found.", "error")
+        return redirect(url_for("income"))
+
+    for job in user.jobs:
+        if job.income_txn_id in selected_ids:
+            job.income_txn_id = ""
+
+    save_users()
+    flash(f"Removed {removed_count} transaction(s).", "success")
+    return redirect(url_for("income"))
 
 
 @app.route("/income/<txn_id>/delete", methods=["POST"])
@@ -1088,14 +1422,14 @@ def download_csv():
     writer.writerow([])
 
     writer.writerow(["=== INCOME / EXPENSES ==="])
-    writer.writerow(["Date", "Type", "Amount", "Description", "Linked Job", "Paid Skills"])
+    writer.writerow(["Date", "Type", "Payment Method", "Amount", "Description", "Linked Job", "Paid Skills"])
     for txn in user.income_txns:
         linked_job = ""
         if txn.job_id and txn.job_id in job_lookup:
             linked = job_lookup[txn.job_id]
             linked_job = f"{linked.company} - {linked.role}"
         paid_skills = ", ".join(skill_lookup[skill_id].name for skill_id in txn.skill_ids if skill_id in skill_lookup)
-        writer.writerow([txn.date, txn.type.capitalize(), txn.amount, txn.description, linked_job, paid_skills])
+        writer.writerow([txn.date, txn.type.capitalize(), txn.payment_method, txn.amount, txn.description, linked_job, paid_skills])
     writer.writerow(["", "NET BALANCE", user.income_balance(), ""])
 
     output.seek(0)
@@ -1161,7 +1495,7 @@ def download_pdf():
     elements.append(Spacer(1, 0.2 * inch))
 
     elements.append(Paragraph("Freelance Vault", styles["Heading2"]))
-    income_data = [["Date", "Type", "Amount (PHP)", "Description", "Skills"]]
+    income_data = [["Date", "Type", "Method", "Amount (PHP)", "Description", "Skills"]]
     for txn in user.income_txns:
         paid_skills = ", ".join(skill_lookup[skill_id].name for skill_id in txn.skill_ids if skill_id in skill_lookup)
         if txn.job_id and txn.job_id in job_lookup:
@@ -1170,10 +1504,10 @@ def download_pdf():
                 paid_skills = f"{paid_skills} | {linked_job.company}"
             else:
                 paid_skills = linked_job.company
-        income_data.append([txn.date, txn.type.capitalize(), f"{txn.amount:,.2f}", txn.description, paid_skills or "-"])
-    income_data.append(["", "NET BALANCE", f"{user.income_balance():,.2f}", "", ""])
+        income_data.append([txn.date, txn.type.capitalize(), txn.payment_method, f"{txn.amount:,.2f}", txn.description, paid_skills or "-"])
+    income_data.append(["", "NET BALANCE", "", f"{user.income_balance():,.2f}", "", ""])
     if len(income_data) > 2:
-        table = Table(income_data, colWidths=[0.9 * inch, 0.8 * inch, 1.0 * inch, 2.2 * inch, 1.9 * inch])
+        table = Table(income_data, colWidths=[0.7 * inch, 0.7 * inch, 1.0 * inch, 0.9 * inch, 1.9 * inch, 1.6 * inch])
         table.setStyle(header_style)
         elements.append(table)
     else:
