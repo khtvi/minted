@@ -116,20 +116,20 @@ body {
   border-bottom: 3px solid rgba(0, 0, 0, 0.72);
 }
 .site-shell {
-  width: min(1320px, calc(100% - 24px));
-  margin: 12px auto 18px;
-  border: 3px solid var(--border);
-  border-radius: 26px;
-  overflow: clip;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
   background:
     radial-gradient(420px 200px at 10% 0, rgba(232, 169, 192, 0.2), transparent 68%),
     radial-gradient(440px 220px at 88% 12%, rgba(145, 169, 89, 0.2), transparent 72%),
     var(--surface-alt);
-  box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.26), var(--shadow);
+  box-shadow: none;
   position: relative;
 }
 .site-shell::before {
-  content: "";
+  content: none;
   position: absolute;
   top: 88px;
   left: -44px;
@@ -142,7 +142,7 @@ body {
   opacity: 0.84;
 }
 .site-shell::after {
-  content: "";
+  content: none;
   position: absolute;
   right: -26px;
   top: 270px;
@@ -1652,9 +1652,9 @@ tbody tr:hover {
     padding: 9px 10px;
   }
   .site-shell {
-    width: calc(100% - 10px);
-    margin: 5px auto 10px;
-    border-radius: 16px;
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
   }
   .site-main {
     padding: 12px 12px 0;
