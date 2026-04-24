@@ -8,6 +8,14 @@
   {% block head %}{% endblock %}
 </head>
 <body>
+  <div class="dot-strip" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="promo-strip">
+    YOUR CAREER COLLECTION IS LIVE! TRACK SKILLS, JOBS, AND VAULT FLOW IN ONE BOARD.
+  </div>
+
+  <div class="site-shell">
 
   <nav>
     <a href="/" class="nav-brand">Skill<span>Vault</span></a>
@@ -54,7 +62,31 @@
     {% endif %}
   {% endwith %}
 
-  {% block content %}{% endblock %}
+  <main class="site-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-grid">
+      <div>
+        <div class="site-footer-head">Explore</div>
+        <div class="site-footer-links">
+          <a href="{{ url_for('index') }}">Home</a>
+          {% if session.get('username') %}
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('skills') }}">Skills</a>
+            <a href="{{ url_for('jobs') }}">Jobs</a>
+            <a href="{{ url_for('income') }}">Vault</a>
+          {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="site-footer-brand">Skill<span>Vault</span></div>
+    </div>
+  </footer>
+</div>
 
   <script>
     (function () {
@@ -68,27 +100,27 @@
       const prefersLight = window.matchMedia &&
         window.matchMedia("(prefers-color-scheme: light)").matches;
       const initial = stored || (prefersLight ? "light" : "dark");
-      if (initial === "light") {
-        root.setAttribute("data-theme", "light");
+      if (initial === "dark") {
+        root.setAttribute("data-theme", "dark");
       }
       const button = document.getElementById("theme-toggle");
       const setLabel = () => {
-        const isLight = root.getAttribute("data-theme") === "light";
+        const isDark = root.getAttribute("data-theme") === "dark";
         if (button) {
-          const label = isLight ? "Switch to dark mode" : "Switch to light mode";
+          const label = isDark ? "Switch to light mode" : "Switch to dark mode";
           button.setAttribute("aria-label", label);
           button.setAttribute("title", label);
-          button.setAttribute("aria-pressed", isLight ? "true" : "false");
+          button.setAttribute("aria-pressed", isDark ? "true" : "false");
         }
       };
       const toggleTheme = () => {
-        const isLight = root.getAttribute("data-theme") === "light";
-        if (isLight) {
+        const isDark = root.getAttribute("data-theme") === "dark";
+        if (isDark) {
           root.removeAttribute("data-theme");
-          localStorage.setItem(storageKey, "dark");
-        } else {
-          root.setAttribute("data-theme", "light");
           localStorage.setItem(storageKey, "light");
+        } else {
+          root.setAttribute("data-theme", "dark");
+          localStorage.setItem(storageKey, "dark");
         }
         setLabel();
       };
