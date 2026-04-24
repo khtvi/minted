@@ -207,7 +207,9 @@ nav a.nav-brand.active {
    LAYOUT
 ────────────────────────────────────────── */
 .page {
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   width: 75%;
   max-width: none;
   margin: 0;
