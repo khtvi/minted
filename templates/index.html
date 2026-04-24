@@ -2,33 +2,82 @@
 {% block title %}SkillVault - Career Capital Tracker{% endblock %}
 {% block content %}
 <div class="hero">
-    <div class="hero-inner">
-        <h1>Your skills are<br><span>capital.</span> Treat them like it.</h1>
-        <p>SkillVault is a personal tracker built like a bank. Deposit study hours, deploy skills on projects, log applications, and watch your career capital grow.</p>
-        <div class="hero-actions">
-            <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
-            <a href="{{ url_for('login') }}" class="btn btn-ghost">Log In</a>
-        </div>
-        <div class="feature-row">
+    <div class="hero-inner hero-split">
+        <section class="hero-main">
+            <div class="hero-kicker">Career Capital OS</div>
+            <h1>Turn your effort<br><span>into momentum.</span></h1>
+            <p>SkillVault helps you run your growth like a portfolio. Track study deposits, application performance, and income flow in one high-signal dashboard.</p>
+            <div class="hero-actions">
+                <a href="{{ url_for('register') }}" class="btn btn-primary">Start Building</a>
+                <a href="{{ url_for('login') }}" class="btn btn-ghost">I Have an Account</a>
+            </div>
+            <div class="hero-metrics" aria-label="SkillVault highlights">
+                <div class="hero-metric">
+                    <div class="hero-metric-value">3 systems</div>
+                    <div class="hero-metric-label">Skills, jobs, and vault in one flow</div>
+                </div>
+                <div class="hero-metric">
+                    <div class="hero-metric-value">2 exports</div>
+                    <div class="hero-metric-label">CSV for data, PDF for reports</div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="hero-stage" aria-label="Product capability preview">
+            <div class="hero-orbit"></div>
+            <div class="hero-stage-card">
+                <div class="hero-stage-top">
+                    <div>
+                        <div class="hero-stage-title">Growth Pulse</div>
+                        <div class="hero-stage-sub">Last 30 days</div>
+                    </div>
+                    <div class="hero-stage-pill">+18.4%</div>
+                </div>
+                <div class="hero-stage-bars">
+                    <span style="--bar: 46%"></span>
+                    <span style="--bar: 63%"></span>
+                    <span style="--bar: 58%"></span>
+                    <span style="--bar: 79%"></span>
+                    <span style="--bar: 92%"></span>
+                    <span style="--bar: 88%"></span>
+                </div>
+                <div class="hero-stage-bottom">
+                    <div>
+                        <strong>42h</strong>
+                        <span>Study logged</span>
+                    </div>
+                    <div>
+                        <strong>17</strong>
+                        <span>Applications</span>
+                    </div>
+                    <div>
+                        <strong>PHP 28k</strong>
+                        <span>Vault balance</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="feature-row feature-row-wide">
             <div class="feature-box">
-                <div class="feature-icon">Skill</div>
+                <div class="feature-icon">01</div>
                 <div class="feature-title">Skill Bank</div>
-                <div class="feature-desc">Deposit study hours, track proficiency across all your skills.</div>
+                <div class="feature-desc">Deposit study hours, review utilization, and spot underused skills before they stall.</div>
             </div>
             <div class="feature-box">
-                <div class="feature-icon">Jobs</div>
+                <div class="feature-icon">02</div>
                 <div class="feature-title">Job Ledger</div>
-                <div class="feature-desc">Log every AU remote application and track your conversion rate.</div>
+                <div class="feature-desc">Track each application stage and quickly see where your pipeline leaks.</div>
             </div>
             <div class="feature-box">
-                <div class="feature-icon">Vault</div>
+                <div class="feature-icon">03</div>
                 <div class="feature-title">Income Vault</div>
-                <div class="feature-desc">Track freelance earnings and expenses. Watch the balance grow.</div>
+                <div class="feature-desc">Capture freelance earnings and expenses with a running net balance that stays visible.</div>
             </div>
             <div class="feature-box">
-                <div class="feature-icon">Report</div>
+                <div class="feature-icon">04</div>
                 <div class="feature-title">Export Reports</div>
-                <div class="feature-desc">Download your full career report as CSV or PDF anytime.</div>
+                <div class="feature-desc">Share progress snapshots with clean CSV and PDF exports whenever needed.</div>
             </div>
         </div>
     </div>
