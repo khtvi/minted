@@ -1013,7 +1013,7 @@ select option {
 }
 
 .hero .page-tip {
-  justify-content: center;
+  justify-content: flex-start;
   text-align: left;
 }
 
