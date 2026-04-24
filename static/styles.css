@@ -207,7 +207,7 @@ nav a.nav-brand.active {
    LAYOUT
 ────────────────────────────────────────── */
 .page {
-  width: 100%;
+  width: 50%;
   max-width: none;
   margin: 0;
   padding: 24px clamp(16px, 2.4vw, 34px) 36px;
@@ -222,9 +222,9 @@ nav a.nav-brand.active {
 }
 
 .page-header {
-  display: grid;
+  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   margin-bottom: 24px;
   gap: 16px;
   flex-wrap: wrap;
