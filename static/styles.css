@@ -1006,7 +1006,7 @@ select option {
 }
 
 .hero-actions {
-  display: grid;
+  display: flex;
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
