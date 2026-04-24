@@ -367,33 +367,17 @@ class User:
         self.skills.append(skill)
         return skill
 
-    def total_study_hours(self):
-        return round(sum(skill.hours_deposited for skill in self.skills), 2)
-
     def income_balance(self):
         total = 0
         for txn in self.income_txns:
             total += txn.amount if txn.type == "income" else -txn.amount
         return round(total, 2)
 
-    def total_income(self):
-        return round(sum(txn.amount for txn in self.income_txns if txn.type == "income"), 2)
-
-    def total_expenses(self):
-        return round(sum(txn.amount for txn in self.income_txns if txn.type == "expense"), 2)
-
     def get_job(self, job_id):
         for job in self.jobs:
             if job.id == job_id:
                 return job
         return None
-
-    def job_conversion_rate(self):
-        total = len(self.jobs)
-        if total == 0:
-            return 0
-        responded = sum(1 for job in self.jobs if job.status not in ["Sent", "Rejected"])
-        return round((responded / total) * 100, 1)
 
     def to_dict(self):
         return {
