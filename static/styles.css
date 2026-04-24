@@ -224,7 +224,7 @@ nav a.nav-brand.active {
 .page-header {
   display: grid;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   margin-bottom: 24px;
   gap: 16px;
   flex-wrap: wrap;
@@ -980,7 +980,7 @@ select option {
   min-height: calc(100vh - 56px);
   display: grid;
   align-items: center;
-  justify-content: flex-center;
+  justify-content: center;
   text-align: center;
   padding: 40px 24px;
 }
