@@ -207,7 +207,7 @@ nav a.nav-brand.active {
    LAYOUT
 ────────────────────────────────────────── */
 .page {
-  width: 100%;
+  width: 80%;
   max-width: none;
   margin: 0;
   padding: 24px clamp(16px, 2.4vw, 34px) 36px;
