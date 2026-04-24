@@ -5,7 +5,7 @@
   <div class="page-header"><div><div class="page-title">Add Skill</div><div class="page-subtitle">Open a new account in your skill bank.</div></div><a href="{{ url_for('skills') }}" class="btn btn-ghost">Back</a></div>
   <div class="page-split">
     <div>
-      <div class="page-tip"><strong>Suggestion:</strong> Use clear, specific names (e.g., “React UI” instead of “Frontend”) for better tracking.</div>
+      <div class="page-tip"><strong>Suggestion:</strong> Example: Python (Automation), React (UI), or Penetration Testing (Web).</div>
       <div class="form-card"><form method="post"><div class="form-group"><label for="name">Skill Name</label><input type="text" id="name" name="name" placeholder="e.g. Python, React, Penetration Testing" required autofocus></div><div class="form-group"><label for="category">Category</label><select id="category" name="category" required>{% for cat in categories %}<option value="{{ cat }}">{{ cat }}</option>{% endfor %}</select></div><button type="submit" class="btn btn-primary w-full">Add to Skill Bank</button></form></div>
     </div>
     <aside class="side-panel">
