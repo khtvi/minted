@@ -1,60 +1,60 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --bg: #18542a;
-  --surface: rgba(243, 232, 204, 0.08);
-  --card: rgba(243, 232, 204, 0.12);
-  --card-hover: rgba(243, 232, 204, 0.18);
-  --border: rgba(243, 232, 204, 0.2);
-  --border-light: rgba(243, 232, 204, 0.32);
-  --accent: #ffc926;
-  --accent-hover: #f96015;
-  --accent-button: #f96015;
-  --accent-button-hover: #d52518;
-  --accent-dim: rgba(255, 201, 38, 0.18);
-  --accent-glow: rgba(255, 201, 38, 0.35);
-  --violet: #f96015;
-  --violet-dim: rgba(249, 96, 21, 0.18);
-  --green: #9abc05;
-  --green-dim: rgba(154, 188, 5, 0.18);
-  --amber: #ffc926;
-  --amber-dim: rgba(255, 201, 38, 0.22);
-  --red: #d52518;
-  --red-dim: rgba(213, 37, 24, 0.18);
-  --text: #f3e8cc;
-  --text-muted: rgba(243, 232, 204, 0.7);
-  --text-subtle: rgba(243, 232, 204, 0.85);
-  --btn-primary-text: #f3e8cc;
+  --bg: #1f3f7a;
+  --surface: rgba(248, 230, 160, 0.08);
+  --card: rgba(248, 230, 160, 0.12);
+  --card-hover: rgba(248, 230, 160, 0.18);
+  --border: rgba(248, 230, 160, 0.22);
+  --border-light: rgba(248, 230, 160, 0.34);
+  --accent: #ffa62b;
+  --accent-hover: #ffd28f;
+  --accent-button: #ffa62b;
+  --accent-button-hover: #ffbc5d;
+  --accent-dim: rgba(255, 166, 43, 0.2);
+  --accent-glow: rgba(255, 166, 43, 0.36);
+  --violet: #86c5ff;
+  --violet-dim: rgba(134, 197, 255, 0.2);
+  --green: #86c5ff;
+  --green-dim: rgba(134, 197, 255, 0.2);
+  --amber: #ffa62b;
+  --amber-dim: rgba(255, 166, 43, 0.22);
+  --red: #ffa62b;
+  --red-dim: rgba(255, 166, 43, 0.2);
+  --text: #f8e6a0;
+  --text-muted: rgba(248, 230, 160, 0.72);
+  --text-subtle: rgba(248, 230, 160, 0.9);
+  --btn-primary-text: #1f3f7a;
   --mono: 'JetBrains Mono', monospace;
   --sans: 'Outfit', sans-serif;
   color-scheme: dark;
 }
 
 :root[data-theme="light"] {
-  --bg: #f3e8cc;
-  --surface: rgba(24, 84, 42, 0.06);
-  --card: rgba(24, 84, 42, 0.08);
-  --card-hover: rgba(24, 84, 42, 0.12);
-  --border: rgba(24, 84, 42, 0.18);
-  --border-light: rgba(24, 84, 42, 0.28);
-  --accent: #f96015;
-  --accent-hover: #d52518;
-  --accent-button: #f96015;
-  --accent-button-hover: #d52518;
-  --accent-dim: rgba(249, 96, 21, 0.14);
-  --accent-glow: rgba(249, 96, 21, 0.25);
-  --violet: #9abc05;
-  --violet-dim: rgba(154, 188, 5, 0.16);
-  --green: #18542a;
-  --green-dim: rgba(24, 84, 42, 0.14);
-  --amber: #ffc926;
-  --amber-dim: rgba(255, 201, 38, 0.2);
-  --red: #d52518;
-  --red-dim: rgba(213, 37, 24, 0.14);
-  --text: #18542a;
-  --text-muted: rgba(24, 84, 42, 0.7);
-  --text-subtle: rgba(24, 84, 42, 0.85);
-  --btn-primary-text: #f3e8cc;
+  --bg: #f8e6a0;
+  --surface: rgba(134, 197, 255, 0.12);
+  --card: rgba(134, 197, 255, 0.18);
+  --card-hover: rgba(134, 197, 255, 0.28);
+  --border: rgba(46, 90, 167, 0.22);
+  --border-light: rgba(46, 90, 167, 0.36);
+  --accent: #ffa62b;
+  --accent-hover: #e39121;
+  --accent-button: #2e5aa7;
+  --accent-button-hover: #254a8a;
+  --accent-dim: rgba(255, 166, 43, 0.2);
+  --accent-glow: rgba(46, 90, 167, 0.25);
+  --violet: #86c5ff;
+  --violet-dim: rgba(134, 197, 255, 0.24);
+  --green: #2e5aa7;
+  --green-dim: rgba(46, 90, 167, 0.2);
+  --amber: #ffa62b;
+  --amber-dim: rgba(255, 166, 43, 0.22);
+  --red: #ffa62b;
+  --red-dim: rgba(255, 166, 43, 0.22);
+  --text: #1f3f7a;
+  --text-muted: rgba(46, 90, 167, 0.74);
+  --text-subtle: rgba(46, 90, 167, 0.9);
+  --btn-primary-text: #f8e6a0;
   color-scheme: light;
 }
 
@@ -65,8 +65,8 @@ html {
 }
 
 body {
-  background: radial-gradient(1200px 600px at 20% -10%, rgba(255, 201, 38, 0.18), transparent 60%),
-    radial-gradient(900px 500px at 80% 0%, rgba(249, 96, 21, 0.16), transparent 55%),
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(255, 166, 43, 0.22), transparent 60%),
+    radial-gradient(900px 500px at 80% 0%, rgba(134, 197, 255, 0.2), transparent 55%),
     var(--bg);
   color: var(--text);
   font-family: var(--sans);
@@ -444,7 +444,7 @@ nav a.nav-brand.active {
 .tour-popover {
   position: fixed;
   max-width: 280px;
-  background: rgba(15, 28, 19, 0.98);
+  background: var(--card);
   border: 1px solid var(--border-light);
   border-radius: 14px;
   padding: 14px 16px;
@@ -453,15 +453,21 @@ nav a.nav-brand.active {
 }
 
 .tour-title {
+  color: var(--text);
   font-weight: 700;
   font-size: 14px;
   margin-bottom: 6px;
 }
 
 .tour-body {
-  color: var(--text-muted);
+  color: var(--text-subtle);
   font-size: 13px;
   line-height: 1.5;
+}
+
+.tour-popover .btn-ghost {
+  color: var(--text);
+  border-color: var(--border-light);
 }
 
 .tour-actions {
@@ -884,16 +890,28 @@ select option {
 }
 
 .btn-ghost {
-  background: transparent;
-  color: var(--text-subtle);
-  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border-light);
 }
 
 .btn-ghost:hover {
-  background: var(--card);
-  border-color: var(--border-light);
+  background: var(--card-hover);
+  border-color: var(--accent);
   color: var(--text);
   transform: translateY(-1px);
+}
+
+:root[data-theme="light"] .btn-ghost {
+  background: rgba(24, 84, 42, 0.08);
+  color: #18542a;
+  border-color: rgba(24, 84, 42, 0.34);
+}
+
+:root[data-theme="light"] .btn-ghost:hover {
+  background: rgba(24, 84, 42, 0.14);
+  color: #0f3d1f;
+  border-color: #18542a;
 }
 
 .btn-danger {
