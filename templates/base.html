@@ -16,11 +16,13 @@
       <a href="{{ url_for('skills') }}" {% if request.endpoint in ['skills','skill_detail','add_skill','transfer_skill'] %}class="active"{% endif %}>Skills</a>
       <a href="{{ url_for('jobs') }}" {% if request.endpoint in ['jobs','add_job','update_job'] %}class="active"{% endif %}>Jobs</a>
       <a href="{{ url_for('income') }}" {% if request.endpoint in ['income','add_income'] %}class="active"{% endif %}>Vault</a>
-      <div class="nav-sep"></div>
+    {% endif %}
+    <div class="nav-sep"></div>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme"></button>
+    {% if session.get('username') %}
       <span class="nav-user">@{{ session.get('username') }}</span>
       <a href="{{ url_for('logout') }}">Logout</a>
     {% else %}
-      <div class="nav-sep"></div>
       <a href="{{ url_for('login') }}">Login</a>
       <a href="{{ url_for('register') }}">Register</a>
     {% endif %}
@@ -37,6 +39,43 @@
   {% endwith %}
 
   {% block content %}{% endblock %}
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const storageKey = "theme";
+      const stored = localStorage.getItem(storageKey);
+      const prefersLight = window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: light)").matches;
+      const initial = stored || (prefersLight ? "light" : "dark");
+      if (initial === "light") {
+        root.setAttribute("data-theme", "light");
+      }
+      const button = document.getElementById("theme-toggle");
+      const setLabel = () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        if (button) {
+          button.textContent = isLight ? "Dark mode" : "Light mode";
+          button.setAttribute("aria-pressed", isLight ? "true" : "false");
+        }
+      };
+      const toggleTheme = () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        if (isLight) {
+          root.removeAttribute("data-theme");
+          localStorage.setItem(storageKey, "dark");
+        } else {
+          root.setAttribute("data-theme", "light");
+          localStorage.setItem(storageKey, "light");
+        }
+        setLabel();
+      };
+      if (button) {
+        setLabel();
+        button.addEventListener("click", toggleTheme);
+      }
+    })();
+  </script>
 
 </body>
 </html>

@@ -1,39 +1,67 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --bg: #080e1a;
-  --surface: #0f172a;
-  --card: #1a2236;
-  --card-hover: #1e2a40;
-  --border: #1e3055;
-  --border-light: #2a3f66;
-  --accent: #22d3ee;
-  --accent-dim: rgba(34, 211, 238, 0.12);
-  --accent-glow: rgba(34, 211, 238, 0.3);
-  --violet: #a78bfa;
-  --violet-dim: rgba(167, 139, 250, 0.12);
-  --green: #34d399;
-  --green-dim: rgba(52, 211, 153, 0.12);
-  --amber: #fbbf24;
-  --amber-dim: rgba(251, 191, 36, 0.12);
-  --red: #f87171;
-  --red-dim: rgba(248, 113, 113, 0.12);
-  --text: #e2e8f0;
-  --text-muted: #64748b;
-  --text-subtle: #94a3b8;
+  --bg: #0c130f;
+  --surface: #141c16;
+  --card: #1b251d;
+  --card-hover: #223028;
+  --border: #2a3a2f;
+  --border-light: #3a4f40;
+  --accent: #7be495;
+  --accent-dim: rgba(123, 228, 149, 0.14);
+  --accent-glow: rgba(123, 228, 149, 0.3);
+  --violet: #8bbf9a;
+  --violet-dim: rgba(139, 191, 154, 0.14);
+  --green: #5fd38a;
+  --green-dim: rgba(95, 211, 138, 0.14);
+  --amber: #f0c36b;
+  --amber-dim: rgba(240, 195, 107, 0.16);
+  --red: #e48474;
+  --red-dim: rgba(228, 132, 116, 0.16);
+  --text: #f3efe3;
+  --text-muted: #b7c0b0;
+  --text-subtle: #d4dcc9;
   --mono: 'JetBrains Mono', monospace;
   --sans: 'Outfit', sans-serif;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #f6f0e3;
+  --surface: #fff8ee;
+  --card: #f8f1e2;
+  --card-hover: #f1e9d7;
+  --border: #ded2bb;
+  --border-light: #cbbfa9;
+  --accent: #2f8f5b;
+  --accent-dim: rgba(47, 143, 91, 0.12);
+  --accent-glow: rgba(47, 143, 91, 0.2);
+  --violet: #4a8f6a;
+  --violet-dim: rgba(74, 143, 106, 0.12);
+  --green: #1f7a4b;
+  --green-dim: rgba(31, 122, 75, 0.12);
+  --amber: #b9812b;
+  --amber-dim: rgba(185, 129, 43, 0.14);
+  --red: #b9563e;
+  --red-dim: rgba(185, 86, 62, 0.14);
+  --text: #2b2417;
+  --text-muted: #6b5e47;
+  --text-subtle: #806f55;
+  color-scheme: light;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: var(--bg);
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(123, 228, 149, 0.08), transparent 60%),
+    radial-gradient(900px 500px at 80% 0%, rgba(240, 195, 107, 0.06), transparent 55%),
+    var(--bg);
   color: var(--text);
   font-family: var(--sans);
   font-size: 14px;
   line-height: 1.6;
   min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ──────────────────────────────────────────
@@ -81,6 +109,29 @@ nav a:hover, nav a.active {
 
 .nav-sep { flex: 1; }
 
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-subtle);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+  border-color: var(--border-light);
+  background: var(--card);
+}
+
+.theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
 .nav-user {
   color: var(--text-muted);
   font-size: 12px;
@@ -125,7 +176,15 @@ nav a:hover, nav a.active {
 /* ──────────────────────────────────────────
    FLASH MESSAGES
 ────────────────────────────────────────── */
-.flash-wrap { padding: 0 24px; max-width: 1100px; margin: 16px auto 0; }
+.flash-wrap {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(900px, calc(100% - 48px));
+  z-index: 200;
+  pointer-events: none;
+}
 
 .flash {
   padding: 10px 16px;
@@ -136,6 +195,8 @@ nav a:hover, nav a.active {
   display: flex;
   align-items: center;
   gap: 8px;
+  pointer-events: auto;
+  animation: flash-in 0.25s ease-out;
 }
 
 .flash.success {
@@ -164,10 +225,14 @@ nav a:hover, nav a.active {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
-.card:hover { border-color: var(--border-light); }
+.card:hover {
+  border-color: var(--border-light);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+}
 
 .card-title {
   font-size: 11px;
@@ -230,8 +295,8 @@ nav a:hover, nav a.active {
 .skill-card:hover {
   border-color: var(--accent);
   background: var(--card-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
 }
 
 .skill-card-header {
@@ -433,18 +498,19 @@ select option {
   cursor: pointer;
   text-decoration: none;
   border: none;
-  transition: all 0.15s;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s, color 0.15s, border-color 0.15s;
   white-space: nowrap;
 }
 
 .btn-primary {
   background: var(--accent);
-  color: #080e1a;
+  color: #0c130f;
 }
 
 .btn-primary:hover {
-  background: #67e8f9;
+  background: #9af2b5;
   box-shadow: 0 4px 16px var(--accent-glow);
+  transform: translateY(-1px);
 }
 
 .btn-ghost {
@@ -457,6 +523,7 @@ select option {
   background: var(--card);
   border-color: var(--border-light);
   color: var(--text);
+  transform: translateY(-1px);
 }
 
 .btn-danger {
@@ -468,6 +535,7 @@ select option {
 .btn-danger:hover {
   background: var(--red);
   color: white;
+  transform: translateY(-1px);
 }
 
 .btn-violet {
@@ -479,6 +547,7 @@ select option {
 .btn-violet:hover {
   background: var(--violet);
   color: white;
+  transform: translateY(-1px);
 }
 
 .btn-green {
@@ -555,19 +624,6 @@ select option {
 
 .hero-inner { max-width: 600px; }
 
-.hero-tag {
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--accent);
-  border: 1px solid var(--border);
-  background: var(--accent-dim);
-  padding: 4px 12px;
-  border-radius: 20px;
-  margin-bottom: 24px;
-  letter-spacing: 1px;
-}
-
 .hero h1 {
   font-size: 48px;
   font-weight: 700;
@@ -606,6 +662,7 @@ select option {
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 14px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .feature-icon {
@@ -623,6 +680,12 @@ select option {
 .feature-desc {
   font-size: 12px;
   color: var(--text-muted);
+}
+
+.feature-box:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-light);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
 }
 
 /* ──────────────────────────────────────────
@@ -643,6 +706,8 @@ select option {
   padding: 36px;
   width: 100%;
   max-width: 400px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  animation: card-in 0.35s ease-out;
 }
 
 .auth-title {
@@ -657,6 +722,22 @@ select option {
   color: var(--text-muted);
   font-size: 13px;
   margin-bottom: 28px;
+}
+
+.auth-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-light);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes flash-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .auth-card .form-group { margin-bottom: 16px; }
