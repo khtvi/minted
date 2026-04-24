@@ -14,6 +14,20 @@
     </div>
   </div>
 
+  <div class="page-tip"><strong>Suggestion:</strong> Start by adding your top 3 skills, then log a recent application and your latest income to unlock insights.</div>
+
+  {% if show_tour %}
+    <div class="tour-card" data-tour>
+      <div class="tour-title">Quick tour</div>
+      <ol class="tour-steps">
+        <li>Add your first skill and log study hours.</li>
+        <li>Track job applications and update statuses.</li>
+        <li>Record income and expenses to see your vault balance.</li>
+      </ol>
+      <button type="button" class="btn btn-primary btn-sm" data-tour-dismiss>Got it</button>
+    </div>
+  {% endif %}
+
   <div class="stats-grid">
     <div class="card"><div class="card-title">Total Study Hours</div><div class="card-value accent text-mono">{{ user.total_study_hours() }}h</div><div class="card-label">across {{ user.skills | length }} skill(s)</div></div>
     <div class="card"><div class="card-title">Job Applications</div><div class="card-value violet text-mono">{{ user.jobs | length }}</div><div class="card-label">{{ user.job_conversion_rate() }}% response rate</div></div>
@@ -21,9 +35,9 @@
     <div class="card"><div class="card-title">Total Earned</div><div class="card-value text-mono">PHP {{ '{:,.2f}'.format(user.total_income()) }}</div><div class="card-label">PHP {{ '{:,.2f}'.format(user.total_expenses()) }} expenses</div></div>
   </div>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;" class="dashboard-grid">
+  <div class="dashboard-grid">
     <div>
-      <div class="section-header"><div class="section-title">Skill Bank</div><a href="{{ url_for('skills') }}" class="btn btn-ghost btn-sm">View All -></a></div>
+      <div class="section-header"><div class="section-title">Skill Bank</div><a href="{{ url_for('skills') }}" class="btn btn-ghost btn-sm">View All</a></div>
       {% if user.skills %}
         <div style="display: flex; flex-direction: column; gap: 10px;">
           {% for skill in user.skills[:5] %}
@@ -41,13 +55,13 @@
       {% endif %}
     </div>
     <div>
-      <div class="section-header"><div class="section-title">Recent Applications</div><a href="{{ url_for('jobs') }}" class="btn btn-ghost btn-sm">View All -></a></div>
+      <div class="section-header"><div class="section-title">Recent Applications</div><a href="{{ url_for('jobs') }}" class="btn btn-ghost btn-sm">View All</a></div>
       {% if user.jobs %}
         <div class="table-wrap" style="margin-bottom: 24px;"><table><thead><tr><th>Company</th><th>Role</th><th>Status</th></tr></thead><tbody>{% for job in user.jobs[-5:]|reverse %}<tr><td style="font-weight: 600;">{{ job.company }}</td><td style="color: var(--text-muted);">{{ job.role }}</td><td><span class="badge badge-{{ job.status.lower() }}">{{ job.status }}</span></td></tr>{% endfor %}</tbody></table></div>
       {% else %}
         <div class="card empty-state" style="padding: 24px; margin-bottom: 24px;"><div class="empty-state-icon">Jobs</div><p>No applications logged yet.</p><a href="{{ url_for('add_job') }}" class="btn btn-primary">Log First Application</a></div>
       {% endif %}
-      <div class="section-header"><div class="section-title">Recent Vault Activity</div><a href="{{ url_for('income') }}" class="btn btn-ghost btn-sm">View All -></a></div>
+      <div class="section-header"><div class="section-title">Recent Vault Activity</div><a href="{{ url_for('income') }}" class="btn btn-ghost btn-sm">View All</a></div>
       {% if user.income_txns %}
         <div style="display: flex; flex-direction: column; gap: 6px;">{% for txn in user.income_txns[-4:]|reverse %}<div class="card" style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;"><div><div style="font-size: 13px; font-weight: 500; color: var(--text);">{{ txn.description }}</div><div style="font-size: 11px; color: var(--text-muted); font-family: var(--mono);">{{ txn.date }}</div></div><div class="text-mono" style="font-weight: 600; {% if txn.type == 'income' %}color: var(--green){% else %}color: var(--red){% endif %};">{{ '+' if txn.type == 'income' else '-' }}PHP {{ '{:,.2f}'.format(txn.amount) }}</div></div>{% endfor %}</div>
       {% else %}
@@ -57,5 +71,4 @@
   </div>
 </div>
 
-<style>@media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr !important; } }</style>
 {% endblock %}

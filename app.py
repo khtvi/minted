@@ -192,6 +192,9 @@ class User:
     def verify_pin(self, pin):
         return check_password_hash(self.__pin, str(pin))
 
+    def set_pin(self, pin):
+        self.__pin = generate_password_hash(str(pin))
+
     def get_skill(self, skill_id):
         for skill in self.skills:
             if skill.id == skill_id:
@@ -347,6 +350,7 @@ def register():
         user = User(username, pin)
         users.append(user)
         save_users()
+        session["show_tour"] = True
         flash(f"Account created! Welcome, {username}.", "success")
         return redirect(url_for("login"))
 
@@ -380,10 +384,46 @@ def logout():
     return redirect(url_for("index"))
 
 
+@app.route("/user", methods=["GET", "POST"])
+@login_required
+def user_profile():
+    user = current_user()
+
+    if request.method == "POST":
+        action = request.form.get("action", "")
+        if action == "update_pin":
+            current_pin = request.form.get("current_pin", "").strip()
+            new_pin = request.form.get("new_pin", "").strip()
+            confirm_pin = request.form.get("confirm_pin", "").strip()
+
+            if not current_pin or not new_pin or not confirm_pin:
+                flash("All PIN fields are required.", "error")
+                return redirect(url_for("user_profile"))
+
+            if not user.verify_pin(current_pin):
+                flash("Current PIN is incorrect.", "error")
+                return redirect(url_for("user_profile"))
+
+            if new_pin != confirm_pin:
+                flash("New PINs do not match.", "error")
+                return redirect(url_for("user_profile"))
+
+            user.set_pin(new_pin)
+            save_users()
+            flash("PIN updated successfully.", "success")
+            return redirect(url_for("user_profile"))
+
+        flash("Unknown settings action.", "error")
+        return redirect(url_for("user_profile"))
+
+    return render_template("user.html", user=user)
+
+
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html", user=current_user())
+    show_tour = session.pop("show_tour", False)
+    return render_template("dashboard.html", user=current_user(), show_tour=show_tour)
 
 
 @app.route("/skills")
@@ -418,7 +458,7 @@ def add_skill():
         flash(f"Skill '{name}' added to your skill bank!", "success")
         return redirect(url_for("skills"))
 
-    return render_template("add_skill.html", categories=SKILL_CATEGORIES)
+    return render_template("add_skill.html", categories=SKILL_CATEGORIES, user=user)
 
 
 @app.route("/skills/<skill_id>", methods=["GET", "POST"])
