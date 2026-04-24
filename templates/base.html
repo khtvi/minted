@@ -9,22 +9,30 @@
 </head>
 <body>
   <div class="site-shell">
-  <nav class="top-nav">
-    <div class="top-nav-inner">
-      <a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}class="active"{% endif %}>Home</a>
-      {% if session.get('username') %}
-        <a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active"{% endif %}>Dashboard</a>
-        <a href="{{ url_for('skills') }}" data-tour-target="skills-nav" {% if request.endpoint in ['skills','skill_detail','add_skill','edit_skill','transfer_skill'] %}class="active"{% endif %}>Skills</a>
-        <a href="{{ url_for('jobs') }}" data-tour-target="jobs-nav" {% if request.endpoint in ['jobs','add_job','edit_job'] %}class="active"{% endif %}>Jobs</a>
-        <a href="{{ url_for('income') }}" data-tour-target="vault-nav" {% if request.endpoint in ['income','add_income','edit_income'] %}class="active"{% endif %}>Vault</a>
-        <a href="{{ url_for('user_profile') }}" {% if request.endpoint == 'user_profile' %}class="active"{% endif %}>Profile</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
-      {% else %}
-        <a href="{{ url_for('login') }}" {% if request.endpoint == 'login' %}class="active"{% endif %}>Login</a>
-        <a href="{{ url_for('register') }}" {% if request.endpoint == 'register' %}class="active"{% endif %}>Register</a>
-      {% endif %}
-    </div>
-  </nav>
+  <header class="top-header">
+    <nav class="top-nav" aria-label="Primary">
+      <div class="top-nav-inner">
+        <a class="brand-mark" href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}aria-current="page"{% endif %}>
+          <span class="brand-kicker">SkillVault</span>
+          <span class="brand-name">Minted</span>
+        </a>
+        <div class="top-nav-links">
+          <a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}class="active" aria-current="page"{% endif %}>Home</a>
+          {% if session.get('username') %}
+            <a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active" aria-current="page"{% endif %}>Dashboard</a>
+            <a href="{{ url_for('skills') }}" data-tour-target="skills-nav" {% if request.endpoint in ['skills','skill_detail','add_skill','edit_skill','transfer_skill'] %}class="active" aria-current="page"{% endif %}>Skills</a>
+            <a href="{{ url_for('jobs') }}" data-tour-target="jobs-nav" {% if request.endpoint in ['jobs','add_job','edit_job'] %}class="active" aria-current="page"{% endif %}>Jobs</a>
+            <a href="{{ url_for('income') }}" data-tour-target="vault-nav" {% if request.endpoint in ['income','add_income','edit_income'] %}class="active" aria-current="page"{% endif %}>Vault</a>
+            <a href="{{ url_for('user_profile') }}" {% if request.endpoint == 'user_profile' %}class="active" aria-current="page"{% endif %}>Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+            <a href="{{ url_for('login') }}" {% if request.endpoint == 'login' %}class="active" aria-current="page"{% endif %}>Login</a>
+            <a href="{{ url_for('register') }}" {% if request.endpoint == 'register' %}class="active" aria-current="page"{% endif %}>Register</a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+  </header>
 
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
