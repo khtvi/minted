@@ -1,68 +1,68 @@
-@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;700;800&family=Nunito:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
 
 :root {
-  --bg: #f3f6fa;
-  --bg-alt: #e4ebf3;
-  --surface: #e2eaf3;
-  --surface-alt: #f7f9fc;
-  --card: #ffffff;
-  --card-strong: #eef3f9;
-  --ink: #143656;
-  --text: #143656;
-  --text-muted: #5f7389;
-  --border: rgba(20, 54, 86, 0.24);
-  --border-soft: rgba(20, 54, 86, 0.14);
-  --accent: #1f4e79;
-  --accent-soft: rgba(31, 78, 121, 0.18);
-  --mint: #dce6f2;
-  --mint-soft: rgba(220, 230, 242, 0.34);
-  --pink: #edf2f8;
-  --pink-soft: rgba(237, 242, 248, 0.34);
-  --gold: #c3893a;
-  --violet: #3f5f8c;
-  --violet-soft: rgba(63, 95, 140, 0.2);
-  --green: #2f7a63;
-  --green-soft: rgba(47, 122, 99, 0.16);
-  --red: #b54e57;
-  --red-soft: rgba(181, 78, 87, 0.16);
-  --amber: #ad7d31;
-  --on-accent: #f6fbff;
-  --shadow: 0 8px 22px rgba(20, 54, 86, 0.08);
-  --sans: "Nunito", "Segoe UI", sans-serif;
-  --display: "League Spartan", "Arial Black", sans-serif;
-  --brand: "League Spartan", "Arial Black", sans-serif;
+  --bg: #f0f0ea;
+  --bg-alt: #e3e3dc;
+  --surface: #d9d9d2;
+  --surface-alt: #f7f7f3;
+  --card: #fbfbf8;
+  --card-strong: #f1f1ea;
+  --ink: #1b1c1b;
+  --text: #1f201f;
+  --text-muted: #676a67;
+  --border: rgba(27, 28, 27, 0.24);
+  --border-soft: rgba(27, 28, 27, 0.14);
+  --accent: #1f201f;
+  --accent-soft: rgba(31, 32, 31, 0.14);
+  --mint: #dce8df;
+  --mint-soft: rgba(220, 232, 223, 0.32);
+  --pink: #eadde5;
+  --pink-soft: rgba(234, 221, 229, 0.32);
+  --gold: #d8cf74;
+  --violet: #9db2d1;
+  --violet-soft: rgba(157, 178, 209, 0.22);
+  --green: #9dbc9a;
+  --green-soft: rgba(157, 188, 154, 0.2);
+  --red: #c77b7f;
+  --red-soft: rgba(199, 123, 127, 0.18);
+  --amber: #beab62;
+  --on-accent: #ffffff;
+  --shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+  --sans: "Manrope", "Segoe UI", sans-serif;
+  --display: "Cormorant Garamond", Georgia, serif;
+  --brand: "Cormorant Garamond", Georgia, serif;
   --mono: "Space Mono", "Courier New", monospace;
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --bg: #101b2c;
-  --bg-alt: #18283f;
-  --surface: #263a56;
-  --surface-alt: #1a2b45;
-  --card: #22354f;
-  --card-strong: #2b4363;
-  --ink: #e9eff9;
-  --text: #e9eff9;
-  --text-muted: #b9c9dd;
-  --border: rgba(233, 239, 249, 0.3);
-  --border-soft: rgba(233, 239, 249, 0.2);
-  --accent: #9fc2e8;
-  --accent-soft: rgba(159, 194, 232, 0.2);
-  --mint: #2c425f;
-  --mint-soft: rgba(44, 66, 95, 0.36);
-  --pink: #304767;
-  --pink-soft: rgba(48, 71, 103, 0.32);
-  --gold: #d4ad76;
-  --violet: #a8c3e3;
-  --violet-soft: rgba(168, 195, 227, 0.22);
-  --green: #9fd0be;
-  --green-soft: rgba(159, 208, 190, 0.2);
-  --red: #e9a9b0;
-  --red-soft: rgba(233, 169, 176, 0.2);
-  --amber: #dfc290;
-  --on-accent: #102238;
-  --shadow: 0 10px 28px rgba(6, 12, 26, 0.34);
+  --bg: #161816;
+  --bg-alt: #222521;
+  --surface: #343831;
+  --surface-alt: #252a24;
+  --card: #2f342d;
+  --card-strong: #3a4038;
+  --ink: #ecece5;
+  --text: #ecece5;
+  --text-muted: #bcc3b8;
+  --border: rgba(236, 236, 229, 0.28);
+  --border-soft: rgba(236, 236, 229, 0.18);
+  --accent: #e4dfb0;
+  --accent-soft: rgba(228, 223, 176, 0.2);
+  --mint: #394a3d;
+  --mint-soft: rgba(57, 74, 61, 0.3);
+  --pink: #4a3c46;
+  --pink-soft: rgba(74, 60, 70, 0.3);
+  --gold: #d8cf74;
+  --violet: #b0c2db;
+  --violet-soft: rgba(176, 194, 219, 0.22);
+  --green: #b4ceac;
+  --green-soft: rgba(180, 206, 172, 0.2);
+  --red: #d4a1a5;
+  --red-soft: rgba(212, 161, 165, 0.2);
+  --amber: #d9c987;
+  --on-accent: #22241f;
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.34);
   color-scheme: dark;
 }
 
@@ -83,21 +83,17 @@ body {
   line-height: 1.5;
   color: var(--text);
   background:
-    repeating-linear-gradient(0deg, rgba(20, 54, 86, 0.025) 0 1px, transparent 1px 18px),
-    repeating-linear-gradient(90deg, rgba(20, 54, 86, 0.02) 0 1px, transparent 1px 18px),
-    radial-gradient(980px 660px at 50% 120%, rgba(82, 110, 149, 0.18), transparent 60%),
-    radial-gradient(760px 420px at 12% 96%, rgba(166, 182, 205, 0.2), transparent 54%),
-    radial-gradient(760px 420px at 88% 96%, rgba(166, 182, 205, 0.2), transparent 54%),
+    radial-gradient(980px 660px at 50% 120%, rgba(140, 156, 138, 0.2), transparent 60%),
+    radial-gradient(760px 420px at 12% 96%, rgba(184, 178, 160, 0.16), transparent 54%),
+    radial-gradient(760px 420px at 88% 96%, rgba(184, 178, 160, 0.16), transparent 54%),
     linear-gradient(180deg, var(--bg-alt) 0 36%, var(--bg) 36% 100%);
 }
 
 :root[data-theme="dark"] body {
   background:
-    repeating-linear-gradient(0deg, rgba(233, 239, 249, 0.02) 0 1px, transparent 1px 18px),
-    repeating-linear-gradient(90deg, rgba(233, 239, 249, 0.016) 0 1px, transparent 1px 18px),
-    radial-gradient(980px 660px at 50% 120%, rgba(73, 110, 163, 0.3), transparent 62%),
-    radial-gradient(760px 420px at 12% 96%, rgba(58, 84, 120, 0.24), transparent 54%),
-    radial-gradient(760px 420px at 88% 96%, rgba(58, 84, 120, 0.2), transparent 54%),
+    radial-gradient(980px 660px at 50% 120%, rgba(102, 122, 97, 0.24), transparent 62%),
+    radial-gradient(760px 420px at 12% 96%, rgba(78, 88, 73, 0.2), transparent 54%),
+    radial-gradient(760px 420px at 88% 96%, rgba(78, 88, 73, 0.2), transparent 54%),
     linear-gradient(180deg, var(--bg-alt) 0 36%, var(--bg) 36% 100%);
 }
 
@@ -294,7 +290,7 @@ nav a.nav-brand.active {
 }
 
 .site-main::after {
-  content: "SKILLVAULT STUDIO";
+  content: none;
   position: fixed;
   right: 6px;
   top: 56%;
@@ -308,9 +304,7 @@ nav a.nav-brand.active {
   pointer-events: none;
 }
 
-:root[data-theme="dark"] .site-main::after {
-  color: rgba(233, 239, 249, 0.7);
-}
+ 
 
 .site-footer {
   margin-top: 24px;
@@ -406,7 +400,7 @@ nav a.nav-brand.active {
 .hero {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px 14px 0 0;
+  border-radius: 2px;
   padding: clamp(18px, 3vw, 28px);
   min-height: 460px;
   position: relative;
@@ -435,8 +429,8 @@ nav a.nav-brand.active {
   left: 0;
   right: 0;
   bottom: -1px;
-  height: 24px;
-  background: radial-gradient(circle at 18px 0, var(--card) 18px, transparent 19px) 0 0 / 36px 24px repeat-x;
+  height: 16px;
+  background: linear-gradient(90deg, transparent 0 3%, rgba(27, 28, 27, 0.18) 3% 97%, transparent 97% 100%);
   pointer-events: none;
 }
 
@@ -455,20 +449,21 @@ nav a.nav-brand.active {
 .hero-main h1 {
   font-family: var(--display);
   font-size: clamp(36px, 6vw, 72px);
-  line-height: 0.96;
-  letter-spacing: -0.02em;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
   color: var(--accent);
-  text-transform: uppercase;
+  text-transform: none;
   max-width: 560px;
 }
 
 .hero-main h1 span {
-  color: var(--accent);
+  color: var(--gold);
   font-family: var(--display);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  font-size: 0.9em;
+  font-style: italic;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.86em;
   display: inline;
   margin-top: 0;
 }
@@ -490,7 +485,9 @@ nav a.nav-brand.active {
 .hero-stage {
   border: 8px solid #ffffff;
   border-radius: 0;
-  background: linear-gradient(145deg, rgba(217, 229, 243, 0.92) 0 46%, rgba(255, 255, 255, 0.95) 46% 100%);
+  background:
+    linear-gradient(120deg, rgba(15, 18, 15, 0.48), rgba(15, 18, 15, 0.2)),
+    linear-gradient(145deg, rgba(94, 102, 89, 0.92), rgba(145, 151, 137, 0.82));
   min-height: 360px;
   display: grid;
   place-items: center;
@@ -504,7 +501,7 @@ nav a.nav-brand.active {
 }
 
 .hero-stage-card {
-  background: rgba(255, 255, 255, 0.86);
+  background: rgba(248, 248, 244, 0.9);
   width: min(94%, 540px);
   border: 1px solid var(--border);
   border-radius: 2px;
@@ -554,7 +551,7 @@ nav a.nav-brand.active {
 .hero-stage-bars span {
   border: 1px solid var(--border);
   border-radius: 0;
-  background: linear-gradient(180deg, #9db2cb 0 35%, #1f4e79 35% 100%);
+  background: linear-gradient(180deg, #d8cf74 0 35%, #6e7566 35% 100%);
   height: var(--bar, 50%);
 }
 
@@ -599,7 +596,7 @@ nav a.nav-brand.active {
 .feature-box {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 10px;
   padding: 16px 14px;
   box-shadow: 0 8px 14px rgba(20, 54, 86, 0.1);
   position: relative;
@@ -618,19 +615,19 @@ nav a.nav-brand.active {
 }
 
 .feature-row .feature-box:nth-child(1) {
-  background: #ecf0f8;
+  background: #dbe4f0;
 }
 
 .feature-row .feature-box:nth-child(2) {
-  background: #e8f0e8;
+  background: #dce8d8;
 }
 
 .feature-row .feature-box:nth-child(3) {
-  background: #f1ede3;
+  background: #ece6cf;
 }
 
 .feature-row .feature-box:nth-child(4) {
-  background: #e8edf4;
+  background: #e5dde8;
 }
 
 .feature-icon {
@@ -665,7 +662,7 @@ nav a.nav-brand.active {
   padding: 18px 16px 22px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0.2)), var(--surface-alt);
   border: 1px solid var(--border-soft);
-  border-radius: 14px;
+  border-radius: 2px;
   box-shadow: 0 8px 20px rgba(20, 54, 86, 0.08);
   position: relative;
 }
@@ -676,9 +673,9 @@ nav a.nav-brand.active {
   left: 0;
   right: 0;
   top: -1px;
-  height: 14px;
-  background: radial-gradient(circle at 14px 14px, transparent 14px, rgba(31, 78, 121, 0.16) 15px) 0 0 / 28px 14px repeat-x;
-  border-radius: 14px 14px 0 0;
+  height: 10px;
+  background: linear-gradient(90deg, rgba(216, 207, 116, 0.95), rgba(215, 225, 143, 0.82));
+  border-radius: 0;
   pointer-events: none;
 }
 
@@ -705,7 +702,7 @@ nav a.nav-brand.active {
   font-size: clamp(30px, 4.8vw, 52px);
   line-height: 0.95;
   letter-spacing: -0.02em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--accent);
 }
 
@@ -750,7 +747,7 @@ nav a.nav-brand.active {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  border-radius: 2px;
+  border-radius: 999px;
   border: 1px solid var(--border);
   text-decoration: none;
   padding: 10px 16px;
@@ -768,28 +765,28 @@ nav a.nav-brand.active {
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--gold);
+  color: #1f201f;
 }
 
 .btn-ghost {
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.88);
   color: var(--text);
 }
 
 .btn-green {
-  background: #dde9e6;
-  color: #2f6957;
+  background: #dce8d8;
+  color: #405f3c;
 }
 
 .btn-violet {
-  background: #dfe7f0;
+  background: #dbe4f0;
   color: #3f5f8c;
 }
 
 .btn-danger {
-  background: #f4e1e4;
-  color: #a14650;
+  background: #efdfe0;
+  color: #9f4b53;
 }
 
 .btn-sm {
@@ -915,7 +912,7 @@ label {
 .card {
   padding: 16px;
   position: relative;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 .card::before {
@@ -933,20 +930,20 @@ label {
 .stats-grid .card::after,
 .income-row .card::after,
 .profile-stats .card::after {
-  content: "TOP PICK";
+  content: "HIGHLIGHT";
   position: absolute;
   top: -11px;
   right: 12px;
   border: 2px solid var(--border);
   border-radius: 999px;
-  background: var(--pink);
+  background: #ebe6cf;
   color: var(--accent);
   font-family: var(--display);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   font-size: 9px;
   padding: 4px 8px;
-  transform: rotate(-4deg);
+  transform: rotate(-2deg);
 }
 
 .card-title {
@@ -1007,8 +1004,8 @@ label {
 .dashboard-spotlight {
   margin-bottom: 14px;
   background:
-    radial-gradient(360px 220px at 0% 0%, rgba(121, 152, 186, 0.18), transparent 65%),
-    radial-gradient(360px 220px at 100% 0%, rgba(178, 193, 211, 0.18), transparent 65%),
+    radial-gradient(360px 220px at 0% 0%, rgba(216, 207, 116, 0.2), transparent 65%),
+    radial-gradient(360px 220px at 100% 0%, rgba(157, 178, 209, 0.16), transparent 65%),
     var(--card);
   border-radius: 16px;
   overflow: hidden;
@@ -1021,8 +1018,8 @@ label {
   left: 0;
   right: 0;
   bottom: -1px;
-  height: 20px;
-  background: radial-gradient(circle at 16px 0, rgba(95, 115, 137, 0.16) 16px, transparent 17px) 0 0 / 32px 20px repeat-x;
+  height: 14px;
+  background: linear-gradient(90deg, rgba(216, 207, 116, 0.24), rgba(216, 207, 116, 0.1));
   pointer-events: none;
 }
 
