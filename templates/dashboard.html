@@ -10,20 +10,24 @@
     </div>
     <div class="flex gap-8">
       <a href="{{ url_for('download_csv') }}" class="btn btn-ghost btn-sm">Download CSV</a>
-      <a href="{{ url_for('download_pdf') }}" class="btn btn-ghost btn-sm">Download PDF</a>
     </div>
   </div>
 
 
   {% if show_tour %}
-    <div class="tour-card" data-tour>
-      <div class="tour-title">Quick tour</div>
-      <ol class="tour-steps">
-        <li>Add your first skill and log study hours.</li>
-        <li>Track job applications and update statuses.</li>
-        <li>Record income and expenses to see your vault balance.</li>
-      </ol>
-      <button type="button" class="btn btn-primary btn-sm" data-tour-dismiss>Got it</button>
+    <div class="tour-overlay" data-tour>
+      <div class="tour-spotlight" data-tour-spotlight></div>
+      <div class="tour-popover" data-tour-popover>
+        <div class="tour-title" data-tour-title></div>
+        <div class="tour-body" data-tour-body></div>
+        <div class="tour-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-tour-skip>Skip</button>
+          <button type="button" class="btn btn-primary btn-sm" data-tour-next>Next</button>
+        </div>
+      </div>
+      <div class="tour-step" data-tour-step data-target="[data-tour-target='skills-nav']" data-title="Open Skill Bank" data-body="Click Skills to add your first skill and start logging hours."></div>
+      <div class="tour-step" data-tour-step data-target="[data-tour-target='jobs-nav']" data-title="Track Applications" data-body="Click Jobs to log applications and update statuses."></div>
+      <div class="tour-step" data-tour-step data-target="[data-tour-target='vault-nav']" data-title="Update Your Vault" data-body="Click Vault to record income and expenses."></div>
     </div>
   {% endif %}
 

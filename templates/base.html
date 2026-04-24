@@ -13,20 +13,36 @@
     <a href="/" class="nav-brand">Skill<span>Vault</span></a>
     {% if session.get('username') %}
       <a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active"{% endif %}>Dashboard</a>
-      <a href="{{ url_for('skills') }}" {% if request.endpoint in ['skills','skill_detail','add_skill','transfer_skill'] %}class="active"{% endif %}>Skills</a>
-      <a href="{{ url_for('jobs') }}" {% if request.endpoint in ['jobs','add_job','update_job'] %}class="active"{% endif %}>Jobs</a>
-      <a href="{{ url_for('income') }}" {% if request.endpoint in ['income','add_income'] %}class="active"{% endif %}>Vault</a>
+      <a href="{{ url_for('skills') }}" data-tour-target="skills-nav" {% if request.endpoint in ['skills','skill_detail','add_skill','transfer_skill'] %}class="active"{% endif %}>Skills</a>
+      <a href="{{ url_for('jobs') }}" data-tour-target="jobs-nav" {% if request.endpoint in ['jobs','add_job','update_job'] %}class="active"{% endif %}>Jobs</a>
+      <a href="{{ url_for('income') }}" data-tour-target="vault-nav" {% if request.endpoint in ['income','add_income'] %}class="active"{% endif %}>Vault</a>
     {% endif %}
     {% if session.get('username') %}
       <div class="nav-sep"></div>
       <a href="{{ url_for('user_profile') }}" class="nav-user">@{{ session.get('username') }}</a>
       <a href="{{ url_for('logout') }}">Logout</a>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">Theme</button>
+      <button class="theme-toggle theme-toggle-inline" id="theme-toggle" type="button" aria-label="Toggle theme">
+        <svg class="theme-icon icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 4.5a1 1 0 0 1 1 1V7a1 1 0 0 1-2 0V5.5a1 1 0 0 1 1-1Zm0 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7.5-3.5a1 1 0 0 1 1 1v.5a1 1 0 1 1-2 0V13a1 1 0 0 1 1-1ZM4.5 12a1 1 0 0 1 1 1v.5a1 1 0 1 1-2 0V13a1 1 0 0 1 1-1Zm11.25 5.25a1 1 0 0 1 1.41 0l.35.35a1 1 0 1 1-1.41 1.41l-.35-.35a1 1 0 0 1 0-1.41Zm-7.1 0a1 1 0 0 1 0 1.41l-.35.35a1 1 0 1 1-1.41-1.41l.35-.35a1 1 0 0 1 1.41 0ZM17.16 6.84a1 1 0 0 1 1.41 0l.35.35a1 1 0 0 1-1.41 1.41l-.35-.35a1 1 0 0 1 0-1.41Zm-11.32 0a1 1 0 0 1 0 1.41l-.35.35A1 1 0 0 1 4.08 7.2l.35-.35a1 1 0 0 1 1.41 0Z" fill="currentColor"/>
+        </svg>
+        <svg class="theme-icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.4 14.9A8.5 8.5 0 0 1 9.1 3.6a1 1 0 0 0-1.3-1.2A10 10 0 1 0 21.6 16a1 1 0 0 0-1.2-1.1Z" fill="currentColor"/>
+        </svg>
+        <span>Theme</span>
+      </button>
     {% else %}
       <div class="nav-sep"></div>
       <a href="{{ url_for('login') }}">Login</a>
       <a href="{{ url_for('register') }}">Register</a>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">Theme</button>
+      <button class="theme-toggle theme-toggle-inline" id="theme-toggle" type="button" aria-label="Toggle theme">
+        <svg class="theme-icon icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 4.5a1 1 0 0 1 1 1V7a1 1 0 0 1-2 0V5.5a1 1 0 0 1 1-1Zm0 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7.5-3.5a1 1 0 0 1 1 1v.5a1 1 0 1 1-2 0V13a1 1 0 0 1 1-1ZM4.5 12a1 1 0 0 1 1 1v.5a1 1 0 1 1-2 0V13a1 1 0 0 1 1-1Zm11.25 5.25a1 1 0 0 1 1.41 0l.35.35a1 1 0 1 1-1.41 1.41l-.35-.35a1 1 0 0 1 0-1.41Zm-7.1 0a1 1 0 0 1 0 1.41l-.35.35a1 1 0 1 1-1.41-1.41l.35-.35a1 1 0 0 1 1.41 0ZM17.16 6.84a1 1 0 0 1 1.41 0l.35.35a1 1 0 0 1-1.41 1.41l-.35-.35a1 1 0 0 1 0-1.41Zm-11.32 0a1 1 0 0 1 0 1.41l-.35.35A1 1 0 0 1 4.08 7.2l.35-.35a1 1 0 0 1 1.41 0Z" fill="currentColor"/>
+        </svg>
+        <svg class="theme-icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.4 14.9A8.5 8.5 0 0 1 9.1 3.6a1 1 0 0 0-1.3-1.2A10 10 0 1 0 21.6 16a1 1 0 0 0-1.2-1.1Z" fill="currentColor"/>
+        </svg>
+        <span>Theme</span>
+      </button>
     {% endif %}
   </nav>
 
@@ -83,14 +99,84 @@
         button.addEventListener("click", toggleTheme);
       }
 
-      document.addEventListener("click", (event) => {
-        const dismiss = event.target.closest("[data-tour-dismiss]");
-        if (!dismiss) return;
+      const initTour = () => {
         const tour = document.querySelector("[data-tour]");
-        if (tour) {
+        if (!tour) return;
+        const steps = Array.from(tour.querySelectorAll("[data-tour-step]"));
+        const spotlight = tour.querySelector("[data-tour-spotlight]");
+        const popover = tour.querySelector("[data-tour-popover]");
+        const title = tour.querySelector("[data-tour-title]");
+        const body = tour.querySelector("[data-tour-body]");
+        const next = tour.querySelector("[data-tour-next]");
+        const skip = tour.querySelector("[data-tour-skip]");
+        let index = 0;
+
+        const endTour = () => {
           tour.remove();
+          window.removeEventListener("resize", renderStep);
+        };
+
+        const placePopover = (rect) => {
+          if (!popover) return;
+          const margin = 12;
+          const popoverRect = popover.getBoundingClientRect();
+          const spaceBelow = window.innerHeight - rect.bottom;
+          const showBelow = spaceBelow > popoverRect.height + 24;
+          const top = showBelow ? rect.bottom + margin : rect.top - popoverRect.height - margin;
+          const left = Math.min(
+            Math.max(margin, rect.left),
+            window.innerWidth - popoverRect.width - margin
+          );
+          popover.style.top = `${Math.max(margin, top)}px`;
+          popover.style.left = `${left}px`;
+        };
+
+        const renderStep = () => {
+          const step = steps[index];
+          if (!step) {
+            endTour();
+            return;
+          }
+          const target = document.querySelector(step.dataset.target);
+          if (!target) {
+            endTour();
+            return;
+          }
+          const rect = target.getBoundingClientRect();
+          if (spotlight) {
+            spotlight.style.top = `${rect.top - 6}px`;
+            spotlight.style.left = `${rect.left - 6}px`;
+            spotlight.style.width = `${rect.width + 12}px`;
+            spotlight.style.height = `${rect.height + 12}px`;
+          }
+          if (title) title.textContent = step.dataset.title || "";
+          if (body) body.textContent = step.dataset.body || "";
+          if (next) next.textContent = index === steps.length - 1 ? "Finish" : "Next";
+          requestAnimationFrame(() => placePopover(rect));
+        };
+
+        if (next) {
+          next.addEventListener("click", () => {
+            if (index < steps.length - 1) {
+              index += 1;
+              renderStep();
+            } else {
+              endTour();
+            }
+          });
         }
-      });
+        if (skip) {
+          skip.addEventListener("click", endTour);
+        }
+        tour.addEventListener("click", (event) => {
+          const dismiss = event.target.closest("[data-tour-dismiss]");
+          if (dismiss) endTour();
+        });
+        window.addEventListener("resize", renderStep);
+        renderStep();
+      };
+
+      initTour();
     })();
   </script>
 

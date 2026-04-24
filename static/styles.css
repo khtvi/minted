@@ -96,6 +96,7 @@ nav {
   text-decoration: none;
   letter-spacing: -0.5px;
   margin-right: 16px;
+  padding: 0;
 }
 
 .nav-brand span { color: var(--text-muted); }
@@ -115,6 +116,12 @@ nav a:hover, nav a.active {
   background: var(--accent-dim);
 }
 
+nav a.nav-brand:hover,
+nav a.nav-brand.active {
+  background: transparent;
+  color: var(--accent);
+}
+
 .nav-sep { flex: 1; }
 
 .theme-toggle {
@@ -129,31 +136,27 @@ nav a:hover, nav a.active {
   transition: all 0.15s;
 }
 
-.theme-toggle-icon {
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  border-radius: 999px;
+.theme-toggle-inline {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
 }
 
-.theme-toggle-icon .theme-icon {
+.theme-toggle .theme-icon {
   width: 16px;
   height: 16px;
   display: block;
 }
 
-.theme-toggle-icon .icon-sun {
+.theme-toggle .icon-sun {
   display: none;
 }
 
-:root[data-theme="light"] .theme-toggle-icon .icon-sun {
+:root[data-theme="light"] .theme-toggle .icon-sun {
   display: block;
 }
 
-:root[data-theme="light"] .theme-toggle-icon .icon-moon {
+:root[data-theme="light"] .theme-toggle .icon-moon {
   display: none;
 }
 
@@ -192,7 +195,7 @@ nav a:hover, nav a.active {
    LAYOUT
 ────────────────────────────────────────── */
 .page {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 28px 36px 40px;
 }
@@ -354,26 +357,54 @@ nav a:hover, nav a.active {
   border: 1px solid var(--border-light);
 }
 
-.tour-card {
+.tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  pointer-events: none;
+}
+
+.tour-spotlight {
+  position: absolute;
+  border-radius: 12px;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
+  transition: all 0.2s ease;
+}
+
+.tour-popover {
+  position: fixed;
+  max-width: 280px;
   background: var(--card);
   border: 1px solid var(--border-light);
   border-radius: 14px;
-  padding: 16px 18px;
-  margin-bottom: 24px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+  padding: 14px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+  pointer-events: auto;
 }
 
 .tour-title {
   font-weight: 700;
-  font-size: 15px;
-  margin-bottom: 8px;
+  font-size: 14px;
+  margin-bottom: 6px;
 }
 
-.tour-steps {
-  margin: 0 0 12px 18px;
+.tour-body {
   color: var(--text-muted);
   font-size: 13px;
   line-height: 1.5;
+}
+
+.tour-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tour-step {
+  display: none;
 }
 
 .profile-actions {
@@ -885,12 +916,12 @@ select option {
   min-height: calc(100vh - 56px);
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  justify-content: flex-start;
+  text-align: left;
   padding: 40px 24px;
 }
 
-.hero-inner { max-width: 600px; }
+.hero-inner { max-width: 720px; }
 
 .hero h1 {
   font-size: 48px;
@@ -913,7 +944,7 @@ select option {
 .hero-actions {
   display: flex;
   gap: 12px;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
 }
 
@@ -928,9 +959,7 @@ select option {
   gap: 12px;
   margin-top: 48px;
   text-align: left;
-  max-width: 640px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 760px;
 }
 
 @media (max-width: 640px) {
