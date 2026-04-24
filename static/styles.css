@@ -222,7 +222,7 @@ nav a.nav-brand.active {
 }
 
 .page-header {
-  display: flex;
+  display: grid;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 24px;
@@ -978,10 +978,10 @@ select option {
 ────────────────────────────────────────── */
 .hero {
   min-height: calc(100vh - 56px);
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: flex-start;
-  text-align: left;
+  justify-content: flex-center;
+  text-align: center;
   padding: 40px 24px;
 }
 
