@@ -1,60 +1,60 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --bg: #1f3f7a;
-  --surface: rgba(248, 230, 160, 0.08);
-  --card: rgba(248, 230, 160, 0.12);
-  --card-hover: rgba(248, 230, 160, 0.18);
-  --border: rgba(248, 230, 160, 0.22);
-  --border-light: rgba(248, 230, 160, 0.34);
-  --accent: #ffa62b;
-  --accent-hover: #ffd28f;
-  --accent-button: #ffa62b;
-  --accent-button-hover: #ffbc5d;
-  --accent-dim: rgba(255, 166, 43, 0.2);
-  --accent-glow: rgba(255, 166, 43, 0.36);
-  --violet: #86c5ff;
-  --violet-dim: rgba(134, 197, 255, 0.2);
-  --green: #86c5ff;
-  --green-dim: rgba(134, 197, 255, 0.2);
-  --amber: #ffa62b;
-  --amber-dim: rgba(255, 166, 43, 0.22);
-  --red: #ffa62b;
-  --red-dim: rgba(255, 166, 43, 0.2);
-  --text: #f8e6a0;
-  --text-muted: rgba(248, 230, 160, 0.72);
-  --text-subtle: rgba(248, 230, 160, 0.9);
-  --btn-primary-text: #1f3f7a;
+  --bg: #173b64;
+  --surface: rgba(246, 250, 255, 0.1);
+  --card: rgba(246, 250, 255, 0.14);
+  --card-hover: rgba(246, 250, 255, 0.22);
+  --border: rgba(246, 250, 255, 0.26);
+  --border-light: rgba(246, 250, 255, 0.4);
+  --accent: #ffde70;
+  --accent-hover: #ffe78f;
+  --accent-button: #ffde70;
+  --accent-button-hover: #ffd34a;
+  --accent-dim: rgba(255, 222, 112, 0.2);
+  --accent-glow: rgba(255, 222, 112, 0.34);
+  --violet: #a3c4eb;
+  --violet-dim: rgba(163, 196, 235, 0.22);
+  --green: #a3c4eb;
+  --green-dim: rgba(163, 196, 235, 0.22);
+  --amber: #ffde70;
+  --amber-dim: rgba(255, 222, 112, 0.24);
+  --red: #ffde70;
+  --red-dim: rgba(255, 222, 112, 0.22);
+  --text: #f6faff;
+  --text-muted: rgba(246, 250, 255, 0.74);
+  --text-subtle: rgba(246, 250, 255, 0.92);
+  --btn-primary-text: #173b64;
   --mono: 'JetBrains Mono', monospace;
   --sans: 'Outfit', sans-serif;
   color-scheme: dark;
 }
 
 :root[data-theme="light"] {
-  --bg: #f8e6a0;
-  --surface: rgba(134, 197, 255, 0.12);
-  --card: rgba(134, 197, 255, 0.18);
-  --card-hover: rgba(134, 197, 255, 0.28);
-  --border: rgba(46, 90, 167, 0.22);
-  --border-light: rgba(46, 90, 167, 0.36);
-  --accent: #ffa62b;
-  --accent-hover: #e39121;
-  --accent-button: #2e5aa7;
-  --accent-button-hover: #254a8a;
-  --accent-dim: rgba(255, 166, 43, 0.2);
-  --accent-glow: rgba(46, 90, 167, 0.25);
-  --violet: #86c5ff;
-  --violet-dim: rgba(134, 197, 255, 0.24);
-  --green: #2e5aa7;
-  --green-dim: rgba(46, 90, 167, 0.2);
-  --amber: #ffa62b;
-  --amber-dim: rgba(255, 166, 43, 0.22);
-  --red: #ffa62b;
-  --red-dim: rgba(255, 166, 43, 0.22);
-  --text: #1f3f7a;
-  --text-muted: rgba(46, 90, 167, 0.74);
-  --text-subtle: rgba(46, 90, 167, 0.9);
-  --btn-primary-text: #f8e6a0;
+  --bg: #f6faff;
+  --surface: rgba(163, 196, 235, 0.24);
+  --card: rgba(163, 196, 235, 0.3);
+  --card-hover: rgba(163, 196, 235, 0.44);
+  --border: rgba(23, 59, 100, 0.2);
+  --border-light: rgba(23, 59, 100, 0.34);
+  --accent: #173b64;
+  --accent-hover: #1f4d81;
+  --accent-button: #173b64;
+  --accent-button-hover: #1f4d81;
+  --accent-dim: rgba(255, 222, 112, 0.28);
+  --accent-glow: rgba(23, 59, 100, 0.3);
+  --violet: #a3c4eb;
+  --violet-dim: rgba(163, 196, 235, 0.28);
+  --green: #173b64;
+  --green-dim: rgba(23, 59, 100, 0.2);
+  --amber: #ffde70;
+  --amber-dim: rgba(255, 222, 112, 0.28);
+  --red: #173b64;
+  --red-dim: rgba(23, 59, 100, 0.2);
+  --text: #173b64;
+  --text-muted: rgba(23, 59, 100, 0.72);
+  --text-subtle: rgba(23, 59, 100, 0.9);
+  --btn-primary-text: #f6faff;
   color-scheme: light;
 }
 
@@ -65,16 +65,21 @@ html {
 }
 
 body {
-  background: radial-gradient(1200px 600px at 20% -10%, rgba(255, 166, 43, 0.22), transparent 60%),
-    radial-gradient(900px 500px at 80% 0%, rgba(134, 197, 255, 0.2), transparent 55%),
-    var(--bg);
+  background:
+    radial-gradient(1200px 620px at 8% -18%, rgba(255, 222, 112, 0.3), transparent 58%),
+    radial-gradient(980px 540px at 86% 2%, rgba(163, 196, 235, 0.36), transparent 56%),
+    radial-gradient(900px 500px at 48% 118%, rgba(23, 59, 100, 0.3), transparent 62%),
+    linear-gradient(130deg, rgba(246, 250, 255, 0.9) 0%, rgba(163, 196, 235, 0.46) 54%, rgba(23, 59, 100, 0.84) 100%),
+    repeating-linear-gradient(45deg, rgba(246, 250, 255, 0.03) 0 2px, rgba(23, 59, 100, 0.04) 2px 11px);
+  background-size: 130% 130%, 140% 140%, 130% 130%, 100% 100%, 220px 220px;
+  background-position: 0% 0%, 100% 0%, 50% 100%, 0 0, 0 0;
   color: var(--text);
   font-family: var(--sans);
   font-size: 14px;
   line-height: 1.6;
   min-height: 100vh;
   transition: background 0.3s ease, color 0.3s ease;
-  animation: page-enter 0.18s ease-out;
+  animation: page-enter 0.28s ease-out, sky-shift 18s ease-in-out infinite alternate;
 }
 
 /* ──────────────────────────────────────────
@@ -91,6 +96,8 @@ nav {
   position: sticky;
   top: 0;
   z-index: 100;
+  backdrop-filter: blur(8px);
+  animation: nav-drop 0.4s ease-out;
 }
 
 nav::-webkit-scrollbar {
@@ -591,6 +598,7 @@ nav a.nav-brand.active {
   padding: 22px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  animation: rise-in 0.45s ease both;
 }
 
 .card:hover {
@@ -652,6 +660,7 @@ nav a.nav-brand.active {
   border-radius: 14px;
   padding: 20px;
   transition: all 0.2s;
+  animation: rise-in 0.5s ease both;
   text-decoration: none;
   display: block;
   color: inherit;
@@ -903,15 +912,15 @@ select option {
 }
 
 :root[data-theme="light"] .btn-ghost {
-  background: rgba(24, 84, 42, 0.08);
-  color: #18542a;
-  border-color: rgba(24, 84, 42, 0.34);
+  background: rgba(23, 59, 100, 0.08);
+  color: #173b64;
+  border-color: rgba(23, 59, 100, 0.34);
 }
 
 :root[data-theme="light"] .btn-ghost:hover {
-  background: rgba(24, 84, 42, 0.14);
-  color: #0f3d1f;
-  border-color: #18542a;
+  background: rgba(163, 196, 235, 0.5);
+  color: #173b64;
+  border-color: #173b64;
 }
 
 .btn-danger {
@@ -1157,6 +1166,22 @@ select option {
 @keyframes page-enter {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes nav-drop {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.995); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes sky-shift {
+  0% { background-position: 0% 0%, 100% 0%, 50% 100%, 0 0, 0 0; }
+  50% { background-position: 12% 8%, 88% 10%, 46% 92%, 0 0, 10px 14px; }
+  100% { background-position: 18% 14%, 82% 20%, 40% 82%, 0 0, 20px 28px; }
 }
 
 .is-loading .card,
