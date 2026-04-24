@@ -803,6 +803,41 @@ label {
   pointer-events: none;
 }
 
+.stats-grid .card::after,
+.income-row .card::after,
+.profile-stats .card::after {
+  content: var(--card-chip, "METRIC");
+  position: absolute;
+  top: -11px;
+  right: 12px;
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  background: #ebe6cf;
+  color: var(--accent);
+  font-family: var(--display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 9px;
+  padding: 4px 8px;
+  transform: rotate(-2deg);
+}
+
+.stats-grid .card:nth-child(1) { --card-chip: "Overview"; }
+.stats-grid .card:nth-child(2) { --card-chip: "Progress"; }
+.stats-grid .card:nth-child(3) { --card-chip: "Momentum"; }
+.stats-grid .card:nth-child(4) { --card-chip: "Signal"; }
+
+.income-row .card:nth-child(1) { --card-chip: "Inflow"; }
+.income-row .card:nth-child(2) { --card-chip: "Outflow"; }
+.income-row .card:nth-child(3) { --card-chip: "Net"; }
+
+.profile-stats .card:nth-child(1) { --card-chip: "Identity"; }
+.profile-stats .card:nth-child(2) { --card-chip: "Effort"; }
+.profile-stats .card:nth-child(3) { --card-chip: "Pipeline"; }
+.profile-stats .card:nth-child(4) { --card-chip: "Response"; }
+.profile-stats .card:nth-child(5) { --card-chip: "Revenue"; }
+.profile-stats .card:nth-child(6) { --card-chip: "Balance"; }
+
 .card-title {
   font-family: var(--display);
   letter-spacing: 0.06em;
@@ -1740,22 +1775,33 @@ tbody tr:hover {
   position: fixed;
   inset: 0;
   z-index: 350;
-  background: rgba(20, 20, 24, 0.78);
+  background: rgba(20, 20, 24, 0.54);
 }
 
 .tour-spotlight {
   position: absolute;
   border-radius: 14px;
-  border: 3px solid #9db5d2;
-  box-shadow: 0 0 0 9999px rgba(20, 20, 24, 0.58), 0 0 0 7px rgba(157, 181, 210, 0.28);
+  border: 3px solid #bfd4ec;
+  box-shadow: 0 0 0 9999px rgba(20, 20, 24, 0.36), 0 0 0 8px rgba(191, 212, 236, 0.3);
   transition: all 0.2s ease;
+}
+
+.tour-focus-host {
+  position: relative;
+  z-index: 366 !important;
 }
 
 .tour-focus-target {
   position: relative;
   z-index: 365;
-  box-shadow: 0 0 0 3px rgba(157, 181, 210, 0.55);
+  box-shadow: 0 0 0 3px rgba(191, 212, 236, 0.72);
   border-radius: 12px;
+}
+
+.top-nav-links a.tour-focus-target {
+  color: #0e1014;
+  background: rgba(255, 255, 255, 0.96);
+  border-color: #bfd4ec;
 }
 
 .tour-popover {

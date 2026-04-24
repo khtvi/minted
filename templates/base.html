@@ -83,11 +83,21 @@
         const skip = tour.querySelector("[data-tour-skip]");
         let index = 0;
         let activeTarget = null;
+        let activeHost = null;
 
-        const endTour = () => {
+        const clearFocus = () => {
           if (activeTarget) {
             activeTarget.classList.remove("tour-focus-target");
+            activeTarget = null;
           }
+          if (activeHost) {
+            activeHost.classList.remove("tour-focus-host");
+            activeHost = null;
+          }
+        };
+
+        const endTour = () => {
+          clearFocus();
           tour.remove();
           window.removeEventListener("resize", renderStep);
         };
@@ -118,9 +128,10 @@
             endTour();
             return;
           }
-          if (activeTarget) {
-            activeTarget.classList.remove("tour-focus-target");
-          }
+          clearFocus();
+          const host = target.closest(".top-header") || target.closest(".site-main") || target;
+          host.classList.add("tour-focus-host");
+          activeHost = host;
           target.classList.add("tour-focus-target");
           target.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
           activeTarget = target;
