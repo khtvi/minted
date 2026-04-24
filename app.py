@@ -21,6 +21,10 @@ SKILL_CATEGORIES = [
     "Programming", "Cybersecurity", "Design", "Admin / VA",
     "Marketing", "Data", "Writing", "Other",
 ]
+JOB_TYPES = [
+    "Full-time", "Part-time", "Contract", "Freelance",
+    "Internship", "Temporary", "Project-based", "Other",
+]
 VALID_TXN_TYPES = {"income", "expense"}
 
 
@@ -122,6 +126,10 @@ class JobApplication:
         self.cert_used = ""
         self.notes = ""
         self.platform = ""
+        self.job_type = "Other"
+        self.expected_amount = 0.0
+        self.earned_amount = 0.0
+        self.income_txn_id = ""
 
     def to_dict(self):
         return {
@@ -134,6 +142,10 @@ class JobApplication:
             "cert_used": self.cert_used,
             "notes": self.notes,
             "platform": self.platform,
+            "job_type": self.job_type,
+            "expected_amount": self.expected_amount,
+            "earned_amount": self.earned_amount,
+            "income_txn_id": self.income_txn_id,
         }
 
     @staticmethod
@@ -146,6 +158,12 @@ class JobApplication:
         job.cert_used = data.get("cert_used", "")
         job.notes = data.get("notes", "")
         job.platform = data.get("platform", "")
+        job.job_type = data.get("job_type", "Other")
+        if job.job_type not in JOB_TYPES:
+            job.job_type = "Other"
+        job.expected_amount = max(float(data.get("expected_amount", 0) or 0), 0.0)
+        job.earned_amount = max(float(data.get("earned_amount", 0) or 0), 0.0)
+        job.income_txn_id = data.get("income_txn_id", "")
         return job
 
 
@@ -180,9 +198,11 @@ class IncomeTransaction:
 
 
 class User:
-    def __init__(self, username, pin, user_id=None, is_hashed=False):
+    def __init__(self, username, pin, user_id=None, is_hashed=False, email=None, name=""):
         self.id = user_id if user_id else str(uuid.uuid4())[:8]
         self.username = username
+        self.email = email if email else username
+        self.name = name
         self.__pin = pin if is_hashed else generate_password_hash(str(pin))
         self.skills = []
         self.jobs = []
@@ -246,6 +266,8 @@ class User:
         return {
             "id": self.id,
             "username": self.username,
+            "email": self.email,
+            "name": self.name,
             "pin": self.__pin,
             "created_at": self.created_at,
             "skills": [skill.to_dict() for skill in self.skills],
@@ -255,7 +277,14 @@ class User:
 
     @staticmethod
     def from_dict(data):
-        user = User(data["username"], data["pin"], user_id=data["id"], is_hashed=True)
+        user = User(
+            data["username"],
+            data["pin"],
+            user_id=data["id"],
+            is_hashed=True,
+            email=data.get("email"),
+            name=data.get("name", ""),
+        )
         user.created_at = data.get("created_at", "")
         user.skills = [Skill.from_dict(item) for item in data.get("skills", [])]
         user.jobs = [JobApplication.from_dict(item) for item in data.get("jobs", [])]
@@ -291,11 +320,21 @@ def save_users():
     os.replace(temp_file, DATA_FILE)
 
 
-def find_user(username):
+def find_user_by_username(username):
     if not username:
         return None
     for user in users:
         if user.username.lower() == username.lower():
+            return user
+    return None
+
+
+def find_user_by_login(identifier):
+    if not identifier:
+        return None
+    lowered = identifier.lower()
+    for user in users:
+        if user.username.lower() == lowered or user.email.lower() == lowered:
             return user
     return None
 
@@ -305,7 +344,7 @@ load_users()
 
 def current_user():
     if "username" in session:
-        user = find_user(session["username"])
+        user = find_user_by_username(session["username"])
         if user:
             return user
         session.pop("username", None)
@@ -331,28 +370,34 @@ def index():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        username = request.form["username"].strip()
+        email = request.form["email"].strip()
         pin = request.form["pin"].strip()
         confirm = request.form["confirm_pin"].strip()
 
-        if not username or not pin:
-            flash("Username and PIN are required.", "error")
+        if not email or not pin:
+            flash("Email and PIN are required.", "error")
+            return redirect(url_for("register"))
+
+        if "@" not in email or "." not in email:
+            flash("Please enter a valid email address.", "error")
             return redirect(url_for("register"))
 
         if pin != confirm:
             flash("PINs do not match.", "error")
             return redirect(url_for("register"))
 
-        if find_user(username):
-            flash("Username already taken.", "error")
+        if find_user_by_login(email):
+            flash("Email already in use.", "error")
             return redirect(url_for("register"))
 
-        user = User(username, pin)
+        user = User(email, pin, email=email)
         users.append(user)
         save_users()
         session["show_tour"] = True
-        flash(f"Account created! Welcome, {username}.", "success")
-        return redirect(url_for("login"))
+        session["username"] = user.username
+        session["display_name"] = user.name or user.username
+        flash("Account created! Let's finish your profile.", "success")
+        return redirect(url_for("welcome"))
 
     return render_template("register.html")
 
@@ -360,21 +405,43 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"].strip()
+        login_id = request.form["login_id"].strip()
         pin = request.form["pin"].strip()
-        user = find_user(username)
+        user = find_user_by_login(login_id)
 
         if user and user.verify_pin(pin):
             session["username"] = user.username
-            flash(f"Welcome back, {user.username}!", "success")
+            session["display_name"] = user.name or user.username
+            flash(f"Welcome back, {user.name or user.username}!", "success")
             if user.username.lower() == "admin":
                 return redirect(url_for("admin"))
+            if not user.name:
+                return redirect(url_for("welcome"))
             return redirect(url_for("dashboard"))
 
-        flash("Invalid username or PIN.", "error")
+        flash("Invalid email/username or PIN.", "error")
         return redirect(url_for("login"))
 
     return render_template("login.html")
+
+
+@app.route("/welcome", methods=["GET", "POST"])
+@login_required
+def welcome():
+    user = current_user()
+    if user.name:
+        return redirect(url_for("dashboard"))
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        if not name:
+            flash("Name is required.", "error")
+            return redirect(url_for("welcome"))
+        user.name = name
+        save_users()
+        session["display_name"] = user.name
+        flash(f"Welcome, {user.name}!", "success")
+        return redirect(url_for("dashboard"))
+    return render_template("welcome.html", user=user)
 
 
 @app.route("/logout")
@@ -551,7 +618,15 @@ def transfer_skill():
 @app.route("/jobs")
 @login_required
 def jobs():
-    return render_template("jobs.html", user=current_user(), statuses=JobApplication.STATUSES)
+    user = current_user()
+    txn_by_id = {txn.id: txn for txn in user.income_txns}
+    return render_template(
+        "jobs.html",
+        user=user,
+        statuses=JobApplication.STATUSES,
+        job_types=JOB_TYPES,
+        txn_by_id=txn_by_id,
+    )
 
 
 @app.route("/jobs/add", methods=["GET", "POST"])
@@ -567,9 +642,16 @@ def add_job():
         time_invested = request.form.get("time_invested", "0").strip()
         cert_used = request.form.get("cert_used", "").strip()
         notes = request.form.get("notes", "").strip()
+        job_type = request.form.get("job_type", "").strip()
+        expected_amount = request.form.get("expected_amount", "").strip()
+        earned_amount = request.form.get("earned_amount", "").strip()
 
         if not company or not role:
             flash("Company and role are required.", "error")
+            return redirect(url_for("add_job"))
+
+        if job_type and job_type not in JOB_TYPES:
+            flash("Please select a valid job type.", "error")
             return redirect(url_for("add_job"))
 
         normalized_date = normalize_date(date)
@@ -585,17 +667,34 @@ def add_job():
             flash("Time invested must be 0 or greater.", "error")
             return redirect(url_for("add_job"))
 
+        try:
+            expected_amount = float(expected_amount) if expected_amount else 0.0
+            earned_amount = float(earned_amount) if earned_amount else 0.0
+            if expected_amount < 0 or earned_amount < 0:
+                raise ValueError
+        except ValueError:
+            flash("Expected and earned amounts must be 0 or greater.", "error")
+            return redirect(url_for("add_job"))
+
         job = JobApplication(company, role, normalized_date)
         job.platform = platform
         job.time_invested = time_invested
         job.cert_used = cert_used
         job.notes = notes
+        job.job_type = job_type or "Other"
+        job.expected_amount = expected_amount
+        job.earned_amount = earned_amount
         user.jobs.append(job)
         save_users()
         flash(f"Application to {company} logged!", "success")
         return redirect(url_for("jobs"))
 
-    return render_template("add_job.html", user=user, today=datetime.now().strftime("%Y-%m-%d"))
+    return render_template(
+        "add_job.html",
+        user=user,
+        today=datetime.now().strftime("%Y-%m-%d"),
+        job_types=JOB_TYPES,
+    )
 
 
 @app.route("/jobs/<job_id>/update", methods=["POST"])
@@ -611,11 +710,76 @@ def update_job(job_id):
     new_status = request.form.get("status")
     if new_status in JobApplication.STATUSES:
         job.status = new_status
+        if new_status == "Offer" and not job.income_txn_id:
+            amount = job.earned_amount if job.earned_amount > 0 else job.expected_amount
+            if amount > 0:
+                txn = IncomeTransaction(
+                    "income",
+                    amount,
+                    f"{job.company} - {job.role}",
+                    datetime.now().strftime("%Y-%m-%d"),
+                )
+                user.income_txns.append(txn)
+                job.income_txn_id = txn.id
         save_users()
         flash(f"Status updated to '{new_status}'.", "success")
     else:
         flash("Invalid status.", "error")
 
+    if request.headers.get("X-Requested-With") == "fetch":
+        return {"ok": True}
+    return redirect(url_for("jobs"))
+
+
+@app.route("/jobs/<job_id>/link-income", methods=["POST"])
+@login_required
+def link_job_income(job_id):
+    user = current_user()
+    job = user.get_job(job_id)
+    if not job:
+        flash("Application not found.", "error")
+        return redirect(url_for("jobs"))
+    txn_id = request.form.get("txn_id", "").strip()
+    if not txn_id:
+        job.income_txn_id = ""
+        save_users()
+        flash("Vault link cleared.", "success")
+        return redirect(url_for("jobs"))
+    txn = next((txn for txn in user.income_txns if txn.id == txn_id), None)
+    if not txn:
+        flash("Transaction not found.", "error")
+        return redirect(url_for("jobs"))
+    job.income_txn_id = txn.id
+    save_users()
+    flash("Job linked to vault transaction.", "success")
+    return redirect(url_for("jobs"))
+
+
+@app.route("/jobs/<job_id>/send-income", methods=["POST"])
+@login_required
+def send_job_income(job_id):
+    user = current_user()
+    job = user.get_job(job_id)
+    if not job:
+        flash("Application not found.", "error")
+        return redirect(url_for("jobs"))
+    if job.income_txn_id:
+        flash("Job already linked to a vault transaction.", "info")
+        return redirect(url_for("jobs"))
+    amount = job.earned_amount if job.earned_amount > 0 else job.expected_amount
+    if amount <= 0:
+        flash("Add an expected or earned amount before sending to vault.", "error")
+        return redirect(url_for("jobs"))
+    txn = IncomeTransaction(
+        "income",
+        amount,
+        f"{job.company} - {job.role}",
+        datetime.now().strftime("%Y-%m-%d"),
+    )
+    user.income_txns.append(txn)
+    job.income_txn_id = txn.id
+    save_users()
+    flash("Income added to vault.", "success")
     return redirect(url_for("jobs"))
 
 
@@ -634,7 +798,9 @@ def delete_job(job_id):
 @app.route("/income")
 @login_required
 def income():
-    return render_template("income.html", user=current_user())
+    user = current_user()
+    job_by_txn = {job.income_txn_id: job for job in user.jobs if job.income_txn_id}
+    return render_template("income.html", user=user, job_by_txn=job_by_txn)
 
 
 @app.route("/income/add", methods=["GET", "POST"])
@@ -710,9 +876,24 @@ def download_csv():
     writer.writerow([])
 
     writer.writerow(["=== JOB APPLICATIONS ==="])
-    writer.writerow(["Company", "Role", "Date Applied", "Status", "Platform", "Time Invested (h)", "Cert Used", "Notes"])
+    writer.writerow([
+        "Company", "Role", "Type", "Date Applied", "Status", "Platform",
+        "Time Invested (h)", "Cert Used", "Expected Amount", "Earned Amount", "Notes",
+    ])
     for job in user.jobs:
-        writer.writerow([job.company, job.role, job.date_applied, job.status, job.platform, job.time_invested, job.cert_used, job.notes])
+        writer.writerow([
+            job.company,
+            job.role,
+            job.job_type,
+            job.date_applied,
+            job.status,
+            job.platform,
+            job.time_invested,
+            job.cert_used,
+            job.expected_amount,
+            job.earned_amount,
+            job.notes,
+        ])
     writer.writerow([])
 
     writer.writerow(["=== INCOME / EXPENSES ==="])
@@ -761,11 +942,19 @@ def download_pdf():
     elements.append(Spacer(1, 0.2 * inch))
 
     elements.append(Paragraph("Job Applications", styles["Heading2"]))
-    job_data = [["Company", "Role", "Date", "Status", "Platform"]]
+    job_data = [["Company", "Role", "Type", "Date", "Status", "Expected", "Earned"]]
     for job in user.jobs:
-        job_data.append([job.company, job.role, job.date_applied, job.status, job.platform])
+        job_data.append([
+            job.company,
+            job.role,
+            job.job_type,
+            job.date_applied,
+            job.status,
+            f"{job.expected_amount:,.2f}" if job.expected_amount else "-",
+            f"{job.earned_amount:,.2f}" if job.earned_amount else "-",
+        ])
     if len(job_data) > 1:
-        table = Table(job_data, colWidths=[1.6 * inch, 1.6 * inch, 1.1 * inch, 1.0 * inch, 1.1 * inch])
+        table = Table(job_data, colWidths=[1.3 * inch, 1.3 * inch, 0.9 * inch, 1.0 * inch, 0.9 * inch, 1.0 * inch, 1.0 * inch])
         table.setStyle(header_style)
         elements.append(table)
     else:

@@ -6,7 +6,7 @@
   <div class="page-header">
     <div>
       <div class="page-title">Dashboard</div>
-      <div class="page-subtitle">Career capital overview for @{{ user.username }}</div>
+      <div class="page-subtitle">Career capital overview for {{ user.name or user.username }}</div>
     </div>
     <div class="flex gap-8">
       <a href="{{ url_for('download_csv') }}" class="btn btn-ghost btn-sm">Download CSV</a>

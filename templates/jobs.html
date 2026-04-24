@@ -1,9 +1,138 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block title %}Job Ledger - SkillVault{% endblock %}
 {% block content %}
 <div class="page">
-  <div class="page-header"><div><div class="page-title">Job Ledger</div><div class="page-subtitle">Every application is a transaction. Track your conversion rate.</div></div><div class="flex gap-8"><a href="{{ url_for('download_pdf') }}" class="btn btn-ghost btn-sm">Download PDF</a><a href="{{ url_for('add_job') }}" class="btn btn-primary">Log Application</a></div></div>
-  {% if user.jobs %}<div class="stats-grid"><div class="card"><div class="card-title">Total Applied</div><div class="card-value text-mono">{{ user.jobs | length }}</div></div><div class="card"><div class="card-title">Response Rate</div><div class="card-value accent text-mono">{{ user.job_conversion_rate() }}%</div></div><div class="card"><div class="card-title">Active</div><div class="card-value violet text-mono">{{ user.jobs | selectattr('status', 'in', ['Sent','Viewed','Responded','Interviewed']) | list | length }}</div></div><div class="card"><div class="card-title">Offers</div><div class="card-value green text-mono">{{ user.jobs | selectattr('status', 'equalto', 'Offer') | list | length }}</div></div></div>{% endif %}
-  {% if user.jobs %}<div class="table-wrap"><table><thead><tr><th>Company</th><th>Role</th><th>Platform</th><th>Date Applied</th><th>Cert Used</th><th>Time (h)</th><th>Status</th><th>Actions</th></tr></thead><tbody>{% for job in user.jobs|reverse %}<tr><td style="font-weight: 600;">{{ job.company }}</td><td style="color: var(--text-muted);">{{ job.role }}</td><td style="color: var(--text-muted); font-size: 12px;">{{ job.platform or '-' }}</td><td style="font-family: var(--mono); font-size: 12px; color: var(--text-muted);">{{ job.date_applied }}</td><td style="font-size: 12px; color: var(--text-subtle);">{{ job.cert_used or '-' }}</td><td style="font-family: var(--mono); font-size: 12px; color: var(--text-muted);">{{ job.time_invested }}</td><td><span class="badge badge-{{ job.status.lower() }}">{{ job.status }}</span></td><td><div class="flex gap-8"><form method="post" action="{{ url_for('update_job', job_id=job.id) }}" style="display: inline;"><select name="status" onchange="this.form.submit()" style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); font-size: 11px; padding: 3px 6px; cursor: pointer; outline: none;">{% for s in statuses %}<option value="{{ s }}" {% if s == job.status %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></form><form method="post" action="{{ url_for('delete_job', job_id=job.id) }}" style="display: inline;" onsubmit="return confirm('Remove this application?')"><button type="submit" class="btn btn-danger btn-sm" style="padding: 3px 8px;">Delete</button></form></div></td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="card empty-state"><div class="empty-state-icon">Jobs</div><p>No applications logged yet. Every app you send is a data point.</p><a href="{{ url_for('add_job') }}" class="btn btn-primary">Log First Application</a></div>{% endif %}
+  <div class="page-header">
+    <div>
+      <div class="page-title">Job Ledger</div>
+      <div class="page-subtitle">Every application is a transaction. Track your conversion rate.</div>
+    </div>
+    <div class="flex gap-8">
+      <a href="{{ url_for('download_pdf') }}" class="btn btn-ghost btn-sm">Download PDF</a>
+      <a href="{{ url_for('add_job') }}" class="btn btn-primary">Log Application</a>
+    </div>
+  </div>
+
+  {% if user.jobs %}
+    <div class="stats-grid">
+      <div class="card"><div class="card-title">Total Applied</div><div class="card-value text-mono">{{ user.jobs | length }}</div></div>
+      <div class="card"><div class="card-title">Response Rate</div><div class="card-value accent text-mono">{{ user.job_conversion_rate() }}%</div></div>
+      <div class="card"><div class="card-title">Active</div><div class="card-value violet text-mono">{{ user.jobs | selectattr('status', 'in', ['Sent','Viewed','Responded','Interviewed']) | list | length }}</div></div>
+      <div class="card"><div class="card-title">Offers</div><div class="card-value green text-mono">{{ user.jobs | selectattr('status', 'equalto', 'Offer') | list | length }}</div></div>
+    </div>
+
+    <div class="kanban" data-job-board>
+      {% for status in statuses %}
+        {% set column_jobs = user.jobs | selectattr('status', 'equalto', status) | list %}
+        <div class="kanban-column" data-status-column data-status="{{ status }}">
+          <div class="kanban-header">
+            <div class="kanban-title">{{ status }}</div>
+            <div class="kanban-count">{{ column_jobs | length }}</div>
+          </div>
+          <div class="kanban-cards">
+            {% for job in column_jobs %}
+              <div class="job-card" data-job-card data-job-id="{{ job.id }}">
+                <div class="job-card-drag" draggable="true">
+                  <div class="job-card-title">{{ job.company }}</div>
+                  <div class="job-card-role">{{ job.role }}</div>
+                </div>
+                <div class="job-meta">
+                  <span>{{ job.job_type }}</span>
+                  <span>{{ job.platform or "—" }}</span>
+                  <span>{{ job.date_applied }}</span>
+                </div>
+                <div class="job-money">
+                  <span>Expected: {% if job.expected_amount %}PHP {{ '{:,.2f}'.format(job.expected_amount) }}{% else %}—{% endif %}</span>
+                  <span>Earned: {% if job.earned_amount %}PHP {{ '{:,.2f}'.format(job.earned_amount) }}{% else %}—{% endif %}</span>
+                </div>
+                {% if job.income_txn_id and txn_by_id.get(job.income_txn_id) %}
+                  {% set linked = txn_by_id.get(job.income_txn_id) %}
+                  <div class="job-vault">Vault: {{ linked.date }} · PHP {{ '{:,.2f}'.format(linked.amount) }}</div>
+                {% else %}
+                  <div class="job-vault">Vault: Not linked</div>
+                {% endif %}
+                <div class="job-actions">
+                  <form method="post" action="{{ url_for('link_job_income', job_id=job.id) }}" class="job-link-form">
+                    <select name="txn_id">
+                      <option value="">No link</option>
+                      {% for txn in user.income_txns|reverse %}
+                        <option value="{{ txn.id }}" {% if txn.id == job.income_txn_id %}selected{% endif %}>{{ txn.date }} · PHP {{ '{:,.2f}'.format(txn.amount) }} · {{ txn.description }}</option>
+                      {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-ghost btn-sm">Link</button>
+                  </form>
+                  {% if not job.income_txn_id %}
+                    <form method="post" action="{{ url_for('send_job_income', job_id=job.id) }}">
+                      <button type="submit" class="btn btn-ghost btn-sm">Send to Vault</button>
+                    </form>
+                  {% endif %}
+                  <form method="post" action="{{ url_for('delete_job', job_id=job.id) }}" onsubmit="return confirm('Remove this application?')">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                  </form>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card empty-state"><div class="empty-state-icon">Jobs</div><p>No applications logged yet. Every app you send is a data point.</p><a href="{{ url_for('add_job') }}" class="btn btn-primary">Log First Application</a></div>
+  {% endif %}
 </div>
+
+<script>
+  (function () {
+    const cards = Array.from(document.querySelectorAll("[data-job-card]"));
+    const columns = Array.from(document.querySelectorAll("[data-status-column]"));
+    let draggedCard = null;
+
+    const updateStatus = (jobId, status) => {
+      const data = new FormData();
+      data.append("status", status);
+      return fetch(`/jobs/${jobId}/update`, {
+        method: "POST",
+        headers: { "X-Requested-With": "fetch" },
+        body: data,
+      });
+    };
+
+    cards.forEach((card) => {
+      const handle = card.querySelector(".job-card-drag");
+      if (!handle) return;
+      handle.addEventListener("dragstart", (event) => {
+        draggedCard = card;
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", card.dataset.jobId);
+        card.classList.add("is-dragging");
+      });
+      handle.addEventListener("dragend", () => {
+        if (draggedCard) {
+          draggedCard.classList.remove("is-dragging");
+        }
+        draggedCard = null;
+      });
+    });
+
+    columns.forEach((column) => {
+      const list = column.querySelector(".kanban-cards");
+      column.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        column.classList.add("drag-over");
+      });
+      column.addEventListener("dragleave", () => {
+        column.classList.remove("drag-over");
+      });
+      column.addEventListener("drop", (event) => {
+        event.preventDefault();
+        column.classList.remove("drag-over");
+        if (!draggedCard || !list) return;
+        const jobId = draggedCard.dataset.jobId;
+        const status = column.dataset.status;
+        list.appendChild(draggedCard);
+        updateStatus(jobId, status).catch(() => window.location.reload());
+      });
+    });
+  })();
+</script>
 {% endblock %}

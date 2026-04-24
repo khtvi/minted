@@ -23,6 +23,14 @@
             <div class="profile-value">@{{ user.username }}</div>
           </div>
           <div class="profile-item">
+            <div class="profile-label">Name</div>
+            <div class="profile-value">{{ user.name or "—" }}</div>
+          </div>
+          <div class="profile-item">
+            <div class="profile-label">Email</div>
+            <div class="profile-value">{{ user.email }}</div>
+          </div>
+          <div class="profile-item">
             <div class="profile-label">Member Since</div>
             <div class="profile-value">{{ user.created_at }}</div>
           </div>
