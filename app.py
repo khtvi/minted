@@ -510,6 +510,11 @@ def login_required(route):
 
 @app.route("/")
 def index():
+    user = current_user()
+    if user:
+        if user.username.lower() == "admin":
+            return redirect(url_for("admin"))
+        return redirect(url_for("dashboard"))
     return render_template("index.html")
 
 

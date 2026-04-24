@@ -188,6 +188,33 @@ body {
   background: rgba(255, 255, 255, 0.66);
 }
 
+.top-nav-links .profile-icon-link {
+  width: 38px;
+  min-height: 38px;
+  padding: 0;
+  justify-content: center;
+}
+
+.profile-icon-link svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .site-main {
   width: min(1340px, 100%);
   margin: 0 auto;
@@ -774,25 +801,6 @@ label {
   background: linear-gradient(135deg, rgba(31, 78, 121, 0.14) 0 50%, transparent 51% 100%);
   border-radius: 2px 0 8px 0;
   pointer-events: none;
-}
-
-.stats-grid .card::after,
-.income-row .card::after,
-.profile-stats .card::after {
-  content: "HIGHLIGHT";
-  position: absolute;
-  top: -11px;
-  right: 12px;
-  border: 2px solid var(--border);
-  border-radius: 999px;
-  background: #ebe6cf;
-  color: var(--accent);
-  font-family: var(--display);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-size: 9px;
-  padding: 4px 8px;
-  transform: rotate(-2deg);
 }
 
 .card-title {
@@ -1739,8 +1747,15 @@ tbody tr:hover {
   position: absolute;
   border-radius: 14px;
   border: 3px solid #9db5d2;
-  box-shadow: 0 0 0 9999px rgba(20, 20, 24, 0.76);
+  box-shadow: 0 0 0 9999px rgba(20, 20, 24, 0.58), 0 0 0 7px rgba(157, 181, 210, 0.28);
   transition: all 0.2s ease;
+}
+
+.tour-focus-target {
+  position: relative;
+  z-index: 365;
+  box-shadow: 0 0 0 3px rgba(157, 181, 210, 0.55);
+  border-radius: 12px;
 }
 
 .tour-popover {

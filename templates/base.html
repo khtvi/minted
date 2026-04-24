@@ -12,20 +12,26 @@
   <header class="top-header">
     <nav class="top-nav" aria-label="Primary">
       <div class="top-nav-inner">
-        <a class="brand-mark" href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}aria-current="page"{% endif %}>
+        <a class="brand-mark" href="{{ url_for('dashboard') if session.get('username') else url_for('index') }}" {% if request.endpoint == 'index' %}aria-current="page"{% endif %}>
           <span class="brand-kicker">SkillVault</span>
           <span class="brand-name">Minted</span>
         </a>
         <div class="top-nav-links">
-          <a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}class="active" aria-current="page"{% endif %}>Home</a>
           {% if session.get('username') %}
             <a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active" aria-current="page"{% endif %}>Dashboard</a>
             <a href="{{ url_for('skills') }}" data-tour-target="skills-nav" {% if request.endpoint in ['skills','skill_detail','add_skill','edit_skill','transfer_skill'] %}class="active" aria-current="page"{% endif %}>Skills</a>
             <a href="{{ url_for('jobs') }}" data-tour-target="jobs-nav" {% if request.endpoint in ['jobs','add_job','edit_job'] %}class="active" aria-current="page"{% endif %}>Jobs</a>
             <a href="{{ url_for('income') }}" data-tour-target="vault-nav" {% if request.endpoint in ['income','add_income','edit_income'] %}class="active" aria-current="page"{% endif %}>Vault</a>
-            <a href="{{ url_for('user_profile') }}" {% if request.endpoint == 'user_profile' %}class="active" aria-current="page"{% endif %}>Profile</a>
+            <a href="{{ url_for('user_profile') }}" class="profile-icon-link{% if request.endpoint == 'user_profile' %} active{% endif %}" {% if request.endpoint == 'user_profile' %}aria-current="page"{% endif %} aria-label="Profile">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="8" r="3.5"></circle>
+                <path d="M4.5 19.2c1.4-3.3 4-4.9 7.5-4.9s6.1 1.6 7.5 4.9"></path>
+              </svg>
+              <span class="sr-only">Profile</span>
+            </a>
             <a href="{{ url_for('logout') }}">Logout</a>
           {% else %}
+            <a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}class="active" aria-current="page"{% endif %}>Home</a>
             <a href="{{ url_for('login') }}" {% if request.endpoint == 'login' %}class="active" aria-current="page"{% endif %}>Login</a>
             <a href="{{ url_for('register') }}" {% if request.endpoint == 'register' %}class="active" aria-current="page"{% endif %}>Register</a>
           {% endif %}
@@ -76,8 +82,12 @@
         const next = tour.querySelector("[data-tour-next]");
         const skip = tour.querySelector("[data-tour-skip]");
         let index = 0;
+        let activeTarget = null;
 
         const endTour = () => {
+          if (activeTarget) {
+            activeTarget.classList.remove("tour-focus-target");
+          }
           tour.remove();
           window.removeEventListener("resize", renderStep);
         };
@@ -108,6 +118,12 @@
             endTour();
             return;
           }
+          if (activeTarget) {
+            activeTarget.classList.remove("tour-focus-target");
+          }
+          target.classList.add("tour-focus-target");
+          target.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+          activeTarget = target;
           const rect = target.getBoundingClientRect();
           if (spotlight) {
             spotlight.style.top = `${rect.top - 6}px`;
