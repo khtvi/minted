@@ -42,7 +42,11 @@ Visit http://localhost:5000
    - Build Command: `pip install -r requirements.txt`
    - Start Command: `gunicorn app:app`
    - Add environment variable: `SECRET_KEY` → any random string
-5. Deploy
+   - Optional environment variable: `DATA_FILE` → `/tmp/storage.json` (ephemeral)
+5. Optional but recommended for persistent data:
+   - Add a Render Disk and mount it at `/var/data`
+   - Set `DATA_FILE=/var/data/storage.json`
+6. Deploy
 
 > **Note:** Render's free tier uses ephemeral storage — `storage.json` resets on redeploy.
 > For persistent data, swap the JSON file for a free PostgreSQL DB on Render.

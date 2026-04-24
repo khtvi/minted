@@ -78,7 +78,7 @@ body {
 nav {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  padding: 0 24px;
+  padding: 0 clamp(14px, 2vw, 28px);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -86,6 +86,15 @@ nav {
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+nav::-webkit-scrollbar {
+  height: 6px;
+}
+
+nav::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 999px;
 }
 
 .nav-brand {
@@ -128,7 +137,9 @@ nav a.nav-brand.active {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text-subtle);
-  padding: 6px 12px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
   border-radius: 6px;
   font-size: 12px;
   font-weight: 600;
@@ -139,7 +150,8 @@ nav a.nav-brand.active {
 .theme-toggle-inline {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 0;
 }
 
 .theme-toggle .theme-icon {
@@ -195,17 +207,18 @@ nav a.nav-brand.active {
    LAYOUT
 ────────────────────────────────────────── */
 .page {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 28px 36px 40px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 24px clamp(16px, 2.4vw, 34px) 36px;
 }
 
 @media (max-width: 1024px) {
-  .page { padding: 24px 28px 36px; }
+  .page { padding: 22px 20px 32px; }
 }
 
 @media (max-width: 640px) {
-  .page { padding: 20px 18px 28px; }
+  .page { padding: 18px 14px 24px; }
 }
 
 .page-header {
@@ -218,7 +231,7 @@ nav a.nav-brand.active {
 }
 
 .page-title {
-  font-size: 24px;
+  font-size: clamp(22px, 2.2vw, 30px);
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.5px;
@@ -228,6 +241,7 @@ nav a.nav-brand.active {
   color: var(--text-muted);
   font-size: 13px;
   margin-top: 2px;
+  max-width: 72ch;
 }
 
 .page-tip {
@@ -246,6 +260,18 @@ nav a.nav-brand.active {
 .page-tip strong {
   color: var(--text);
   font-weight: 600;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.2fr) repeat(3, minmax(130px, 1fr)) auto auto;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.filter-row input,
+.filter-row select {
+  min-height: 38px;
 }
 
 .hero-tip {
@@ -556,14 +582,14 @@ nav a.nav-brand.active {
 ────────────────────────────────────────── */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
 
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
 }
 
@@ -599,6 +625,12 @@ nav a.nav-brand.active {
   font-weight: 600;
   font-size: 15px;
   color: var(--text);
+}
+
+.skill-level {
+  font-size: 11px;
+  color: var(--accent);
+  margin-top: 3px;
 }
 
 .skill-cat {
@@ -661,12 +693,15 @@ nav a.nav-brand.active {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 table {
   width: 100%;
+  min-width: 620px;
   border-collapse: collapse;
 }
 
@@ -723,7 +758,7 @@ td {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 28px;
+  padding: clamp(18px, 2vw, 30px);
   width: 100%;
   max-width: none;
 }
@@ -855,8 +890,8 @@ select option {
 .btn.w-full {
   display: flex;
   width: 100%;
-  max-width: 280px;
-  margin: 10px auto 0;
+  max-width: none;
+  margin: 10px 0 0;
   justify-content: center;
 }
 
@@ -1005,10 +1040,10 @@ select option {
 ────────────────────────────────────────── */
 .auth-page {
   min-height: calc(100vh - 56px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 24px;
+  display: grid;
+  align-items: start;
+  justify-items: start;
+  padding: clamp(24px, 3vw, 48px) clamp(14px, 2.4vw, 34px);
 }
 
 .auth-card {
@@ -1017,7 +1052,7 @@ select option {
   border-radius: 16px;
   padding: 36px;
   width: 100%;
-  max-width: 400px;
+  max-width: 520px;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   animation: card-in 0.35s ease-out;
 }
@@ -1133,7 +1168,7 @@ select option {
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
   gap: 28px;
   align-items: start;
 }
@@ -1176,7 +1211,7 @@ select option {
 ────────────────────────────────────────── */
 .kanban {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 16px;
   margin-top: 12px;
 }
@@ -1276,6 +1311,21 @@ select option {
   color: var(--text-subtle);
 }
 
+.rel-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--border-light);
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
+
 .job-vault {
   font-size: 12px;
   color: var(--text-muted);
@@ -1285,6 +1335,10 @@ select option {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.job-status-mobile {
+  display: none;
 }
 
 .job-link-form {
@@ -1335,6 +1389,16 @@ select option {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.multi-select {
+  min-height: 120px;
+}
+
+.form-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
 }
 
 .form-stack .form-group {
@@ -1464,9 +1528,79 @@ select option {
 @media (max-width: 768px) {
   .hero h1 { font-size: 32px; }
   .income-row { grid-template-columns: 1fr; }
-  .page { padding: 20px 16px; }
+  .page { padding: 16px 12px 22px; }
   .auth-card { padding: 24px 20px; }
-  nav { padding: 0 16px; gap: 4px; }
+  nav {
+    height: auto;
+    min-height: 56px;
+    padding: 10px 12px;
+    gap: 6px;
+    flex-wrap: wrap;
+    overflow-x: auto;
+  }
+  .nav-brand {
+    flex: 1 0 100%;
+    margin-right: 0;
+  }
+  .nav-sep {
+    display: none;
+  }
+  nav a {
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+  .theme-toggle {
+    width: 32px;
+    height: 32px;
+  }
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .page-header .flex {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .page-header .flex .btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .filter-row {
+    grid-template-columns: 1fr;
+  }
+  .filter-row .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .table-wrap table {
+    min-width: 560px;
+  }
+  .form-card form > div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  .job-status-mobile {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .job-status-mobile select {
+    flex: 1;
+    min-width: 0;
+    font-size: 12px;
+    padding: 7px 9px;
+  }
+  .job-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .job-link-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .job-link-form select {
+    min-width: 0;
+    width: 100%;
+  }
   .detail-header { flex-direction: column; }
 }
 
