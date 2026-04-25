@@ -1,5 +1,5 @@
-﻿{% extends "base.html" %}
-{% block title %}Freelance Vault - SkillVault{% endblock %}
+{% extends "base.html" %}
+{% block title %}Freelance Vault - Minted{% endblock %}
 {% block content %}
 <div class="page page-centered">
   <div class="page-header"><div><div class="page-title">Freelance Vault</div><div class="page-subtitle">Track payment methods, linked jobs, paid skills, and full transaction history.</div></div><a href="{{ url_for('add_income') }}" class="btn btn-primary">Log Transaction</a></div>
@@ -17,16 +17,10 @@
         <option value="{{ method }}" {% if vault_filters.payment_method == method %}selected{% endif %}>{{ method }}</option>
       {% endfor %}
     </select>
-    <select name="skill_id">
-      <option value="">All skills</option>
-      {% for skill in skills %}
-        <option value="{{ skill.id }}" {% if vault_filters.skill_id == skill.id %}selected{% endif %}>{{ skill.name }}</option>
-      {% endfor %}
-    </select>
     <select name="job_id">
       <option value="">All jobs</option>
       {% for job in jobs %}
-        <option value="{{ job.id }}" {% if vault_filters.job_id == job.id %}selected{% endif %}>{{ job.company }} · {{ job.role }}</option>
+        <option value="{{ job.id }}" {% if vault_filters.job_id == job.id %}selected{% endif %}>{{ job.company }}  -  {{ job.role }}</option>
       {% endfor %}
     </select>
     <button type="submit" class="btn btn-ghost btn-sm">Filter</button>
@@ -47,7 +41,7 @@
     </div>
     <form method="post" action="{{ url_for('bulk_delete_income') }}" id="bulk-delete-form" class="bulk-edit-mode">
       <div class="table-actions bulk-edit-button"><button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete selected transactions?')">Delete Selected</button></div>
-      <div class="table-wrap"><table><thead><tr><th class="bulk-edit-hidden" style="width: 34px;"><input type="checkbox" id="select-all-txns" aria-label="Select all"></th><th>Date</th><th>Type</th><th>Method</th><th>Description</th><th>Job</th><th>Skill(s)</th><th style="text-align: right;">Amount</th><th style="width: 52px;"></th></tr></thead><tbody>{% for txn in filtered_txns|reverse %}<tr><td class="bulk-edit-hidden"><input type="checkbox" name="txn_ids" value="{{ txn.id }}" class="txn-checkbox" aria-label="Select {{ txn.description }}"></td><td style="font-family: var(--mono); font-size: 12px; color: var(--text-muted);">{{ txn.date }}</td><td>{% if txn.type == 'income' %}<span class="badge badge-offer">Income</span>{% else %}<span class="badge badge-rejected">Expense</span>{% endif %}</td><td><span class="rel-chip">{{ txn.payment_method }}</span></td><td style="font-weight: 500;">{{ txn.description }}</td><td style="font-size: 12px; color: var(--text-muted);">{% if txn.job_id and job_lookup.get(txn.job_id) %}{{ job_lookup.get(txn.job_id).company }} · {{ job_lookup.get(txn.job_id).role }}{% elif job_by_txn.get(txn.id) %}{{ job_by_txn.get(txn.id).company }} · {{ job_by_txn.get(txn.id).role }}{% else %}—{% endif %}</td><td>{% if txn.skill_ids %}{% for skill_id in txn.skill_ids %}{% if skill_lookup.get(skill_id) %}<span class="rel-chip">{{ skill_lookup.get(skill_id).name }}</span>{% endif %}{% endfor %}{% else %}<span style="font-size: 12px; color: var(--text-muted);">—</span>{% endif %}</td><td style="text-align: right; font-family: var(--mono); font-weight: 600; color: {% if txn.type == 'income' %}var(--green){% else %}var(--red){% endif %};">{{ '+' if txn.type == 'income' else '-' }}PHP {{ '{:,.2f}'.format(txn.amount) }}</td><td><details class="entry-menu"><summary aria-label="Transaction actions">...</summary><div class="entry-menu-list"><a href="{{ url_for('edit_income', txn_id=txn.id) }}">Edit</a><button type="submit" formaction="{{ url_for('delete_income', txn_id=txn.id) }}" formmethod="post" onclick="return confirm('Remove this transaction?')">Delete</button></div></details></td></tr>{% endfor %}</tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th class="bulk-edit-hidden" style="width: 34px;"><input type="checkbox" id="select-all-txns" aria-label="Select all"></th><th>Date</th><th>Type</th><th>Method</th><th>Description</th><th>Job</th><th>Skill(s)</th><th style="text-align: right;">Amount</th><th style="width: 52px;"></th></tr></thead><tbody>{% for txn in filtered_txns|reverse %}<tr><td class="bulk-edit-hidden"><input type="checkbox" name="txn_ids" value="{{ txn.id }}" class="txn-checkbox" aria-label="Select {{ txn.description }}"></td><td style="font-family: var(--mono); font-size: 12px; color: var(--text-muted);">{{ txn.date }}</td><td>{% if txn.type == 'income' %}<span class="badge badge-offer">Income</span>{% else %}<span class="badge badge-rejected">Expense</span>{% endif %}</td><td><span class="rel-chip">{{ txn.payment_method }}</span></td><td style="font-weight: 500;">{{ txn.description }}</td><td style="font-size: 12px; color: var(--text-muted);">{% if txn.job_id and job_lookup.get(txn.job_id) %}{{ job_lookup.get(txn.job_id).company }}  -  {{ job_lookup.get(txn.job_id).role }}{% elif job_by_txn.get(txn.id) %}{{ job_by_txn.get(txn.id).company }}  -  {{ job_by_txn.get(txn.id).role }}{% else %}—{% endif %}</td><td>{% if txn.skill_ids %}{% for skill_id in txn.skill_ids %}{% if skill_lookup.get(skill_id) %}<span class="rel-chip">{{ skill_lookup.get(skill_id).name }}</span>{% endif %}{% endfor %}{% else %}<span style="font-size: 12px; color: var(--text-muted);">—</span>{% endif %}</td><td style="text-align: right; font-family: var(--mono); font-weight: 600; color: {% if txn.type == 'income' %}var(--green){% else %}var(--red){% endif %};">{{ '+' if txn.type == 'income' else '-' }}PHP {{ '{:,.2f}'.format(txn.amount) }}</td><td><details class="entry-menu"><summary aria-label="Transaction actions">...</summary><div class="entry-menu-list"><a href="{{ url_for('edit_income', txn_id=txn.id) }}">Edit</a><button type="submit" formaction="{{ url_for('delete_income', txn_id=txn.id) }}" formmethod="post" onclick="return confirm('Remove this transaction?')">Delete</button></div></details></td></tr>{% endfor %}</tbody></table></div>
     </form>
     {% if not filtered_txns %}<div class="card empty-state" style="margin-top: 16px;"><div class="empty-state-icon">Filter</div><p>No vault entries matched the selected filters.</p><a href="{{ url_for('income') }}" class="btn btn-ghost">Clear Filters</a></div>{% endif %}
   {% else %}
@@ -91,3 +85,4 @@
   })();
 </script>
 {% endblock %}
+

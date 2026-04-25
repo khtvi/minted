@@ -73,8 +73,8 @@ PAYMENT_METHODS = [
 ]
 PASSWORD_MIN_LEN = 8
 PASSWORD_MAX_LEN = 10
-LOGIN_WINDOW_SECONDS = 10 * 60
-MAX_LOGIN_ATTEMPTS = 8
+LOGIN_WINDOW_SECONDS = 5 * 60
+MAX_LOGIN_ATTEMPTS = 20
 FAILED_LOGIN_ATTEMPTS = {}
 
 
@@ -1228,7 +1228,6 @@ def income():
     raw_query = request.args.get("q", "").strip()
     query = raw_query.lower()
     type_filter = request.args.get("type", "").strip()
-    skill_filter = request.args.get("skill_id", "").strip()
     job_filter = request.args.get("job_id", "").strip()
     payment_filter = request.args.get("payment_method", "").strip()
 
@@ -1237,8 +1236,6 @@ def income():
         filtered_txns = [txn for txn in filtered_txns if query in txn.description.lower()]
     if type_filter and type_filter in VALID_TXN_TYPES:
         filtered_txns = [txn for txn in filtered_txns if txn.type == type_filter]
-    if skill_filter and skill_filter in skill_lookup:
-        filtered_txns = [txn for txn in filtered_txns if skill_filter in txn.skill_ids]
     if job_filter and job_filter in job_lookup:
         filtered_txns = [txn for txn in filtered_txns if txn.job_id == job_filter]
     if payment_filter and payment_filter in PAYMENT_METHODS:
@@ -1268,7 +1265,6 @@ def income():
         vault_filters={
             "q": raw_query,
             "type": type_filter,
-            "skill_id": skill_filter,
             "job_id": job_filter,
             "payment_method": payment_filter,
         },

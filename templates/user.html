@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Profile - SkillVault{% endblock %}
+{% block title %}Profile - Minted{% endblock %}
 {% block content %}
 <div class="page">
   <div class="page-header">
@@ -25,7 +25,7 @@
           </div>
           <div class="profile-item">
             <div class="profile-label">Name</div>
-            <div class="profile-value">{{ user.name or "—" }}</div>
+            <div class="profile-value">{{ user.name or "-" }}</div>
           </div>
           <div class="profile-item">
             <div class="profile-label">Email</div>
@@ -65,12 +65,12 @@
         </div>
         <div class="card">
           <div class="card-title">Income</div>
-          <div class="card-value green">₱{{ '{:,.2f}'.format(user.total_income()) }}</div>
+          <div class="card-value green">PHP {{ '{:,.2f}'.format(user.total_income()) }}</div>
           <div class="card-label">Total earned</div>
         </div>
         <div class="card">
           <div class="card-title">Balance</div>
-          <div class="card-value accent">₱{{ '{:,.2f}'.format(user.income_balance()) }}</div>
+          <div class="card-value accent">PHP {{ '{:,.2f}'.format(user.income_balance()) }}</div>
           <div class="card-label">Net vault</div>
         </div>
       </div>
@@ -87,7 +87,7 @@
                 <div class="mini-item">
                   <div>
                     <div class="mini-title">{{ job.company }}</div>
-                    <div class="mini-meta">{{ job.role }} · {{ job.date_applied }}</div>
+                    <div class="mini-meta">{{ job.role }} - {{ job.date_applied }}</div>
                   </div>
                   <span class="badge badge-{{ job.status.lower() }}">{{ job.status }}</span>
                 </div>
@@ -141,3 +141,4 @@
   </div>
 </div>
 {% endblock %}
+

@@ -116,7 +116,7 @@ body {
 }
 
 .top-nav {
-  width: min(1340px, 100%);
+  width: min(1500px, 100%);
   margin: 0 auto;
   border: 1px solid var(--border);
   border-radius: 22px;
@@ -216,7 +216,7 @@ body {
 }
 
 .site-main {
-  width: min(1340px, 100%);
+  width: min(1500px, 100%);
   margin: 0 auto;
   padding: 42px 34px 40px;
   position: relative;
@@ -525,7 +525,7 @@ body {
 }
 
 .page-centered {
-  max-width: 1220px;
+  max-width: 1360px;
   margin-inline: auto;
 }
 
@@ -579,19 +579,19 @@ body {
 
 .filter-row {
   border: 2px solid var(--border);
-  border-radius: 20px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 10px;
   background: rgba(255, 255, 255, 0.38);
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 26px;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
 .filter-row input,
 .filter-row select,
 .filter-row .btn {
-  min-height: 50px;
+  min-height: 42px;
 }
 
 .btn {
@@ -642,7 +642,7 @@ body {
 }
 
 .btn-sm {
-  padding: 10px 14px;
+  padding: 8px 12px;
   font-size: 10px;
 }
 
@@ -1061,7 +1061,9 @@ label {
 }
 
 .skill-card {
+  position: relative;
   padding: 20px;
+  padding-right: 58px;
 }
 
 .skill-card-header {
@@ -1254,6 +1256,7 @@ tbody tr:hover {
 }
 
 .job-card {
+  position: relative;
   padding: 16px;
 }
 
@@ -1674,6 +1677,14 @@ tbody tr:hover {
   position: relative;
 }
 
+.job-card .entry-menu,
+.skill-card .entry-menu {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+}
+
 .entry-menu summary {
   width: 32px;
   height: 36px;
@@ -1744,8 +1755,7 @@ tbody tr:hover {
   display: none;
 }
 
-.bulk-edit-mode .bulk-edit-hidden,
-.bulk-edit-mode .bulk-edit-button {
+.bulk-edit-button {
   display: none;
 }
 
@@ -1756,6 +1766,10 @@ tbody tr:hover {
 
 .bulk-edit-active .table-actions.bulk-edit-button {
   display: flex;
+}
+
+.action-section .action-group .btn-sm {
+  flex: 0 0 auto;
 }
 
 .rel-chip {

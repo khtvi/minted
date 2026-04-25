@@ -1,6 +1,7 @@
 import json
 import os
 import sqlite3
+import time
 
 
 class SQLiteUserStore:
@@ -12,7 +13,24 @@ class SQLiteUserStore:
         self._ensure_schema()
 
     def _connect(self):
-        return sqlite3.connect(self.db_path)
+        connection = sqlite3.connect(self.db_path, timeout=30)
+        connection.execute("PRAGMA journal_mode=WAL")
+        connection.execute("PRAGMA synchronous=NORMAL")
+        connection.execute("PRAGMA busy_timeout=30000")
+        return connection
+
+    def _run_with_retry(self, operation):
+        last_error = None
+        for attempt in range(4):
+            try:
+                return operation()
+            except sqlite3.OperationalError as exc:
+                message = str(exc).lower()
+                if "locked" not in message and "busy" not in message:
+                    raise
+                last_error = exc
+                time.sleep(0.08 * (attempt + 1))
+        raise RuntimeError("SQLite database is busy. Please retry.") from last_error
 
     def _ensure_schema(self):
         with self._connect() as connection:
@@ -30,9 +48,12 @@ class SQLiteUserStore:
             connection.commit()
 
     def read_users(self):
-        with self._connect() as connection:
-            cursor = connection.execute("SELECT users_json FROM app_state WHERE id = 1")
-            row = cursor.fetchone()
+        def _read():
+            with self._connect() as connection:
+                cursor = connection.execute("SELECT users_json FROM app_state WHERE id = 1")
+                return cursor.fetchone()
+
+        row = self._run_with_retry(_read)
         if not row or not row[0]:
             return []
         data = json.loads(row[0])
@@ -42,12 +63,16 @@ class SQLiteUserStore:
         if not isinstance(users, list):
             raise ValueError("users must be a list")
         payload = json.dumps(users)
-        with self._connect() as connection:
-            connection.execute(
-                "UPDATE app_state SET users_json = ? WHERE id = 1",
-                (payload,),
-            )
-            connection.commit()
+
+        def _write():
+            with self._connect() as connection:
+                connection.execute(
+                    "UPDATE app_state SET users_json = ? WHERE id = 1",
+                    (payload,),
+                )
+                connection.commit()
+
+        self._run_with_retry(_write)
 
     def migrate_from_json(self, json_path):
         if not json_path or not os.path.exists(json_path):

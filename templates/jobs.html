@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Job Ledger - SkillVault{% endblock %}
+{% block title %}Job Ledger - Minted{% endblock %}
 {% block content %}
 <div class="page page-centered">
   <div class="page-header">
@@ -72,7 +72,7 @@
                 </div>
                 <div class="job-meta">
                   <span>{{ job.job_type }}</span>
-                  <span>{{ job.platform or "—" }}</span>
+                  <span>{{ job.platform or "-" }}</span>
                   <span>{{ job.date_applied }}</span>
                 </div>
                 {% if job.skill_ids %}
@@ -85,12 +85,12 @@
                   </div>
                 {% endif %}
                 <div class="job-money">
-                  <span>Expected: {% if job.expected_amount %}PHP {{ '{:,.2f}'.format(job.expected_amount) }}{% else %}—{% endif %}</span>
-                  <span>Earned: {% if job.earned_amount %}PHP {{ '{:,.2f}'.format(job.earned_amount) }}{% else %}—{% endif %}</span>
+                  <span>Expected: {% if job.expected_amount %}PHP {{ '{:,.2f}'.format(job.expected_amount) }}{% else %}-{% endif %}</span>
+                  <span>Earned: {% if job.earned_amount %}PHP {{ '{:,.2f}'.format(job.earned_amount) }}{% else %}-{% endif %}</span>
                 </div>
                 {% if job.income_txn_id and txn_by_id.get(job.income_txn_id) %}
                   {% set linked = txn_by_id.get(job.income_txn_id) %}
-                  <div class="job-vault">Vault: {{ linked.date }} · PHP {{ '{:,.2f}'.format(linked.amount) }}</div>
+                  <div class="job-vault">Vault: {{ linked.date }} - PHP {{ '{:,.2f}'.format(linked.amount) }}</div>
                 {% else %}
                   <div class="job-vault">Vault: Not linked</div>
                 {% endif %}
@@ -107,7 +107,7 @@
                     <select name="txn_id">
                       <option value="">No link</option>
                       {% for txn in user.income_txns|reverse %}
-                        <option value="{{ txn.id }}" {% if txn.id == job.income_txn_id %}selected{% endif %}>{{ txn.date }} · PHP {{ '{:,.2f}'.format(txn.amount) }} · {{ txn.description }}</option>
+                        <option value="{{ txn.id }}" {% if txn.id == job.income_txn_id %}selected{% endif %}>{{ txn.date }} - PHP {{ '{:,.2f}'.format(txn.amount) }} - {{ txn.description }}</option>
                       {% endfor %}
                     </select>
                     <button type="submit" class="btn btn-ghost btn-sm">Link</button>
@@ -187,3 +187,4 @@
   })();
 </script>
 {% endblock %}
+
