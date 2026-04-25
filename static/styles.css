@@ -141,34 +141,23 @@ body {
   justify-content: center;
   text-decoration: none;
   color: var(--ink);
-  min-width: 132px;
-  padding: 10px 16px 11px;
-  border: 1.5px solid var(--border);
-  border-radius: 22px;
-  background:
-    radial-gradient(110% 160% at 0% 0%, rgba(216, 207, 116, 0.2), transparent 58%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 248, 244, 0.88));
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.09);
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  position: static;
+  overflow: visible;
+  transition: color 0.2s ease;
 }
 
 .brand-mark::after {
-  content: "";
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 9px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(216, 207, 116, 0.7), transparent);
-  pointer-events: none;
+  content: none;
 }
 
 .brand-mark:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.12);
-  border-color: rgba(27, 28, 27, 0.36);
+  color: var(--text);
 }
 
 .brand-kicker {
@@ -204,8 +193,8 @@ body {
   text-decoration: none;
   color: var(--text-muted);
   font-family: var(--display);
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  font-size: 13px;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
@@ -247,7 +236,7 @@ body {
 .site-main {
   width: min(1680px, 100%);
   margin: 0 auto;
-  padding: 42px 34px 40px;
+  padding: 36px 20px 34px;
   position: relative;
 }
 
@@ -291,7 +280,7 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 24px;
-  padding: clamp(30px, 4vw, 44px);
+  padding: clamp(20px, 2.8vw, 30px);
   min-height: 520px;
   position: relative;
   overflow: hidden;
@@ -311,8 +300,8 @@ body {
 }
 
 .hero-inner {
-  width: min(1120px, 100%);
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 }
 
 .hero-split {
@@ -1149,7 +1138,16 @@ label {
   font-family: var(--display);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  font-size: 12px;
+  font-size: 13px;
+}
+
+.page-kicker {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
 }
 
 .task-hub {
@@ -1216,8 +1214,40 @@ label {
   font-family: var(--display);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-size: 9px;
+  font-size: 10px;
   background: rgba(255, 255, 255, 0.7);
+}
+
+.reminder-list {
+  display: grid;
+  gap: 8px;
+}
+
+.reminder-list-inline {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.reminder-item {
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.56);
+}
+
+.reminder-item strong {
+  display: block;
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 12px;
+}
+
+.reminder-item span {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .task-grid {
@@ -2118,21 +2148,23 @@ tbody tr:hover {
   position: fixed;
   max-width: 292px;
   background: var(--surface);
-  padding: 18px;
+  padding: 20px;
   z-index: 360;
+  border-radius: 18px;
 }
 
 .tour-title {
   font-family: var(--display);
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 0.05em;
 }
 
 .tour-body {
   margin-top: 6px;
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .tour-actions {
@@ -2310,6 +2342,10 @@ tbody tr:hover {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .reminder-list-inline {
+    grid-template-columns: 1fr;
+  }
+
   .resource-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2369,9 +2405,9 @@ tbody tr:hover {
   }
 
   .brand-mark {
-    min-width: 116px;
-    padding: 9px 13px 10px;
-    border-radius: 18px;
+    min-width: 0;
+    padding: 0;
+    border-radius: 0;
   }
 
   .brand-name {
@@ -2385,6 +2421,7 @@ tbody tr:hover {
   .top-nav-links a {
     min-height: 34px;
     padding: 7px 11px;
+    font-size: 12px;
   }
 
   .site-shell {

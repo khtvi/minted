@@ -63,7 +63,6 @@
       <div class="tour-step" data-tour-step data-target="[data-tour-target='skills-nav']" data-title="Skills" data-body="Add a skill and log study time."></div>
       <div class="tour-step" data-tour-step data-target="[data-tour-target='jobs-nav']" data-title="Jobs" data-body="Track applications and status changes."></div>
       <div class="tour-step" data-tour-step data-target="[data-tour-target='vault-nav']" data-title="Vault" data-body="Log income and expenses here."></div>
-      <div class="tour-step" data-tour-step data-target="[data-task-target='task-hub']" data-title="Tasks" data-body="Use section tasks to move faster."></div>
     </div>
   {% endif %}
 
@@ -130,12 +129,13 @@
           window.removeEventListener("resize", renderStep);
         };
 
-        const placePopover = (rect) => {
+        const placePopover = (rect, target) => {
           if (!popover) return;
-          const margin = 12;
+          const margin = 18;
           const popoverRect = popover.getBoundingClientRect();
+          const inTopNav = !!(target && target.closest(".top-nav"));
           const spaceBelow = window.innerHeight - rect.bottom;
-          const showBelow = spaceBelow > popoverRect.height + 24;
+          const showBelow = inTopNav || spaceBelow > popoverRect.height + 24;
           const top = showBelow ? rect.bottom + margin : rect.top - popoverRect.height - margin;
           const left = Math.min(
             Math.max(margin, rect.left),
@@ -174,7 +174,7 @@
           if (title) title.textContent = step.dataset.title || "";
           if (body) body.textContent = step.dataset.body || "";
           if (next) next.textContent = index === steps.length - 1 ? "Finish" : "Next";
-          requestAnimationFrame(() => placePopover(rect));
+          requestAnimationFrame(() => placePopover(rect, target));
         };
 
         if (next) {

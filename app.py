@@ -587,7 +587,7 @@ def register():
         user = User(email, pin, email=email)
         users.append(user)
         save_users()
-        session["show_tour"] = True
+        session["show_tour"] = False
         session["username"] = user.username
         session["display_name"] = user.name or user.username
         flash("Account created! Let's finish your profile.", "success")
@@ -639,6 +639,7 @@ def welcome():
             return redirect(url_for("welcome"))
         user.name = name
         save_users()
+        session["show_tour"] = True
         session["display_name"] = user.name
         flash(f"Welcome, {user.name}!", "success")
         return redirect(url_for("dashboard"))

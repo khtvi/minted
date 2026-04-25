@@ -10,12 +10,12 @@
     <div class="skills-main">
       <section class="task-hub task-hub-inline card" data-task-target="task-hub">
         <div class="section-header">
-          <div class="section-title">Tasks</div>
+          <div class="section-title">Reminders</div>
           <div class="task-tags"><span class="task-tag">Skills</span></div>
         </div>
-        <div class="task-grid">
-          <a href="{{ url_for('add_skill') }}" class="task-link"><strong>Add skill</strong><span>Create a new skill entry</span></a>
-          <a href="{{ url_for('transfer_skill') }}" class="task-link"><strong>Transfer hours</strong><span>Move hours between skills</span></a>
+        <div class="reminder-list reminder-list-inline">
+          <div class="reminder-item"><strong>Audit underused skills</strong><span>Review balances and log missing study hours.</span></div>
+          <div class="reminder-item"><strong>Transfer only when needed</strong><span>Move hours after confirming related priorities.</span></div>
         </div>
       </section>
 

@@ -5,8 +5,9 @@
 <div class="page">
   <div class="page-header">
     <div>
+      <div class="page-kicker">Welcome, {{ user.name or user.username }}.</div>
       <div class="page-title">Dashboard</div>
-      <div class="page-subtitle">Welcome, {{ user.name or user.username }}.</div>
+      <div class="page-subtitle">Your command center for skills, applications, and vault flow.</div>
     </div>
   </div>
 
@@ -14,13 +15,13 @@
     <aside class="dashboard-side">
       <section class="task-hub task-hub-side card" data-task-target="task-hub">
         <div class="section-header">
-          <div class="section-title">Tasks</div>
+          <div class="section-title">Reminders</div>
           <div class="task-tags"><span class="task-tag">Skills</span><span class="task-tag">Jobs</span><span class="task-tag">Vault</span></div>
         </div>
-        <div class="task-grid">
-          <a href="{{ url_for('add_skill') }}" class="task-link"><strong>Add skill</strong><span>Skill Bank</span></a>
-          <a href="{{ url_for('add_job') }}" class="task-link"><strong>Log job</strong><span>Job Ledger</span></a>
-          <a href="{{ url_for('add_income') }}" class="task-link"><strong>Add entry</strong><span>Vault</span></a>
+        <div class="reminder-list">
+          <div class="reminder-item"><strong>Review one skill today</strong><span>Keep your Skill Bank updated before day end.</span></div>
+          <div class="reminder-item"><strong>Follow up one active application</strong><span>Update status in Job Ledger after outreach.</span></div>
+          <div class="reminder-item"><strong>Log latest vault movement</strong><span>Record any new income or expense this day.</span></div>
         </div>
       </section>
     </aside>
