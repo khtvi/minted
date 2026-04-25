@@ -23,6 +23,19 @@
     <button type="submit" class="btn btn-ghost btn-sm">Filter</button>
     <a href="{{ url_for('skills') }}" class="btn btn-ghost btn-sm">Reset</a>
   </form>
+
+  <section class="resource-strip card">
+    <div class="section-header">
+      <div class="section-title">Suggested Skill Resources</div>
+      <a href="https://roadmap.sh" class="btn btn-ghost btn-sm" target="_blank" rel="noopener noreferrer">More Resources</a>
+    </div>
+    <div class="resource-grid">
+      <a class="resource-item" href="https://roadmap.sh" target="_blank" rel="noopener noreferrer"><strong>Role Roadmaps</strong><span>Clear paths for dev, data, design, and security tracks.</span></a>
+      <a class="resource-item" href="https://www.freecodecamp.org/learn" target="_blank" rel="noopener noreferrer"><strong>freeCodeCamp</strong><span>Hands-on learning paths with practice projects.</span></a>
+      <a class="resource-item" href="https://ocw.mit.edu" target="_blank" rel="noopener noreferrer"><strong>MIT OpenCourseWare</strong><span>Deep technical courses for structured upskilling.</span></a>
+      <a class="resource-item" href="https://www.coursera.org" target="_blank" rel="noopener noreferrer"><strong>Coursera Catalog</strong><span>Career-focused courses and certificates by domain.</span></a>
+    </div>
+  </section>
   {% if user.skills %}
     <div class="stats-grid"><div class="card"><div class="card-title">Total Skills</div><div class="card-value text-mono">{{ user.skills | length }}</div></div><div class="card"><div class="card-title">Total Hours Studied</div><div class="card-value accent text-mono">{{ user.total_study_hours() }}h</div></div><div class="card"><div class="card-title">Hours Deployed</div><div class="card-value violet text-mono">{{ user.skills|sum(attribute='hours_withdrawn') }}h</div></div></div>
     {% if filtered_skills %}

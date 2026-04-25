@@ -519,6 +519,15 @@ def current_user():
     return None
 
 
+@app.context_processor
+def inject_global_ui_state():
+    user = current_user()
+    return {
+        "nav_user": user,
+        "show_tour": bool(session.get("show_tour")) and user is not None,
+    }
+
+
 def login_required(route):
     @wraps(route)
     def decorated(*args, **kwargs):
@@ -683,8 +692,14 @@ def user_profile():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    show_tour = session.pop("show_tour", False)
-    return render_template("dashboard.html", user=current_user(), show_tour=show_tour)
+    return render_template("dashboard.html", user=current_user())
+
+
+@app.route("/tour/complete", methods=["POST"])
+@login_required
+def complete_tour():
+    session["show_tour"] = False
+    return {"ok": True}
 
 
 @app.route("/skills")

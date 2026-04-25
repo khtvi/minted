@@ -6,26 +6,9 @@
   <div class="page-header">
     <div>
       <div class="page-title">Dashboard</div>
+      <div class="page-subtitle">Welcome, {{ user.name or user.username }}.</div>
     </div>
   </div>
-
-
-  {% if show_tour %}
-    <div class="tour-overlay" data-tour>
-      <div class="tour-spotlight" data-tour-spotlight></div>
-      <div class="tour-popover" data-tour-popover>
-        <div class="tour-title" data-tour-title></div>
-        <div class="tour-body" data-tour-body></div>
-        <div class="tour-actions">
-          <button type="button" class="btn btn-ghost btn-sm" data-tour-skip>Skip</button>
-          <button type="button" class="btn btn-primary btn-sm" data-tour-next>Next</button>
-        </div>
-      </div>
-      <div class="tour-step" data-tour-step data-target="[data-tour-target='skills-nav']" data-title="Open Skill Bank" data-body="Click Skills to add your first skill and start logging hours."></div>
-      <div class="tour-step" data-tour-step data-target="[data-tour-target='jobs-nav']" data-title="Track Applications" data-body="Click Jobs to log applications and update statuses."></div>
-      <div class="tour-step" data-tour-step data-target="[data-tour-target='vault-nav']" data-title="Update Your Vault" data-body="Click Vault to record income and expenses."></div>
-    </div>
-  {% endif %}
 
   <section class="dashboard-spotlight card">
     <div class="dashboard-spotlight-head">
