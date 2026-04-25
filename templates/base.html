@@ -13,7 +13,6 @@
     <nav class="top-nav" aria-label="Primary">
       <div class="top-nav-inner">
         <a class="brand-mark" href="{{ url_for('dashboard') if session.get('username') else url_for('index') }}" {% if request.endpoint == 'index' %}aria-current="page"{% endif %}>
-          <span class="brand-kicker">Minted</span>
           <span class="brand-name">Minted</span>
         </a>
         <div class="top-nav-links">
