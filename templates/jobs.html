@@ -12,16 +12,8 @@
     </div>
   </div>
 
-  <section class="task-hub task-hub-inline card">
-    <div class="section-header">
-      <div class="section-title">Reminders</div>
-      <div class="task-tags"><span class="task-tag">Jobs</span></div>
-    </div>
-    <div class="reminder-list reminder-list-inline">
-      <div class="reminder-item"><strong>Update application status</strong><span>Close stale entries and keep pipeline fresh.</span></div>
-    </div>
-  </section>
-
+  <div class="jobs-layout">
+  <div class="jobs-main">
   <form method="get" class="filter-row">
     <input type="text" name="q" placeholder="Search company, role, platform" value="{{ job_filters.q }}">
     <select name="status">
@@ -140,6 +132,25 @@
   {% else %}
     <div class="card empty-state"><div class="empty-state-icon">Jobs</div><p>No applications logged yet. Every app you send is a data point.</p><a href="{{ url_for('add_job') }}" class="btn btn-primary">Log First Application</a></div>
   {% endif %}
+  </div>
+  <aside class="jobs-side">
+    <section class="task-hub card">
+      <div class="section-header">
+        <div class="section-title">Reminders</div>
+        <div class="task-tags"><span class="task-tag">Jobs</span></div>
+      </div>
+      <div class="reminder-list">
+        {% if reminders %}
+          {% for reminder in reminders|reverse %}
+            <div class="reminder-item"><strong>{{ reminder.text }}</strong><span>{{ reminder.tag }}</span></div>
+          {% endfor %}
+        {% else %}
+          <div class="reminder-empty">No job reminders yet.</div>
+        {% endif %}
+      </div>
+    </section>
+  </aside>
+  </div>
 </div>
 
 <script>

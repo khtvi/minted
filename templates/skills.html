@@ -8,17 +8,6 @@
   </div>
   <div class="skills-layout">
     <div class="skills-main">
-      <section class="task-hub task-hub-inline card" data-task-target="task-hub">
-        <div class="section-header">
-          <div class="section-title">Reminders</div>
-          <div class="task-tags"><span class="task-tag">Skills</span></div>
-        </div>
-        <div class="reminder-list reminder-list-inline">
-          <div class="reminder-item"><strong>Audit underused skills</strong><span>Review balances and log missing study hours.</span></div>
-          <div class="reminder-item"><strong>Transfer only when needed</strong><span>Move hours after confirming related priorities.</span></div>
-        </div>
-      </section>
-
   <form method="get" class="filter-row">
     <input type="text" name="q" placeholder="Search skill..." value="{{ skill_filters.q }}">
     <select name="category">
@@ -49,6 +38,21 @@
   {% endif %}
     </div>
     <aside class="skills-side">
+      <section class="task-hub card">
+        <div class="section-header">
+          <div class="section-title">Reminders</div>
+          <div class="task-tags"><span class="task-tag">Skills</span></div>
+        </div>
+        <div class="reminder-list">
+          {% if reminders %}
+            {% for reminder in reminders|reverse %}
+              <div class="reminder-item"><strong>{{ reminder.text }}</strong><span>{{ reminder.tag }}</span></div>
+            {% endfor %}
+          {% else %}
+            <div class="reminder-empty">No skill reminders yet.</div>
+          {% endif %}
+        </div>
+      </section>
       <section class="resource-strip card">
         <div class="section-header">
           <div class="section-title">Suggested Skill Resources</div>

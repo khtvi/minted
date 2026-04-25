@@ -15,12 +15,14 @@
         <a class="brand-mark" href="{{ url_for('dashboard') if session.get('username') else url_for('index') }}" {% if request.endpoint == 'index' %}aria-current="page"{% endif %}>
           <span class="brand-name">Minted</span>
         </a>
-        <div class="top-nav-links">
-          {% if session.get('username') %}
+        {% if session.get('username') %}
+          <div class="top-nav-links top-nav-center">
             <a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active" aria-current="page"{% endif %}>Dashboard</a>
             <a href="{{ url_for('skills') }}" data-tour-target="skills-nav" {% if request.endpoint in ['skills','skill_detail','add_skill','edit_skill','transfer_skill'] %}class="active" aria-current="page"{% endif %}>Skills</a>
             <a href="{{ url_for('jobs') }}" data-tour-target="jobs-nav" {% if request.endpoint in ['jobs','add_job','edit_job'] %}class="active" aria-current="page"{% endif %}>Jobs</a>
             <a href="{{ url_for('income') }}" data-tour-target="vault-nav" {% if request.endpoint in ['income','add_income','edit_income'] %}class="active" aria-current="page"{% endif %}>Vault</a>
+          </div>
+          <div class="top-nav-links top-nav-right">
             <a href="{{ url_for('user_profile') }}" class="profile-icon-link{% if request.endpoint == 'user_profile' %} active{% endif %}" {% if request.endpoint == 'user_profile' %}aria-current="page"{% endif %} aria-label="Profile">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <circle cx="12" cy="8" r="3.5"></circle>
@@ -29,12 +31,16 @@
               <span class="sr-only">Profile</span>
             </a>
             <a href="{{ url_for('logout') }}">Logout</a>
-          {% else %}
+          </div>
+        {% else %}
+          <div class="top-nav-links top-nav-center">
             <a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}class="active" aria-current="page"{% endif %}>Home</a>
+          </div>
+          <div class="top-nav-links top-nav-right">
             <a href="{{ url_for('login') }}" {% if request.endpoint == 'login' %}class="active" aria-current="page"{% endif %}>Login</a>
             <a href="{{ url_for('register') }}" {% if request.endpoint == 'register' %}class="active" aria-current="page"{% endif %}>Register</a>
-          {% endif %}
-        </div>
+          </div>
+        {% endif %}
       </div>
     </nav>
   </header>

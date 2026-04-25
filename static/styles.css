@@ -82,6 +82,7 @@ body {
   font-size: 16px;
   line-height: 1.65;
   color: var(--text);
+  overflow-x: hidden;
   background:
     radial-gradient(980px 660px at 50% 120%, rgba(140, 156, 138, 0.2), transparent 60%),
     radial-gradient(760px 420px at 12% 96%, rgba(184, 178, 160, 0.16), transparent 54%),
@@ -127,12 +128,11 @@ body {
 }
 
 .top-nav-inner {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 18px;
+  gap: 12px;
   padding: 14px 18px;
-  flex-wrap: wrap;
 }
 
 .brand-mark {
@@ -179,8 +179,17 @@ body {
 .top-nav-links {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
+}
+
+.top-nav-center {
+  justify-self: center;
+  justify-content: center;
+}
+
+.top-nav-right {
+  justify-self: end;
 }
 
 .top-nav-links a {
@@ -288,7 +297,7 @@ body {
 }
 
 .hero::after {
-  content: "";
+  content: none;
   position: absolute;
   left: 0;
   right: 0;
@@ -300,8 +309,8 @@ body {
 }
 
 .hero-inner {
-  width: 100%;
-  margin: 0;
+  width: min(1300px, 100%);
+  margin: 0 auto;
 }
 
 .hero-split {
@@ -1195,6 +1204,20 @@ label {
   top: 96px;
 }
 
+.jobs-layout,
+.income-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 14px;
+  align-items: start;
+}
+
+.jobs-side,
+.income-side {
+  position: sticky;
+  top: 96px;
+}
+
 .skills-side .resource-grid {
   grid-template-columns: 1fr;
 }
@@ -1248,6 +1271,27 @@ label {
   color: var(--text-muted);
   font-size: 13px;
   line-height: 1.45;
+}
+
+.reminder-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.reminder-delete {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.reminder-empty {
+  border: 1px dashed var(--border-soft);
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  font-size: 13px;
 }
 
 .task-grid {
@@ -2321,7 +2365,9 @@ tbody tr:hover {
   }
 
   .dashboard-side,
-  .skills-side {
+  .skills-side,
+  .jobs-side,
+  .income-side {
     position: static;
     top: auto;
   }
@@ -2331,6 +2377,11 @@ tbody tr:hover {
   }
 
   .skills-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .jobs-layout,
+  .income-layout {
     grid-template-columns: 1fr;
   }
 
@@ -2401,7 +2452,10 @@ tbody tr:hover {
   }
 
   .top-nav-inner {
-    align-items: flex-start;
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 8px;
+    align-items: start;
   }
 
   .brand-mark {
@@ -2416,6 +2470,12 @@ tbody tr:hover {
 
   .top-nav-links {
     gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .top-nav-center,
+  .top-nav-right {
+    justify-self: start;
   }
 
   .top-nav-links a {

@@ -4,16 +4,8 @@
 <div class="page page-centered">
   <div class="page-header"><div><div class="page-title">Freelance Vault</div><div class="page-subtitle">Track payment methods, linked jobs, paid skills, and full transaction history.</div></div><a href="{{ url_for('add_income') }}" class="btn btn-primary">Log Transaction</a></div>
 
-  <section class="task-hub task-hub-inline card">
-    <div class="section-header">
-      <div class="section-title">Reminders</div>
-      <div class="task-tags"><span class="task-tag">Vault</span></div>
-    </div>
-    <div class="reminder-list reminder-list-inline">
-      <div class="reminder-item"><strong>Log today’s cash movement</strong><span>Capture income or expense before the day closes.</span></div>
-    </div>
-  </section>
-
+  <div class="income-layout">
+  <div class="income-main">
   <form method="get" class="filter-row">
     <input type="text" name="q" placeholder="Search description" value="{{ vault_filters.q }}">
     <select name="type">
@@ -57,6 +49,25 @@
   {% else %}
     <div class="card empty-state"><div class="empty-state-icon">Vault</div><p>No transactions yet. Log your first income or expense.</p><a href="{{ url_for('add_income') }}" class="btn btn-primary">Log First Entry</a></div>
   {% endif %}
+  </div>
+  <aside class="income-side">
+    <section class="task-hub card">
+      <div class="section-header">
+        <div class="section-title">Reminders</div>
+        <div class="task-tags"><span class="task-tag">Vault</span></div>
+      </div>
+      <div class="reminder-list">
+        {% if reminders %}
+          {% for reminder in reminders|reverse %}
+            <div class="reminder-item"><strong>{{ reminder.text }}</strong><span>{{ reminder.tag }}</span></div>
+          {% endfor %}
+        {% else %}
+          <div class="reminder-empty">No vault reminders yet.</div>
+        {% endif %}
+      </div>
+    </section>
+  </aside>
+  </div>
 </div>
 
 <script>

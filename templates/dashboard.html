@@ -16,12 +16,33 @@
       <section class="task-hub task-hub-side card" data-task-target="task-hub">
         <div class="section-header">
           <div class="section-title">Reminders</div>
-          <div class="task-tags"><span class="task-tag">Skills</span><span class="task-tag">Jobs</span><span class="task-tag">Vault</span></div>
+          <div class="task-tags"><span class="task-tag">Manual</span></div>
         </div>
+        <form method="post" action="{{ url_for('add_reminder') }}" class="reminder-form">
+          <input type="hidden" name="next" value="{{ url_for('dashboard') }}">
+          <input type="text" name="text" placeholder="Add a reminder..." maxlength="120" required>
+          <select name="tag">
+            {% for tag in reminder_tags %}
+              <option value="{{ tag }}">{{ tag }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-ghost btn-sm">Add</button>
+        </form>
         <div class="reminder-list">
-          <div class="reminder-item"><strong>Review one skill today</strong><span>Keep your Skill Bank updated before day end.</span></div>
-          <div class="reminder-item"><strong>Follow up one active application</strong><span>Update status in Job Ledger after outreach.</span></div>
-          <div class="reminder-item"><strong>Log latest vault movement</strong><span>Record any new income or expense this day.</span></div>
+          {% if reminders %}
+            {% for reminder in reminders|reverse %}
+              <div class="reminder-item">
+                <strong>{{ reminder.text }}</strong>
+                <span>{{ reminder.tag }}</span>
+                <form method="post" action="{{ url_for('delete_reminder', reminder_id=reminder.id) }}" class="reminder-delete">
+                  <input type="hidden" name="next" value="{{ url_for('dashboard') }}">
+                  <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="reminder-empty">No reminders yet. Add your first one.</div>
+          {% endif %}
         </div>
       </section>
     </aside>

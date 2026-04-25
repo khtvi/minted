@@ -82,6 +82,7 @@ JOB_TYPES = [
     "Full-time", "Part-time", "Contract", "Freelance",
     "Internship", "Temporary", "Project-based", "Other",
 ]
+REMINDER_TAGS = ["General", "Skills", "Jobs", "Vault"]
 VALID_TXN_TYPES = {"income", "expense"}
 PAYMENT_METHODS = [
     "Savings Account",
@@ -362,6 +363,7 @@ class User:
         self.skills = []
         self.jobs = []
         self.income_txns = []
+        self.reminders = []
         self.created_at = datetime.now().strftime("%Y-%m-%d")
 
     def verify_pin(self, pin):
@@ -417,6 +419,33 @@ class User:
         responded = sum(1 for job in self.jobs if job.status not in ["Sent", "Rejected"])
         return round((responded / total) * 100, 1)
 
+    def add_reminder(self, text, tag="General"):
+        label = (text or "").strip()
+        if not label:
+            return None
+        safe_tag = tag if tag in REMINDER_TAGS else "General"
+        reminder = {
+            "id": str(uuid.uuid4())[:8],
+            "text": label,
+            "tag": safe_tag,
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        }
+        self.reminders.append(reminder)
+        return reminder
+
+    def delete_reminder(self, reminder_id):
+        before = len(self.reminders)
+        self.reminders = [item for item in self.reminders if item.get("id") != reminder_id]
+        return len(self.reminders) != before
+
+    def reminders_for(self, tag):
+        if not tag:
+            return list(self.reminders)
+        return [
+            item for item in self.reminders
+            if item.get("tag") in ["General", tag]
+        ]
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -428,6 +457,7 @@ class User:
             "skills": [skill.to_dict() for skill in self.skills],
             "jobs": [job.to_dict() for job in self.jobs],
             "income_txns": [txn.to_dict() for txn in self.income_txns],
+            "reminders": list(self.reminders),
         }
 
     @staticmethod
@@ -444,6 +474,24 @@ class User:
         user.skills = [Skill.from_dict(item) for item in data.get("skills", [])]
         user.jobs = [JobApplication.from_dict(item) for item in data.get("jobs", [])]
         user.income_txns = [IncomeTransaction.from_dict(item) for item in data.get("income_txns", [])]
+        raw_reminders = data.get("reminders", [])
+        if isinstance(raw_reminders, list):
+            cleaned = []
+            for item in raw_reminders:
+                if not isinstance(item, dict):
+                    continue
+                text = str(item.get("text", "")).strip()
+                if not text:
+                    continue
+                cleaned.append(
+                    {
+                        "id": str(item.get("id") or str(uuid.uuid4())[:8]),
+                        "text": text,
+                        "tag": item.get("tag") if item.get("tag") in REMINDER_TAGS else "General",
+                        "created_at": str(item.get("created_at", "")),
+                    }
+                )
+            user.reminders = cleaned
         return user
 
 
@@ -698,7 +746,42 @@ def user_profile():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html", user=current_user())
+    user = current_user()
+    return render_template(
+        "dashboard.html",
+        user=user,
+        reminder_tags=REMINDER_TAGS,
+        reminders=list(user.reminders),
+    )
+
+
+@app.route("/reminders/add", methods=["POST"])
+@login_required
+def add_reminder():
+    user = current_user()
+    text = request.form.get("text", "").strip()
+    tag = request.form.get("tag", "General").strip()
+    next_url = request.form.get("next", "").strip()
+    if not text:
+        flash("Reminder text is required.", "error")
+        return redirect(next_url or url_for("dashboard"))
+    user.add_reminder(text, tag)
+    save_users()
+    flash("Reminder added.", "success")
+    return redirect(next_url or url_for("dashboard"))
+
+
+@app.route("/reminders/<reminder_id>/delete", methods=["POST"])
+@login_required
+def delete_reminder(reminder_id):
+    user = current_user()
+    next_url = request.form.get("next", "").strip()
+    if user.delete_reminder(reminder_id):
+        save_users()
+        flash("Reminder deleted.", "success")
+    else:
+        flash("Reminder not found.", "error")
+    return redirect(next_url or url_for("dashboard"))
 
 
 @app.route("/tour/complete", methods=["POST"])
@@ -728,6 +811,7 @@ def skills():
     return render_template(
         "skills.html",
         user=user,
+        reminders=user.reminders_for("Skills"),
         filtered_skills=filtered_skills,
         categories=SKILL_CATEGORIES,
         levels=SKILL_LEVELS,
@@ -970,6 +1054,7 @@ def jobs():
     return render_template(
         "jobs.html",
         user=user,
+        reminders=user.reminders_for("Jobs"),
         filtered_jobs=filtered_jobs,
         statuses=JobApplication.STATUSES,
         job_types=JOB_TYPES,
@@ -1293,6 +1378,7 @@ def income():
     return render_template(
         "income.html",
         user=user,
+        reminders=user.reminders_for("Vault"),
         filtered_txns=filtered_txns,
         skills=user.skills,
         jobs=user.jobs,
