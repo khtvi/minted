@@ -60,27 +60,14 @@
           <button type="button" class="btn btn-primary btn-sm" data-tour-next>Next</button>
         </div>
       </div>
-      <div class="tour-step" data-tour-step data-target="[data-tour-target='skills-nav']" data-title="Open Skill Bank" data-body="Start by adding a skill and tracking your study hours."></div>
-      <div class="tour-step" data-tour-step data-target="[data-tour-target='jobs-nav']" data-title="Track Applications" data-body="Log applications and keep statuses updated."></div>
-      <div class="tour-step" data-tour-step data-target="[data-tour-target='vault-nav']" data-title="Use Your Vault" data-body="Record income and expenses to monitor your net balance."></div>
-      <div class="tour-step" data-tour-step data-target="[data-task-target='task-hub']" data-title="Complete Quick Tasks" data-body="Use these tagged shortcuts on every page to move faster."></div>
+      <div class="tour-step" data-tour-step data-target="[data-tour-target='skills-nav']" data-title="Skills" data-body="Add a skill and log study time."></div>
+      <div class="tour-step" data-tour-step data-target="[data-tour-target='jobs-nav']" data-title="Jobs" data-body="Track applications and status changes."></div>
+      <div class="tour-step" data-tour-step data-target="[data-tour-target='vault-nav']" data-title="Vault" data-body="Log income and expenses here."></div>
+      <div class="tour-step" data-tour-step data-target="[data-task-target='task-hub']" data-title="Tasks" data-body="Use section tasks to move faster."></div>
     </div>
   {% endif %}
 
   <main class="site-main">
-    {% if nav_user %}
-      <section class="task-hub card" data-task-target="task-hub">
-        <div class="section-header">
-          <div class="section-title">Quick Tasks</div>
-          <div class="task-tags"><span class="task-tag">Skills</span><span class="task-tag">Jobs</span><span class="task-tag">Vault</span></div>
-        </div>
-        <div class="task-grid">
-          <a href="{{ url_for('add_skill') }}" class="task-link"><strong>Add a new skill</strong><span>Skill Bank</span></a>
-          <a href="{{ url_for('add_job') }}" class="task-link"><strong>Log an application</strong><span>Job Ledger</span></a>
-          <a href="{{ url_for('add_income') }}" class="task-link"><strong>Record a transaction</strong><span>Vault</span></a>
-        </div>
-      </section>
-    {% endif %}
     {% block content %}{% endblock %}
   </main>
 </div>
@@ -159,13 +146,14 @@
         };
 
         const renderStep = () => {
-          const step = steps[index];
-          if (!step) {
-            endTour();
-            return;
+          let step = steps[index];
+          let target = step ? document.querySelector(step.dataset.target) : null;
+          while (step && !target && index < steps.length - 1) {
+            index += 1;
+            step = steps[index];
+            target = step ? document.querySelector(step.dataset.target) : null;
           }
-          const target = document.querySelector(step.dataset.target);
-          if (!target) {
+          if (!step || !target) {
             endTour();
             return;
           }

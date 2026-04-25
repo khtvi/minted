@@ -12,6 +12,16 @@
     </div>
   </div>
 
+  <section class="task-hub task-hub-inline card">
+    <div class="section-header">
+      <div class="section-title">Tasks</div>
+      <div class="task-tags"><span class="task-tag">Jobs</span></div>
+    </div>
+    <div class="task-grid">
+      <a href="{{ url_for('add_job') }}" class="task-link"><strong>Log job</strong><span>Add a new application</span></a>
+    </div>
+  </section>
+
   <form method="get" class="filter-row">
     <input type="text" name="q" placeholder="Search company, role, platform" value="{{ job_filters.q }}">
     <select name="status">

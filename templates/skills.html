@@ -6,6 +6,19 @@
     <div><div class="page-title">Skill Bank</div><div class="page-subtitle">Your proficiency capital. Deposit hours, deploy on projects.</div></div>
     <div class="flex gap-8 page-header-actions">{% if user.skills | length >= 2 %}<a href="{{ url_for('transfer_skill') }}" class="btn btn-violet btn-sm">Transfer Hours</a>{% endif %}<a href="{{ url_for('add_skill') }}" class="btn btn-primary">Add Skill</a></div>
   </div>
+  <div class="skills-layout">
+    <div class="skills-main">
+      <section class="task-hub task-hub-inline card" data-task-target="task-hub">
+        <div class="section-header">
+          <div class="section-title">Tasks</div>
+          <div class="task-tags"><span class="task-tag">Skills</span></div>
+        </div>
+        <div class="task-grid">
+          <a href="{{ url_for('add_skill') }}" class="task-link"><strong>Add skill</strong><span>Create a new skill entry</span></a>
+          <a href="{{ url_for('transfer_skill') }}" class="task-link"><strong>Transfer hours</strong><span>Move hours between skills</span></a>
+        </div>
+      </section>
+
   <form method="get" class="filter-row">
     <input type="text" name="q" placeholder="Search skill..." value="{{ skill_filters.q }}">
     <select name="category">
@@ -24,18 +37,6 @@
     <a href="{{ url_for('skills') }}" class="btn btn-ghost btn-sm">Reset</a>
   </form>
 
-  <section class="resource-strip card">
-    <div class="section-header">
-      <div class="section-title">Suggested Skill Resources</div>
-      <a href="https://roadmap.sh" class="btn btn-ghost btn-sm" target="_blank" rel="noopener noreferrer">More Resources</a>
-    </div>
-    <div class="resource-grid">
-      <a class="resource-item" href="https://roadmap.sh" target="_blank" rel="noopener noreferrer"><strong>Role Roadmaps</strong><span>Clear paths for dev, data, design, and security tracks.</span></a>
-      <a class="resource-item" href="https://www.freecodecamp.org/learn" target="_blank" rel="noopener noreferrer"><strong>freeCodeCamp</strong><span>Hands-on learning paths with practice projects.</span></a>
-      <a class="resource-item" href="https://ocw.mit.edu" target="_blank" rel="noopener noreferrer"><strong>MIT OpenCourseWare</strong><span>Deep technical courses for structured upskilling.</span></a>
-      <a class="resource-item" href="https://www.coursera.org" target="_blank" rel="noopener noreferrer"><strong>Coursera Catalog</strong><span>Career-focused courses and certificates by domain.</span></a>
-    </div>
-  </section>
   {% if user.skills %}
     <div class="stats-grid"><div class="card"><div class="card-title">Total Skills</div><div class="card-value text-mono">{{ user.skills | length }}</div></div><div class="card"><div class="card-title">Total Hours Studied</div><div class="card-value accent text-mono">{{ user.total_study_hours() }}h</div></div><div class="card"><div class="card-title">Hours Deployed</div><div class="card-value violet text-mono">{{ user.skills|sum(attribute='hours_withdrawn') }}h</div></div></div>
     {% if filtered_skills %}
@@ -46,6 +47,22 @@
   {% else %}
     <div class="card empty-state"><div class="empty-state-icon">Skill</div><p>Your skill bank is empty. Add your first skill to start tracking proficiency.</p><a href="{{ url_for('add_skill') }}" class="btn btn-primary">Add First Skill</a></div>
   {% endif %}
+    </div>
+    <aside class="skills-side">
+      <section class="resource-strip card">
+        <div class="section-header">
+          <div class="section-title">Suggested Skill Resources</div>
+          <a href="https://roadmap.sh" class="btn btn-ghost btn-sm" target="_blank" rel="noopener noreferrer">More Resources</a>
+        </div>
+        <div class="resource-grid">
+          <a class="resource-item" href="https://roadmap.sh" target="_blank" rel="noopener noreferrer"><strong>Role Roadmaps</strong><span>Clear paths for dev, data, design, and security tracks.</span></a>
+          <a class="resource-item" href="https://www.freecodecamp.org/learn" target="_blank" rel="noopener noreferrer"><strong>freeCodeCamp</strong><span>Hands-on learning paths with practice projects.</span></a>
+          <a class="resource-item" href="https://ocw.mit.edu" target="_blank" rel="noopener noreferrer"><strong>MIT OpenCourseWare</strong><span>Deep technical courses for structured upskilling.</span></a>
+          <a class="resource-item" href="https://www.coursera.org" target="_blank" rel="noopener noreferrer"><strong>Coursera Catalog</strong><span>Career-focused courses and certificates by domain.</span></a>
+        </div>
+      </section>
+    </aside>
+  </div>
 </div>
 {% endblock %}
 

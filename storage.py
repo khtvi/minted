@@ -6,11 +6,22 @@ import time
 
 class SQLiteUserStore:
     def __init__(self, db_path):
-        self.db_path = db_path
-        directory = os.path.dirname(os.path.abspath(db_path))
-        if directory:
-            os.makedirs(directory, exist_ok=True)
+        self.db_path = self._resolve_db_path(db_path)
         self._ensure_schema()
+
+    def _resolve_db_path(self, db_path):
+        requested_path = os.path.abspath(db_path)
+        directory = os.path.dirname(requested_path)
+        if directory:
+            try:
+                os.makedirs(directory, exist_ok=True)
+                return requested_path
+            except OSError:
+                # Fall back to the project directory when system paths are not writable.
+                fallback_dir = os.path.dirname(os.path.abspath(__file__))
+                fallback_name = os.path.basename(requested_path) or "storage.db"
+                return os.path.join(fallback_dir, fallback_name)
+        return requested_path
 
     def _connect(self):
         connection = sqlite3.connect(self.db_path, timeout=30)

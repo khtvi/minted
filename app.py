@@ -452,12 +452,15 @@ users = []
 
 def load_users():
     global users
+    existing_users = list(users)
     try:
         data = STORE.read_users()
         users = [User.from_dict(item) for item in data]
+        return True
     except (OSError, json.JSONDecodeError, KeyError, ValueError, RuntimeError) as exc:
         print(f"Error loading data from DB: {exc}")
-        users = []
+        users = existing_users
+        return False
 
 
 def save_users():
@@ -470,6 +473,7 @@ def save_users():
 def find_user_by_username(username):
     if not username:
         return None
+    load_users()
     for user in users:
         if user.username.lower() == username.lower():
             return user
@@ -479,6 +483,7 @@ def find_user_by_username(username):
 def find_user_by_login(identifier):
     if not identifier:
         return None
+    load_users()
     lowered = identifier.lower()
     for user in users:
         if user.username.lower() == lowered or user.email.lower() == lowered:

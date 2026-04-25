@@ -4,6 +4,16 @@
 <div class="page page-centered">
   <div class="page-header"><div><div class="page-title">Freelance Vault</div><div class="page-subtitle">Track payment methods, linked jobs, paid skills, and full transaction history.</div></div><a href="{{ url_for('add_income') }}" class="btn btn-primary">Log Transaction</a></div>
 
+  <section class="task-hub task-hub-inline card">
+    <div class="section-header">
+      <div class="section-title">Tasks</div>
+      <div class="task-tags"><span class="task-tag">Vault</span></div>
+    </div>
+    <div class="task-grid">
+      <a href="{{ url_for('add_income') }}" class="task-link"><strong>Add entry</strong><span>Log a vault transaction</span></a>
+    </div>
+  </section>
+
   <form method="get" class="filter-row">
     <input type="text" name="q" placeholder="Search description" value="{{ vault_filters.q }}">
     <select name="type">
@@ -61,6 +71,14 @@
         bulkForm.classList.toggle("bulk-edit-mode", !isEditing);
         editToggle.setAttribute("aria-pressed", isEditing ? "true" : "false");
         editToggle.textContent = isEditing ? "Done" : "Edit";
+        if (!isEditing) {
+          if (selectAll) {
+            selectAll.checked = false;
+          }
+          rowChecks.forEach((box) => {
+            box.checked = false;
+          });
+        }
       };
 
       setMode(false);

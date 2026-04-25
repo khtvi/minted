@@ -66,7 +66,7 @@ git push heroku main
 ## Structure
 
 ```
-skillvault/
+minted/
 ├── app.py              # Main app — routes + models (Account → User, Skill, Job, Income)
 ├── storage.json        # Auto-created on first run
 ├── requirements.txt
@@ -100,7 +100,7 @@ Register with username `admin`. The admin view shows all registered users.
 
 ## ATM Pattern Mapping
 
-| ATM App         | SkillVault        |
+| ATM App         | Minted            |
 |-----------------|-------------------|
 | Account         | Skill             |
 | Deposit         | Study hours logged |

@@ -10,6 +10,23 @@
     </div>
   </div>
 
+  <div class="dashboard-shell">
+    <aside class="dashboard-side">
+      <section class="task-hub task-hub-side card" data-task-target="task-hub">
+        <div class="section-header">
+          <div class="section-title">Tasks</div>
+          <div class="task-tags"><span class="task-tag">Skills</span><span class="task-tag">Jobs</span><span class="task-tag">Vault</span></div>
+        </div>
+        <div class="task-grid">
+          <a href="{{ url_for('add_skill') }}" class="task-link"><strong>Add skill</strong><span>Skill Bank</span></a>
+          <a href="{{ url_for('add_job') }}" class="task-link"><strong>Log job</strong><span>Job Ledger</span></a>
+          <a href="{{ url_for('add_income') }}" class="task-link"><strong>Add entry</strong><span>Vault</span></a>
+        </div>
+      </section>
+    </aside>
+
+    <div class="dashboard-main">
+
   <section class="dashboard-spotlight card">
     <div class="dashboard-spotlight-head">
       <div>
@@ -102,6 +119,8 @@
       {% else %}
         <div class="card empty-state" style="padding: 24px;"><div class="empty-state-icon">Vault</div><p>No income or expenses logged yet.</p><a href="{{ url_for('add_income') }}" class="btn btn-primary">Log First Entry</a></div>
       {% endif %}
+    </div>
+  </div>
     </div>
   </div>
 </div>
