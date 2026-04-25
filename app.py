@@ -23,6 +23,20 @@ app.config.update(
     PERMANENT_SESSION_LIFETIME=timedelta(hours=12),
 )
 
+
+def resolve_app_data_dir():
+    configured = os.environ.get("MINTED_DATA_DIR", "").strip()
+    if configured:
+        return configured
+
+    if os.name == "nt":
+        base = os.environ.get("LOCALAPPDATA", "").strip()
+        if base:
+            return os.path.join(base, "minted")
+
+    home = os.path.expanduser("~")
+    return os.path.join(home, ".minted")
+
 def resolve_legacy_data_file():
     configured = os.environ.get("DATA_FILE", "").strip()
     if configured:
@@ -32,7 +46,11 @@ def resolve_legacy_data_file():
     if render_disk:
         return os.path.join(render_disk, "storage.json")
 
-    return os.path.join(BASE_DIR, "storage.json")
+    local_file = os.path.join(BASE_DIR, "storage.json")
+    if os.path.exists(local_file):
+        return local_file
+
+    return os.path.join(resolve_app_data_dir(), "storage.json")
 
 
 def resolve_db_file():
@@ -44,7 +62,11 @@ def resolve_db_file():
     if render_disk:
         return os.path.join(render_disk, "storage.db")
 
-    return os.path.join(BASE_DIR, "storage.db")
+    local_db = os.path.join(BASE_DIR, "storage.db")
+    if os.path.exists(local_db):
+        return local_db
+
+    return os.path.join(resolve_app_data_dir(), "storage.db")
 
 
 LEGACY_DATA_FILE = resolve_legacy_data_file()
