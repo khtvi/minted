@@ -33,9 +33,6 @@
             <a href="{{ url_for('logout') }}">Logout</a>
           </div>
         {% else %}
-          <div class="top-nav-links top-nav-center">
-            <a href="{{ url_for('index') }}" {% if request.endpoint == 'index' %}class="active" aria-current="page"{% endif %}>Home</a>
-          </div>
           <div class="top-nav-links top-nav-right">
             <a href="{{ url_for('login') }}" {% if request.endpoint == 'login' %}class="active" aria-current="page"{% endif %}>Login</a>
             <a href="{{ url_for('register') }}" {% if request.endpoint == 'register' %}class="active" aria-current="page"{% endif %}>Register</a>

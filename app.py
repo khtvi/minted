@@ -24,10 +24,33 @@ app.config.update(
 )
 
 
+def running_on_render():
+    return bool(
+        os.environ.get("RENDER_EXTERNAL_HOSTNAME", "").strip()
+        or os.environ.get("RENDER", "").strip().lower() == "true"
+    )
+
+
+def resolve_render_data_dir():
+    configured = os.environ.get("RENDER_DISK_PATH", "").strip()
+    if configured:
+        return configured
+
+    default_mount = "/var/data"
+    if os.path.isdir(default_mount):
+        return default_mount
+
+    return ""
+
+
 def resolve_app_data_dir():
     configured = os.environ.get("MINTED_DATA_DIR", "").strip()
     if configured:
         return configured
+
+    render_data_dir = resolve_render_data_dir()
+    if render_data_dir:
+        return render_data_dir
 
     if os.name == "nt":
         base = os.environ.get("LOCALAPPDATA", "").strip()
@@ -42,9 +65,9 @@ def resolve_legacy_data_file():
     if configured:
         return configured
 
-    render_disk = os.environ.get("RENDER_DISK_PATH", "").strip()
-    if render_disk:
-        return os.path.join(render_disk, "storage.json")
+    render_data_dir = resolve_render_data_dir()
+    if render_data_dir:
+        return os.path.join(render_data_dir, "storage.json")
 
     local_file = os.path.join(BASE_DIR, "storage.json")
     if os.path.exists(local_file):
@@ -58,9 +81,9 @@ def resolve_db_file():
     if configured:
         return configured
 
-    render_disk = os.environ.get("RENDER_DISK_PATH", "").strip()
-    if render_disk:
-        return os.path.join(render_disk, "storage.db")
+    render_data_dir = resolve_render_data_dir()
+    if render_data_dir:
+        return os.path.join(render_data_dir, "storage.db")
 
     local_db = os.path.join(BASE_DIR, "storage.db")
     if os.path.exists(local_db):
@@ -71,6 +94,13 @@ def resolve_db_file():
 
 LEGACY_DATA_FILE = resolve_legacy_data_file()
 DB_FILE = resolve_db_file()
+
+if running_on_render() and not resolve_render_data_dir() and not os.environ.get("DB_FILE", "").strip():
+    print(
+        "Warning: Render persistent disk not detected. "
+        "Data will reset on deploy/restart unless DB_FILE points to a persistent mount."
+    )
+
 STORE = SQLiteUserStore(DB_FILE)
 STORE.migrate_from_json(LEGACY_DATA_FILE)
 SKILL_CATEGORIES = [
