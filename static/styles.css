@@ -316,9 +316,24 @@ body {
   align-items: start;
 }
 
+.home-layout > .hero-main {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.home-layout > .home-stage-tall {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.home-layout > .feature-row {
+  grid-column: 1;
+  grid-row: 2;
+}
+
 .home-stage-tall {
   height: auto;
-  min-height: 456px;
+  min-height: 392px;
   animation: chart-column-breathe 6.4s ease-in-out infinite;
 }
 
@@ -337,13 +352,12 @@ body {
 }
 
 .home-hero .hero-stage {
-  min-height: 456px;
+  min-height: 392px;
   padding: 16px;
 }
 
 .home-hero .feature-row {
   margin-top: 4px;
-  grid-column: 1 / -1;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
 }
@@ -2699,6 +2713,13 @@ tbody tr:hover {
 
   .home-layout {
     grid-template-columns: 1fr;
+  }
+
+  .home-layout > .hero-main,
+  .home-layout > .home-stage-tall,
+  .home-layout > .feature-row {
+    grid-column: auto;
+    grid-row: auto;
   }
 
   .home-stage-tall {
