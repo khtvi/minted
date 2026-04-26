@@ -310,12 +310,12 @@ body {
   flex: 1;
   display: grid;
   grid-auto-rows: max-content;
-  gap: 16px;
-  align-content: space-between;
+  gap: 12px;
+  align-content: start;
 }
 
 .home-hero .hero-split {
-  gap: 18px;
+  gap: 14px;
   align-items: center;
 }
 
@@ -333,13 +333,13 @@ body {
 }
 
 .home-hero .hero-stage {
-  min-height: 360px;
+  min-height: 344px;
   padding: 18px;
 }
 
 .home-hero .feature-row {
   margin-top: 0;
-  gap: 14px;
+  gap: 12px;
 }
 
 .home-hero .feature-box {
@@ -359,10 +359,18 @@ body {
 
 .home-bottom-strip {
   grid-column: 1 / -1;
-  margin-top: 12px;
+  margin-top: 6px;
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.8fr);
   gap: 12px;
+}
+
+.hero-main h1 .word-effort {
+  color: var(--gold);
+}
+
+.hero-main h1 .word-into {
+  color: var(--accent);
 }
 
 .home-bottom-card,
