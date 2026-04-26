@@ -245,7 +245,7 @@ body {
 .site-main {
   width: min(1680px, 100%);
   margin: 0 auto;
-  padding: 34px 20px 8px;
+  padding: 34px 20px 0;
   position: relative;
 }
 
@@ -294,6 +294,10 @@ body {
   position: relative;
   overflow: hidden;
   transition: border-color 0.26s ease, box-shadow 0.26s ease;
+}
+
+.home-hero {
+  min-height: calc(100vh - 148px);
 }
 
 .hero::after {

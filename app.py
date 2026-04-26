@@ -114,6 +114,8 @@ JOB_TYPES = [
 ]
 REMINDER_TAGS = ["General", "Skills", "Jobs", "Vault"]
 VALID_TXN_TYPES = {"income", "expense"}
+RESOURCE_TYPES = {"free", "paid"}
+SKILL_RESOURCE_EXPENSE_PREFIX = "Skill resource expense:"
 PAYMENT_METHODS = [
     "Savings Account",
     "Checking Account",
@@ -198,7 +200,18 @@ class Skill:
     Transfer = move hours to a related skill.
     """
 
-    def __init__(self, name, category="General", level="Beginner", skill_id=None):
+    def __init__(
+        self,
+        name,
+        category="General",
+        level="Beginner",
+        skill_id=None,
+        uses_resources=False,
+        resource_type="free",
+        resource_cost=0.0,
+        reflect_resource_cost=False,
+        resource_txn_id="",
+    ):
         self.id = skill_id if skill_id else str(uuid.uuid4())[:8]
         self.name = name
         self.category = category
@@ -206,6 +219,11 @@ class Skill:
         self.hours_deposited = 0.0
         self.hours_withdrawn = 0.0
         self.log = []
+        self.uses_resources = bool(uses_resources)
+        self.resource_type = resource_type if resource_type in RESOURCE_TYPES else "free"
+        self.resource_cost = max(float(resource_cost or 0), 0.0)
+        self.reflect_resource_cost = bool(reflect_resource_cost)
+        self.resource_txn_id = str(resource_txn_id or "")
 
     def _ts(self):
         return datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -257,6 +275,11 @@ class Skill:
             "hours_deposited": self.hours_deposited,
             "hours_withdrawn": self.hours_withdrawn,
             "log": self.log,
+            "uses_resources": self.uses_resources,
+            "resource_type": self.resource_type,
+            "resource_cost": self.resource_cost,
+            "reflect_resource_cost": self.reflect_resource_cost,
+            "resource_txn_id": self.resource_txn_id,
         }
 
     @staticmethod
@@ -266,10 +289,22 @@ class Skill:
             data.get("category", "General"),
             data.get("level", "Beginner"),
             skill_id=data["id"],
+            uses_resources=bool(data.get("uses_resources", False)),
+            resource_type=data.get("resource_type", "free"),
+            resource_cost=float(data.get("resource_cost", 0) or 0),
+            reflect_resource_cost=bool(data.get("reflect_resource_cost", False)),
+            resource_txn_id=data.get("resource_txn_id", ""),
         )
         skill.hours_deposited = float(data.get("hours_deposited", 0))
         skill.hours_withdrawn = float(data.get("hours_withdrawn", 0))
         skill.log = data.get("log", [])
+        if not skill.uses_resources:
+            skill.resource_type = "free"
+            skill.resource_cost = 0.0
+            skill.reflect_resource_cost = False
+        if skill.resource_type != "paid":
+            skill.resource_cost = 0.0
+            skill.reflect_resource_cost = False
         return skill
 
 
@@ -415,10 +450,27 @@ class User:
                 return skill
         return None
 
-    def add_skill(self, name, category, level="Beginner"):
+    def add_skill(
+        self,
+        name,
+        category,
+        level="Beginner",
+        uses_resources=False,
+        resource_type="free",
+        resource_cost=0.0,
+        reflect_resource_cost=False,
+    ):
         if self.find_skill_by_name(name):
             return None
-        skill = Skill(name, category, level)
+        skill = Skill(
+            name,
+            category,
+            level,
+            uses_resources=uses_resources,
+            resource_type=resource_type,
+            resource_cost=resource_cost,
+            reflect_resource_cost=reflect_resource_cost,
+        )
         self.skills.append(skill)
         return skill
 
@@ -526,6 +578,45 @@ class User:
                 )
             user.reminders = cleaned
         return user
+
+
+def sync_skill_resource_expense(user, skill):
+    should_reflect = (
+        skill.uses_resources
+        and skill.resource_type == "paid"
+        and skill.reflect_resource_cost
+        and skill.resource_cost > 0
+    )
+    linked_txn = None
+    if skill.resource_txn_id:
+        linked_txn = next((txn for txn in user.income_txns if txn.id == skill.resource_txn_id), None)
+
+    if not should_reflect:
+        if linked_txn:
+            user.income_txns = [txn for txn in user.income_txns if txn.id != linked_txn.id]
+        skill.resource_txn_id = ""
+        return "removed" if linked_txn else "noop"
+
+    description = f"{SKILL_RESOURCE_EXPENSE_PREFIX} {skill.name}"
+    if linked_txn:
+        linked_txn.type = "expense"
+        linked_txn.amount = round(skill.resource_cost, 2)
+        linked_txn.description = description
+        linked_txn.skill_ids = [skill.id]
+        if linked_txn.payment_method not in PAYMENT_METHODS:
+            linked_txn.payment_method = "Other"
+        return "updated"
+
+    txn = IncomeTransaction(
+        "expense",
+        skill.resource_cost,
+        description,
+        skill_ids=[skill.id],
+        payment_method="Other",
+    )
+    user.income_txns.append(txn)
+    skill.resource_txn_id = txn.id
+    return "created"
 
 
 users = []
@@ -863,6 +954,10 @@ def add_skill():
         name = request.form["name"].strip()
         category = request.form["category"].strip()
         level = request.form.get("level", "Beginner").strip()
+        uses_resources = request.form.get("uses_resources") == "on"
+        resource_type = request.form.get("resource_type", "free").strip().lower()
+        resource_cost_raw = request.form.get("resource_cost", "0").strip()
+        reflect_resource_cost = request.form.get("reflect_resource_cost") == "on"
 
         if not name:
             flash("Skill name is required.", "error")
@@ -876,13 +971,45 @@ def add_skill():
             flash("Please select a valid skill level.", "error")
             return redirect(url_for("add_skill"))
 
-        result = user.add_skill(name, category, level)
+        if uses_resources and resource_type not in RESOURCE_TYPES:
+            flash("Please choose whether the resource is free or paid.", "error")
+            return redirect(url_for("add_skill"))
+
+        resource_cost = 0.0
+        if not uses_resources:
+            resource_type = "free"
+            reflect_resource_cost = False
+        elif resource_type == "paid":
+            try:
+                resource_cost = float(resource_cost_raw)
+                if resource_cost <= 0:
+                    raise ValueError
+            except ValueError:
+                flash("Paid resources must have a valid positive cost.", "error")
+                return redirect(url_for("add_skill"))
+        else:
+            reflect_resource_cost = False
+
+        result = user.add_skill(
+            name,
+            category,
+            level,
+            uses_resources=uses_resources,
+            resource_type=resource_type,
+            resource_cost=resource_cost,
+            reflect_resource_cost=reflect_resource_cost,
+        )
         if result is None:
             flash(f"Skill '{name}' already exists.", "error")
             return redirect(url_for("add_skill"))
 
+        sync_result = sync_skill_resource_expense(user, result)
+
         save_users()
-        flash(f"Skill '{name}' added to your skill bank!", "success")
+        if sync_result == "created":
+            flash(f"Skill '{name}' added and paid resource logged in Vault.", "success")
+        else:
+            flash(f"Skill '{name}' added to your skill bank!", "success")
         return redirect(url_for("skills"))
 
     return render_template(
@@ -959,6 +1086,10 @@ def edit_skill(skill_id):
         name = request.form.get("name", "").strip()
         category = request.form.get("category", "").strip()
         level = request.form.get("level", "").strip()
+        uses_resources = request.form.get("uses_resources") == "on"
+        resource_type = request.form.get("resource_type", "free").strip().lower()
+        resource_cost_raw = request.form.get("resource_cost", "0").strip()
+        reflect_resource_cost = request.form.get("reflect_resource_cost") == "on"
 
         if not name:
             flash("Skill name is required.", "error")
@@ -969,6 +1100,24 @@ def edit_skill(skill_id):
         if level not in SKILL_LEVELS:
             flash("Please select a valid skill level.", "error")
             return redirect(url_for("edit_skill", skill_id=skill_id))
+        if uses_resources and resource_type not in RESOURCE_TYPES:
+            flash("Please choose whether the resource is free or paid.", "error")
+            return redirect(url_for("edit_skill", skill_id=skill_id))
+
+        resource_cost = 0.0
+        if not uses_resources:
+            resource_type = "free"
+            reflect_resource_cost = False
+        elif resource_type == "paid":
+            try:
+                resource_cost = float(resource_cost_raw)
+                if resource_cost <= 0:
+                    raise ValueError
+            except ValueError:
+                flash("Paid resources must have a valid positive cost.", "error")
+                return redirect(url_for("edit_skill", skill_id=skill_id))
+        else:
+            reflect_resource_cost = False
 
         for existing in user.skills:
             if existing.id != skill.id and existing.name.lower() == name.lower():
@@ -978,8 +1127,20 @@ def edit_skill(skill_id):
         skill.name = name
         skill.category = category
         skill.level = level
+        skill.uses_resources = uses_resources
+        skill.resource_type = resource_type
+        skill.resource_cost = resource_cost
+        skill.reflect_resource_cost = reflect_resource_cost
+        sync_result = sync_skill_resource_expense(user, skill)
         save_users()
-        flash("Skill updated.", "success")
+        if sync_result == "created":
+            flash("Skill updated. Paid resource cost logged in Vault.", "success")
+        elif sync_result == "updated":
+            flash("Skill updated. Linked Vault expense was updated.", "success")
+        elif sync_result == "removed":
+            flash("Skill updated. Linked Vault expense removed.", "success")
+        else:
+            flash("Skill updated.", "success")
         return redirect(url_for("skills"))
 
     return render_template(
@@ -1001,6 +1162,9 @@ def delete_skill(skill_id):
         return redirect(url_for("skills"))
 
     user.skills.remove(skill)
+
+    if skill.resource_txn_id:
+        user.income_txns = [txn for txn in user.income_txns if txn.id != skill.resource_txn_id]
 
     for job in user.jobs:
         if skill_id in job.skill_ids:
@@ -1393,6 +1557,7 @@ def income():
     type_filter = request.args.get("type", "").strip()
     job_filter = request.args.get("job_id", "").strip()
     payment_filter = request.args.get("payment_method", "").strip()
+    source_filter = request.args.get("source", "").strip()
 
     filtered_txns = list(user.income_txns)
     if query:
@@ -1403,6 +1568,13 @@ def income():
         filtered_txns = [txn for txn in filtered_txns if txn.job_id == job_filter]
     if payment_filter and payment_filter in PAYMENT_METHODS:
         filtered_txns = [txn for txn in filtered_txns if txn.payment_method == payment_filter]
+    if source_filter == "resource_expense":
+        filtered_txns = [
+            txn
+            for txn in filtered_txns
+            if txn.type == "expense"
+            and txn.description.startswith(SKILL_RESOURCE_EXPENSE_PREFIX)
+        ]
 
     income_txns = [txn for txn in user.income_txns if txn.type == "income"]
     expense_txns = [txn for txn in user.income_txns if txn.type == "expense"]
@@ -1431,6 +1603,7 @@ def income():
             "type": type_filter,
             "job_id": job_filter,
             "payment_method": payment_filter,
+            "source": source_filter,
         },
         job_by_txn=job_by_txn,
     )
