@@ -928,14 +928,14 @@ label {
 }
 
 .auth-page {
-  min-height: 62vh;
-  display: grid;
-  place-items: center;
+  min-height: 0;
+  display: block;
 }
 
 .auth-card {
   width: min(520px, 100%);
   padding: 34px;
+  margin-inline: auto;
 }
 
 .auth-title {
