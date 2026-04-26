@@ -394,6 +394,7 @@ class User:
         self.jobs = []
         self.income_txns = []
         self.reminders = []
+        self.tour_completed = False
         self.created_at = datetime.now().strftime("%Y-%m-%d")
 
     def verify_pin(self, pin):
@@ -488,6 +489,7 @@ class User:
             "jobs": [job.to_dict() for job in self.jobs],
             "income_txns": [txn.to_dict() for txn in self.income_txns],
             "reminders": list(self.reminders),
+            "tour_completed": self.tour_completed,
         }
 
     @staticmethod
@@ -504,6 +506,7 @@ class User:
         user.skills = [Skill.from_dict(item) for item in data.get("skills", [])]
         user.jobs = [JobApplication.from_dict(item) for item in data.get("jobs", [])]
         user.income_txns = [IncomeTransaction.from_dict(item) for item in data.get("income_txns", [])]
+        user.tour_completed = bool(data.get("tour_completed", False))
         raw_reminders = data.get("reminders", [])
         if isinstance(raw_reminders, list):
             cleaned = []
@@ -607,7 +610,7 @@ def inject_global_ui_state():
     user = current_user()
     return {
         "nav_user": user,
-        "show_tour": bool(session.get("show_tour")) and user is not None,
+        "show_tour": bool(user and user.name and not user.tour_completed),
     }
 
 
@@ -665,7 +668,6 @@ def register():
         user = User(email, pin, email=email)
         users.append(user)
         save_users()
-        session["show_tour"] = False
         session["username"] = user.username
         session["display_name"] = user.name or user.username
         flash("Account created! Let's finish your profile.", "success")
@@ -716,8 +718,8 @@ def welcome():
             flash("Name is required.", "error")
             return redirect(url_for("welcome"))
         user.name = name
+        user.tour_completed = False
         save_users()
-        session["show_tour"] = True
         session["display_name"] = user.name
         flash(f"Welcome, {user.name}!", "success")
         return redirect(url_for("dashboard"))
@@ -817,7 +819,10 @@ def delete_reminder(reminder_id):
 @app.route("/tour/complete", methods=["POST"])
 @login_required
 def complete_tour():
-    session["show_tour"] = False
+    user = current_user()
+    if user:
+        user.tour_completed = True
+        save_users()
     return {"ok": True}
 
 
