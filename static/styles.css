@@ -245,7 +245,7 @@ body {
 .site-main {
   width: min(1680px, 100%);
   margin: 0 auto;
-  padding: 34px 20px 0;
+  padding: 24px;
   position: relative;
 }
 
@@ -297,9 +297,9 @@ body {
 }
 
 .home-hero {
-  min-height: 0;
+  min-height: calc(100dvh - 136px);
   height: auto;
-  padding: clamp(20px, 2.6vw, 28px);
+  padding: 22px;
 }
 
 .home-hero .hero-inner {
@@ -310,29 +310,14 @@ body {
 
 .home-layout {
   display: grid;
+  gap: 12px;
+}
+
+.home-top-row {
+  display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.16fr);
-  grid-template-rows: auto auto;
   gap: 14px;
-  grid-template-areas:
-    "copy chart"
-    "cards cards";
-  min-height: 0;
-  height: auto;
-  align-content: start;
   align-items: start;
-}
-
-.home-layout > .hero-main {
-  grid-area: copy;
-}
-
-.home-layout > .home-stage-tall {
-  grid-area: chart;
-}
-
-.home-layout > .feature-row {
-  grid-area: cards;
-  align-self: start;
 }
 
 .home-stage-tall {
@@ -368,7 +353,7 @@ body {
 }
 
 .home-hero .feature-row {
-  margin-top: 0;
+  margin-top: 2px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
 }
@@ -2724,23 +2709,11 @@ tbody tr:hover {
   }
 
   .home-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    grid-template-areas:
-      "copy"
-      "chart"
-      "cards";
-    flex: initial;
-    min-height: 0;
-    height: auto;
-    align-content: start;
+    gap: 10px;
   }
 
-  .home-layout > .hero-main,
-  .home-layout > .home-stage-tall,
-  .home-layout > .feature-row {
-    grid-column: auto;
-    grid-row: auto;
+  .home-top-row {
+    grid-template-columns: 1fr;
   }
 
   .home-stage-tall {

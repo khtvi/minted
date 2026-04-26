@@ -3,49 +3,51 @@
 {% block content %}
 <div class="hero home-hero">
     <div class="hero-inner home-layout">
-        <section class="hero-main">
-            <h1>Turn your <span class="word-effort">effort</span><br><span class="word-into">into</span> momentum.</h1>
-            <p>Minted helps you run your growth like a portfolio. Track study deposits, application performance, and income flow in one high-signal dashboard.</p>
-            <div class="hero-actions">
-                <a href="{{ url_for('register') }}" class="btn btn-primary">Start Building</a>
-                <a href="{{ url_for('login') }}" class="btn btn-ghost">I Have an Account</a>
-            </div>
-        </section>
+        <div class="home-top-row">
+            <section class="hero-main">
+                <h1>Turn your <span class="word-effort">effort</span><br><span class="word-into">into</span> momentum.</h1>
+                <p>Minted helps you run your growth like a portfolio. Track study deposits, application performance, and income flow in one high-signal dashboard.</p>
+                <div class="hero-actions">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary">Start Building</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-ghost">I Have an Account</a>
+                </div>
+            </section>
 
-        <aside class="hero-stage home-stage-tall" aria-label="Product capability preview">
-            <div class="hero-orbit"></div>
-            <div class="hero-stage-card">
-                <div class="hero-stage-top">
-                    <div>
-                        <div class="hero-stage-title">Growth Pulse</div>
-                        <div class="hero-stage-sub">Last 30 days</div>
+            <aside class="hero-stage home-stage-tall" aria-label="Product capability preview">
+                <div class="hero-orbit"></div>
+                <div class="hero-stage-card">
+                    <div class="hero-stage-top">
+                        <div>
+                            <div class="hero-stage-title">Growth Pulse</div>
+                            <div class="hero-stage-sub">Last 30 days</div>
+                        </div>
+                        <div class="hero-stage-pill">+18.4%</div>
                     </div>
-                    <div class="hero-stage-pill">+18.4%</div>
+                    <div class="hero-stage-bars">
+                        <span style="--bar: 46%"></span>
+                        <span style="--bar: 63%"></span>
+                        <span style="--bar: 58%"></span>
+                        <span style="--bar: 79%"></span>
+                        <span style="--bar: 92%"></span>
+                        <span style="--bar: 88%"></span>
+                    </div>
+                    <div class="hero-stage-bottom">
+                        <div>
+                            <strong>42h</strong>
+                            <span>Study logged</span>
+                        </div>
+                        <div>
+                            <strong>17</strong>
+                            <span>Applications</span>
+                        </div>
+                        <div>
+                            <strong>PHP 28k</strong>
+                            <span>Vault balance</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="hero-stage-bars">
-                    <span style="--bar: 46%"></span>
-                    <span style="--bar: 63%"></span>
-                    <span style="--bar: 58%"></span>
-                    <span style="--bar: 79%"></span>
-                    <span style="--bar: 92%"></span>
-                    <span style="--bar: 88%"></span>
-                </div>
-                <div class="hero-stage-bottom">
-                    <div>
-                        <strong>42h</strong>
-                        <span>Study logged</span>
-                    </div>
-                    <div>
-                        <strong>17</strong>
-                        <span>Applications</span>
-                    </div>
-                    <div>
-                        <strong>PHP 28k</strong>
-                        <span>Vault balance</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
+            </aside>
+        </div>
 
         <div class="feature-row feature-row-wide">
             <div class="feature-box">
