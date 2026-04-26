@@ -297,7 +297,7 @@ body {
 }
 
 .home-hero {
-  min-height: calc(100vh - 148px);
+  min-height: calc(100dvh - 124px);
 }
 
 .hero::after {
