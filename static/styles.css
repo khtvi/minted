@@ -297,53 +297,59 @@ body {
 }
 
 .home-hero {
-  min-height: 0;
+  min-height: calc(100dvh - 132px);
+  padding: clamp(20px, 2.6vw, 28px);
 }
 
 .home-hero .hero-inner {
-  width: min(1220px, 100%);
+  width: min(1280px, 100%);
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 16px;
 }
 
 .home-hero .hero-split {
-  gap: 14px;
+  gap: 18px;
+  align-items: center;
 }
 
 .home-hero .hero-main {
-  padding-top: 4px;
+  padding-top: 0;
 }
 
 .home-hero .hero-main p {
-  margin-top: 8px;
-  max-width: 520px;
+  margin-top: 10px;
+  max-width: 540px;
 }
 
 .home-hero .hero-actions {
-  margin-top: 18px;
+  margin-top: 22px;
 }
 
 .home-hero .hero-stage {
-  min-height: 332px;
-  padding: 16px;
+  min-height: 360px;
+  padding: 18px;
 }
 
 .home-hero .feature-row {
-  margin-top: 10px;
-  gap: 12px;
+  margin-top: 0;
+  gap: 14px;
 }
 
 .home-hero .feature-box {
-  min-height: 116px;
-  padding: 14px 14px;
+  min-height: 124px;
+  padding: 16px 16px;
 }
 
 .home-hero .feature-title {
-  margin-top: 6px;
-  font-size: 13px;
+  margin-top: 8px;
+  font-size: 14px;
 }
 
 .home-hero .feature-desc {
-  font-size: 12px;
-  line-height: 1.35;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .hero::after {
