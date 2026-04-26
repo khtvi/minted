@@ -2778,7 +2778,7 @@ tbody tr:hover {
   }
 
   .home-stage-tall {
-    min-height: 340px;
+    min-height: 360px;
   }
 
   .home-bottom-strip {
@@ -2786,6 +2786,10 @@ tbody tr:hover {
   }
 
   .home-bottom-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-hero .feature-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -2808,10 +2812,6 @@ tbody tr:hover {
     height: auto;
   }
 
-  .home-left {
-    gap: 10px;
-  }
-
   .page-title {
     font-size: clamp(24px, 9vw, 42px);
   }
@@ -2831,6 +2831,10 @@ tbody tr:hover {
 
   .hero-stage {
     min-height: 320px;
+  }
+
+  .home-hero .feature-row {
+    grid-template-columns: 1fr;
   }
 
   .hero-stage-bottom {
