@@ -298,8 +298,7 @@ body {
 
 .home-hero {
   min-height: 0;
-  height: calc(100dvh - 156px);
-  display: flex;
+  height: auto;
   padding: clamp(20px, 2.6vw, 28px);
 }
 
@@ -314,18 +313,12 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.16fr);
   gap: 16px;
-  align-items: stretch;
-}
-
-.home-left {
-  display: grid;
-  grid-template-rows: auto auto auto;
-  gap: 12px;
+  align-items: start;
 }
 
 .home-stage-tall {
-  height: 100%;
-  min-height: 100%;
+  height: auto;
+  min-height: 456px;
   animation: chart-column-breathe 6.4s ease-in-out infinite;
 }
 
@@ -343,13 +336,14 @@ body {
 }
 
 .home-hero .hero-stage {
-  min-height: 100%;
+  min-height: 456px;
   padding: 18px;
 }
 
 .home-hero .feature-row {
   margin-top: 0;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -371,6 +365,7 @@ body {
 }
 
 .home-bottom-strip {
+  grid-column: 1 / -1;
   margin-top: 2px;
   display: grid;
   grid-template-columns: 1fr;
@@ -440,7 +435,7 @@ body {
 
 .home-bottom-metrics {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
 }
 

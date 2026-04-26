@@ -3,64 +3,14 @@
 {% block content %}
 <div class="hero home-hero">
     <div class="hero-inner home-layout">
-        <div class="home-left">
-            <section class="hero-main">
-                <h1>Turn your <span class="word-effort">effort</span><br><span class="word-into">into</span> momentum.</h1>
-                <p>Minted helps you run your growth like a portfolio. Track study deposits, application performance, and income flow in one high-signal dashboard.</p>
-                <div class="hero-actions">
-                    <a href="{{ url_for('register') }}" class="btn btn-primary">Start Building</a>
-                    <a href="{{ url_for('login') }}" class="btn btn-ghost">I Have an Account</a>
-                </div>
-            </section>
-
-            <div class="feature-row">
-                <div class="feature-box">
-                    <div class="feature-icon">01</div>
-                    <div class="feature-title">Skill Bank</div>
-                    <div class="feature-desc">Deposit study hours, review utilization, and spot underused skills before they stall.</div>
-                </div>
-                <div class="feature-box">
-                    <div class="feature-icon">02</div>
-                    <div class="feature-title">Job Ledger</div>
-                    <div class="feature-desc">Track each application stage and quickly see where your pipeline leaks.</div>
-                </div>
-                <div class="feature-box">
-                    <div class="feature-icon">03</div>
-                    <div class="feature-title">Income Vault</div>
-                    <div class="feature-desc">Capture freelance earnings and expenses with a running net balance that stays visible.</div>
-                </div>
-                <div class="feature-box">
-                    <div class="feature-icon">04</div>
-                    <div class="feature-title">Export Reports</div>
-                    <div class="feature-desc">Share progress snapshots with clean CSV and PDF exports whenever needed.</div>
-                </div>
+        <section class="hero-main">
+            <h1>Turn your <span class="word-effort">effort</span><br><span class="word-into">into</span> momentum.</h1>
+            <p>Minted helps you run your growth like a portfolio. Track study deposits, application performance, and income flow in one high-signal dashboard.</p>
+            <div class="hero-actions">
+                <a href="{{ url_for('register') }}" class="btn btn-primary">Start Building</a>
+                <a href="{{ url_for('login') }}" class="btn btn-ghost">I Have an Account</a>
             </div>
-
-            <section class="home-bottom-strip" aria-label="Minted highlights">
-                <article class="home-bottom-card">
-                    <h3>Built for focused growth</h3>
-                    <p>Keep every hour, application, and peso in one clear system so progress feels tangible every week.</p>
-                </article>
-                <article class="home-bottom-metrics">
-                    <div>
-                        <strong>4 core modules</strong>
-                        <span>Skills, Jobs, Vault, Reports</span>
-                    </div>
-                    <div>
-                        <strong>Manual reminders</strong>
-                        <span>Per section for daily clarity</span>
-                    </div>
-                    <div>
-                        <strong>Portable data</strong>
-                        <span>CSV and PDF exports included</span>
-                    </div>
-                    <div>
-                        <strong>Guided onboarding</strong>
-                        <span>Navigation tour after setup</span>
-                    </div>
-                </article>
-            </section>
-        </div>
+        </section>
 
         <aside class="hero-stage home-stage-tall" aria-label="Product capability preview">
             <div class="hero-orbit"></div>
@@ -96,6 +46,54 @@
                 </div>
             </div>
         </aside>
+
+        <div class="feature-row feature-row-wide">
+            <div class="feature-box">
+                <div class="feature-icon">01</div>
+                <div class="feature-title">Skill Bank</div>
+                <div class="feature-desc">Deposit study hours, review utilization, and spot underused skills before they stall.</div>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">02</div>
+                <div class="feature-title">Job Ledger</div>
+                <div class="feature-desc">Track each application stage and quickly see where your pipeline leaks.</div>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">03</div>
+                <div class="feature-title">Income Vault</div>
+                <div class="feature-desc">Capture freelance earnings and expenses with a running net balance that stays visible.</div>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">04</div>
+                <div class="feature-title">Export Reports</div>
+                <div class="feature-desc">Share progress snapshots with clean CSV and PDF exports whenever needed.</div>
+            </div>
+        </div>
+
+        <section class="home-bottom-strip" aria-label="Minted highlights">
+            <article class="home-bottom-card">
+                <h3>Built for focused growth</h3>
+                <p>Keep every hour, application, and peso in one clear system so progress feels tangible every week.</p>
+            </article>
+            <article class="home-bottom-metrics">
+                <div>
+                    <strong>4 core modules</strong>
+                    <span>Skills, Jobs, Vault, Reports</span>
+                </div>
+                <div>
+                    <strong>Manual reminders</strong>
+                    <span>Per section for daily clarity</span>
+                </div>
+                <div>
+                    <strong>Portable data</strong>
+                    <span>CSV and PDF exports included</span>
+                </div>
+                <div>
+                    <strong>Guided onboarding</strong>
+                    <span>Navigation tour after setup</span>
+                </div>
+            </article>
+        </section>
     </div>
 </div>
 {% endblock %}
