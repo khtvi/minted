@@ -297,7 +297,53 @@ body {
 }
 
 .home-hero {
-  min-height: calc(100dvh - 124px);
+  min-height: 0;
+}
+
+.home-hero .hero-inner {
+  width: min(1220px, 100%);
+}
+
+.home-hero .hero-split {
+  gap: 14px;
+}
+
+.home-hero .hero-main {
+  padding-top: 4px;
+}
+
+.home-hero .hero-main p {
+  margin-top: 8px;
+  max-width: 520px;
+}
+
+.home-hero .hero-actions {
+  margin-top: 18px;
+}
+
+.home-hero .hero-stage {
+  min-height: 332px;
+  padding: 16px;
+}
+
+.home-hero .feature-row {
+  margin-top: 10px;
+  gap: 12px;
+}
+
+.home-hero .feature-box {
+  min-height: 116px;
+  padding: 14px 14px;
+}
+
+.home-hero .feature-title {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.home-hero .feature-desc {
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .hero::after {
