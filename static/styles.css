@@ -297,7 +297,7 @@ body {
 }
 
 .home-hero {
-  min-height: 0;
+  min-height: calc(100dvh - 154px);
   height: auto;
   padding: clamp(20px, 2.6vw, 28px);
 }
@@ -313,27 +313,27 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.16fr);
   gap: 14px;
+  grid-template-areas:
+    "copy chart"
+    "cards cards";
   align-items: start;
 }
 
 .home-layout > .hero-main {
-  grid-column: 1;
-  grid-row: 1;
+  grid-area: copy;
 }
 
 .home-layout > .home-stage-tall {
-  grid-column: 2;
-  grid-row: 1 / span 2;
+  grid-area: chart;
 }
 
 .home-layout > .feature-row {
-  grid-column: 1;
-  grid-row: 2;
+  grid-area: cards;
 }
 
 .home-stage-tall {
   height: auto;
-  min-height: 392px;
+  min-height: 372px;
   animation: chart-column-breathe 6.4s ease-in-out infinite;
 }
 
@@ -352,19 +352,23 @@ body {
 }
 
 .home-hero .hero-stage {
-  min-height: 392px;
-  padding: 16px;
+  min-height: 372px;
+  padding: 14px;
+}
+
+.home-hero .hero-stage-card {
+  width: min(96%, 620px);
 }
 
 .home-hero .feature-row {
-  margin-top: 4px;
+  margin-top: 0;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
 }
 
 .home-hero .feature-box {
-  min-height: 116px;
-  padding: 14px 14px;
+  min-height: 132px;
+  padding: 16px 16px;
   transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
   animation: home-card-drift 6.2s ease-in-out infinite;
 }
@@ -548,6 +552,7 @@ body {
   border-radius: 0;
   background: linear-gradient(180deg, #d8cf74 0 35%, #6e7566 35% 100%);
   height: var(--bar, 50%);
+  transform-origin: center bottom;
 }
 
 .hero-stage-bottom {
@@ -2713,6 +2718,10 @@ tbody tr:hover {
 
   .home-layout {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "copy"
+      "chart"
+      "cards";
   }
 
   .home-layout > .hero-main,
@@ -2746,6 +2755,7 @@ tbody tr:hover {
   }
 
   .home-hero {
+    min-height: 0;
     height: auto;
   }
 
@@ -2916,11 +2926,11 @@ tbody tr:hover {
   0%,
   100% {
     filter: brightness(1);
-    transform: translateY(0);
+    transform: translateY(0) scaleY(1);
   }
   50% {
-    filter: brightness(1.06);
-    transform: translateY(-1px);
+    filter: brightness(1.08);
+    transform: translateY(-6px) scaleY(1.08);
   }
 }
 
