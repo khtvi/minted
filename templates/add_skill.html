@@ -6,7 +6,7 @@
   <div class="page-split">
     <div>
       <div class="page-tip"><strong>Suggestion:</strong> Example: Python (Automation), React (UI), or Penetration Testing (Web).</div>
-      <div class="form-card"><form method="post"><div class="form-group"><label for="name">Skill Name</label><input type="text" id="name" name="name" placeholder="e.g. Python, React, Penetration Testing" required autofocus></div><div class="form-group"><label for="category">Category</label><select id="category" name="category" required>{% for cat in categories %}<option value="{{ cat }}">{{ cat }}</option>{% endfor %}</select></div><div class="form-group"><label for="level">Current Level</label><select id="level" name="level" required>{% for level in levels %}<option value="{{ level }}">{{ level }}</option>{% endfor %}</select></div><button type="submit" class="btn btn-primary w-full">Add to Skill Bank</button></form></div>
+      <div class="form-card"><form method="post" id="skill-resource-form"><div class="form-group"><label for="name">Skill Name</label><input type="text" id="name" name="name" placeholder="e.g. Python, React, Penetration Testing" required autofocus></div><div class="form-group"><label for="category">Category</label><select id="category" name="category" required>{% for cat in categories %}<option value="{{ cat }}">{{ cat }}</option>{% endfor %}</select></div><div class="form-group"><label for="level">Current Level</label><select id="level" name="level" required>{% for level in levels %}<option value="{{ level }}">{{ level }}</option>{% endfor %}</select></div><div class="form-group"><label class="check-inline"><input type="checkbox" id="uses_resources" name="uses_resources"><span>This skill uses learning resources</span></label></div><div class="resource-options" id="resource-options" hidden><div class="form-group"><label for="resource_type">Resource Type</label><select id="resource_type" name="resource_type"><option value="free">Free</option><option value="paid">Paid</option></select></div><div class="form-group" id="resource-cost-wrap" hidden><label for="resource_cost">Resource Cost (PHP)</label><input type="number" id="resource_cost" name="resource_cost" min="0.01" step="0.01" placeholder="e.g. 499.00"></div><div class="form-group" id="reflect-wrap" hidden><label class="check-inline"><input type="checkbox" id="reflect_resource_cost" name="reflect_resource_cost"><span>Reflect this paid cost in Vault transaction history</span></label></div></div><button type="submit" class="btn btn-primary w-full">Add to Skill Bank</button></form></div>
     </div>
     <aside class="side-panel">
       <div class="side-title">Momentum</div>
@@ -31,5 +31,37 @@
     </aside>
   </div>
 </div>
+
+<script>
+  (function () {
+    const usesResources = document.getElementById("uses_resources");
+    const resourceOptions = document.getElementById("resource-options");
+    const resourceType = document.getElementById("resource_type");
+    const resourceCostWrap = document.getElementById("resource-cost-wrap");
+    const reflectWrap = document.getElementById("reflect-wrap");
+    const resourceCostInput = document.getElementById("resource_cost");
+
+    if (!usesResources || !resourceOptions || !resourceType || !resourceCostWrap || !reflectWrap || !resourceCostInput) {
+      return;
+    }
+
+    const syncResourceFields = () => {
+      const enabled = usesResources.checked;
+      const isPaid = enabled && resourceType.value === "paid";
+
+      resourceOptions.hidden = !enabled;
+      resourceCostWrap.hidden = !isPaid;
+      reflectWrap.hidden = !isPaid;
+      resourceCostInput.required = isPaid;
+      if (!isPaid) {
+        resourceCostInput.value = "";
+      }
+    };
+
+    usesResources.addEventListener("change", syncResourceFields);
+    resourceType.addEventListener("change", syncResourceFields);
+    syncResourceFields();
+  })();
+</script>
 {% endblock %}
 

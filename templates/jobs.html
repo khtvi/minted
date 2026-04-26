@@ -139,10 +139,16 @@
         <div class="section-title">Reminders</div>
         <div class="task-tags"><span class="task-tag">Jobs</span></div>
       </div>
+      <form method="post" action="{{ url_for('add_reminder') }}" class="reminder-form">
+        <input type="hidden" name="next" value="{{ url_for('jobs') }}">
+        <input type="hidden" name="tag" value="Jobs">
+        <input type="text" name="text" placeholder="Add a job reminder..." maxlength="120" required>
+        <button type="submit" class="btn btn-ghost btn-sm">Add</button>
+      </form>
       <div class="reminder-list">
         {% if reminders %}
           {% for reminder in reminders|reverse %}
-            <div class="reminder-item"><strong>{{ reminder.text }}</strong><span>{{ reminder.tag }}</span></div>
+            <div class="reminder-item"><strong>{{ reminder.text }}</strong><span>{{ reminder.tag }}</span><form method="post" action="{{ url_for('delete_reminder', reminder_id=reminder.id) }}" class="reminder-delete"><input type="hidden" name="next" value="{{ url_for('jobs') }}"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form></div>
           {% endfor %}
         {% else %}
           <div class="reminder-empty">No job reminders yet.</div>

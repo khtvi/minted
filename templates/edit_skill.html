@@ -6,7 +6,7 @@
   <div class="page-split">
     <div>
       <div class="page-tip"><strong>Suggestion:</strong> Keep the skill name stable and only update its category or level when your usage changes.</div>
-      <div class="form-card"><form method="post"><div class="form-group"><label for="name">Skill Name</label><input type="text" id="name" name="name" value="{{ skill.name }}" required autofocus></div><div class="form-group"><label for="category">Category</label><select id="category" name="category" required>{% for cat in categories %}<option value="{{ cat }}" {% if skill.category == cat %}selected{% endif %}>{{ cat }}</option>{% endfor %}</select></div><div class="form-group"><label for="level">Current Level</label><select id="level" name="level" required>{% for level in levels %}<option value="{{ level }}" {% if skill.level == level %}selected{% endif %}>{{ level }}</option>{% endfor %}</select></div><button type="submit" class="btn btn-primary w-full">Save Changes</button></form></div>
+      <div class="form-card"><form method="post"><div class="form-group"><label for="name">Skill Name</label><input type="text" id="name" name="name" value="{{ skill.name }}" required autofocus></div><div class="form-group"><label for="category">Category</label><select id="category" name="category" required>{% for cat in categories %}<option value="{{ cat }}" {% if skill.category == cat %}selected{% endif %}>{{ cat }}</option>{% endfor %}</select></div><div class="form-group"><label for="level">Current Level</label><select id="level" name="level" required>{% for level in levels %}<option value="{{ level }}" {% if skill.level == level %}selected{% endif %}>{{ level }}</option>{% endfor %}</select></div><div class="form-group"><label class="check-inline"><input type="checkbox" id="uses_resources" name="uses_resources" {% if skill.uses_resources %}checked{% endif %}><span>This skill uses learning resources</span></label></div><div class="resource-options" id="resource-options" {% if not skill.uses_resources %}hidden{% endif %}><div class="form-group"><label for="resource_type">Resource Type</label><select id="resource_type" name="resource_type"><option value="free" {% if skill.resource_type == 'free' %}selected{% endif %}>Free</option><option value="paid" {% if skill.resource_type == 'paid' %}selected{% endif %}>Paid</option></select></div><div class="form-group" id="resource-cost-wrap" {% if skill.resource_type != 'paid' or not skill.uses_resources %}hidden{% endif %}><label for="resource_cost">Resource Cost (PHP)</label><input type="number" id="resource_cost" name="resource_cost" min="0.01" step="0.01" value="{% if skill.resource_type == 'paid' and skill.resource_cost > 0 %}{{ '%.2f'|format(skill.resource_cost) }}{% endif %}" placeholder="e.g. 499.00"></div><div class="form-group" id="reflect-wrap" {% if skill.resource_type != 'paid' or not skill.uses_resources %}hidden{% endif %}><label class="check-inline"><input type="checkbox" id="reflect_resource_cost" name="reflect_resource_cost" {% if skill.reflect_resource_cost %}checked{% endif %}><span>Reflect this paid cost in Vault transaction history</span></label></div></div><button type="submit" class="btn btn-primary w-full">Save Changes</button></form></div>
     </div>
     <aside class="side-panel">
       <div class="side-title">Skill balance</div>
@@ -22,4 +22,36 @@
     </aside>
   </div>
 </div>
+
+<script>
+  (function () {
+    const usesResources = document.getElementById("uses_resources");
+    const resourceOptions = document.getElementById("resource-options");
+    const resourceType = document.getElementById("resource_type");
+    const resourceCostWrap = document.getElementById("resource-cost-wrap");
+    const reflectWrap = document.getElementById("reflect-wrap");
+    const resourceCostInput = document.getElementById("resource_cost");
+
+    if (!usesResources || !resourceOptions || !resourceType || !resourceCostWrap || !reflectWrap || !resourceCostInput) {
+      return;
+    }
+
+    const syncResourceFields = () => {
+      const enabled = usesResources.checked;
+      const isPaid = enabled && resourceType.value === "paid";
+
+      resourceOptions.hidden = !enabled;
+      resourceCostWrap.hidden = !isPaid;
+      reflectWrap.hidden = !isPaid;
+      resourceCostInput.required = isPaid;
+      if (!isPaid) {
+        resourceCostInput.value = "";
+      }
+    };
+
+    usesResources.addEventListener("change", syncResourceFields);
+    resourceType.addEventListener("change", syncResourceFields);
+    syncResourceFields();
+  })();
+</script>
 {% endblock %}

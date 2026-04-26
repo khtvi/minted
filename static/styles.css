@@ -245,7 +245,7 @@ body {
 .site-main {
   width: min(1680px, 100%);
   margin: 0 auto;
-  padding: 36px 20px 18px;
+  padding: 34px 20px 8px;
   position: relative;
 }
 
@@ -290,7 +290,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 24px;
   padding: clamp(20px, 2.8vw, 30px);
-  min-height: clamp(620px, 72vh, 760px);
+  min-height: clamp(560px, 66vh, 700px);
   position: relative;
   overflow: hidden;
   transition: border-color 0.26s ease, box-shadow 0.26s ease;
@@ -468,7 +468,7 @@ body {
 }
 
 .feature-row {
-  margin-top: 18px;
+  margin-top: 14px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
@@ -777,6 +777,31 @@ label {
 
 .form-group {
   margin-bottom: 18px;
+}
+
+.check-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0;
+  font-family: var(--sans);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 14px;
+}
+
+.check-inline input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.resource-options {
+  border: 1px dashed var(--border-soft);
+  border-radius: 14px;
+  padding: 14px 14px 2px;
+  margin-bottom: 14px;
+  background: rgba(255, 255, 255, 0.44);
 }
 
 .form-card,
@@ -1461,6 +1486,37 @@ label {
   font-family: var(--mono);
 }
 
+.skill-resource-row {
+  margin-top: 8px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.resource-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 9px;
+  background: #dce8d8;
+  color: #405f3c;
+}
+
+.resource-chip.paid {
+  background: #eadde5;
+  color: #6e4e63;
+}
+
+.resource-chip.muted {
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--text-muted);
+}
+
 .progress-bar {
   margin-top: 10px;
   width: 100%;
@@ -1760,6 +1816,42 @@ tbody tr:hover {
 .resource-badge.paid {
   background: #eadde5;
   color: #6e4e63;
+}
+
+.resource-status-card {
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.resource-status-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.54);
+  margin-bottom: 8px;
+}
+
+.resource-status-line span {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.resource-status-line strong {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 10px;
+}
+
+.resource-status-empty {
+  border: 1px dashed var(--border-soft);
+  border-radius: 12px;
+  padding: 9px 10px;
+  color: var(--text-muted);
+  font-size: 13px;
 }
 
 .detail-header-info h2 {
@@ -2118,6 +2210,7 @@ tbody tr:hover {
 
 .entry-menu {
   position: relative;
+  z-index: 40;
 }
 
 .job-card .entry-menu,
@@ -2164,13 +2257,24 @@ tbody tr:hover {
 .entry-menu-list {
   position: absolute;
   right: 0;
-  top: 36px;
+  top: calc(100% + 4px);
   min-width: 120px;
   border: 2px solid var(--border);
   border-radius: 16px;
   background: var(--surface);
   overflow: hidden;
-  z-index: 18;
+  box-shadow: 0 14px 24px rgba(12, 22, 34, 0.18);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.14s ease, transform 0.14s ease;
+}
+
+.entry-menu[open] .entry-menu-list {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .entry-menu-list a,

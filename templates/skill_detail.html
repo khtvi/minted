@@ -15,18 +15,55 @@
     </div>
 
     <aside class="skill-side">
-      <section class="resource-strip card">
+      <section class="card resource-status-card">
         <div class="section-header">
-          <div class="section-title">Suggested Resources</div>
+          <div class="section-title">Resource Setup</div>
+        </div>
+        {% if skill.uses_resources %}
+          <div class="resource-status-line"><span>Type</span><strong>{{ skill.resource_type|capitalize }}</strong></div>
+          {% if skill.resource_type == 'paid' %}
+            <div class="resource-status-line"><span>Cost</span><strong>PHP {{ '{:,.2f}'.format(skill.resource_cost) }}</strong></div>
+            <div class="resource-status-line"><span>Vault Reflection</span><strong>{{ 'Enabled' if skill.reflect_resource_cost else 'Disabled' }}</strong></div>
+          {% endif %}
+        {% else %}
+          <div class="resource-status-empty">No resource preference set yet.</div>
+        {% endif %}
+        <a href="{{ url_for('edit_skill', skill_id=skill.id) }}" class="btn btn-ghost btn-sm" style="margin-top: 10px;">Edit Resource Setup</a>
+      </section>
+
+      <section class="resource-strip card">
+        {% set category = skill.category | lower %}
+        <div class="section-header">
+          <div class="section-title">Suggested Resources for {{ skill.category }}</div>
           <span class="resource-key">Free / Paid</span>
         </div>
         <div class="resource-grid resource-grid-skill">
-          <a class="resource-item" href="https://roadmap.sh" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>Roadmap.sh</strong><span>Role-based learning maps and study paths.</span></a>
-          <a class="resource-item" href="https://www.freecodecamp.org/learn" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>freeCodeCamp</strong><span>Hands-on practice for technical skills.</span></a>
-          <a class="resource-item" href="https://ocw.mit.edu" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>MIT OpenCourseWare</strong><span>University-grade courses and materials.</span></a>
-          <a class="resource-item" href="https://www.coursera.org" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>Coursera</strong><span>Certificates and career-focused programs.</span></a>
-          <a class="resource-item" href="https://www.udemy.com" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>Udemy</strong><span>Low-cost courses for targeted upskilling.</span></a>
-          <a class="resource-item" href="https://www.linkedin.com/learning/" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>LinkedIn Learning</strong><span>Professional courses tied to your profile.</span></a>
+          {% if 'programming' in category or 'development' in category or 'coding' in category %}
+          <a class="resource-item" href="https://www.freecodecamp.org/learn" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>freeCodeCamp</strong><span>Interactive coding tracks and projects.</span></a>
+          <a class="resource-item" href="https://roadmap.sh" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>Roadmap.sh</strong><span>Structured role-based learning paths.</span></a>
+          <a class="resource-item" href="https://www.coursera.org" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>Coursera</strong><span>Professional certificates and specializations.</span></a>
+          <a class="resource-item" href="https://frontendmasters.com" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>Frontend Masters</strong><span>Advanced engineering courses from experts.</span></a>
+          {% elif 'design' in category or 'ui' in category or 'ux' in category %}
+          <a class="resource-item" href="https://www.figma.com/community" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>Figma Community</strong><span>Design files, systems, and practice kits.</span></a>
+          <a class="resource-item" href="https://lawsofux.com" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>Laws of UX</strong><span>Core UX principles with practical examples.</span></a>
+          <a class="resource-item" href="https://www.interaction-design.org" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>Interaction Design Foundation</strong><span>Deep UX courses and design frameworks.</span></a>
+          <a class="resource-item" href="https://www.domestika.org" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>Domestika</strong><span>Creative classes in visual and brand design.</span></a>
+          {% elif 'marketing' in category or 'sales' in category or 'seo' in category %}
+          <a class="resource-item" href="https://academy.hubspot.com" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>HubSpot Academy</strong><span>Inbound, content, and CRM certifications.</span></a>
+          <a class="resource-item" href="https://analytics.google.com/analytics/academy/" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>Google Analytics Academy</strong><span>Measure, report, and optimize campaigns.</span></a>
+          <a class="resource-item" href="https://www.cxl.com/institute/" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>CXL Institute</strong><span>Advanced growth and conversion programs.</span></a>
+          <a class="resource-item" href="https://www.linkedin.com/learning/" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>LinkedIn Learning</strong><span>Short-form marketing and strategy lessons.</span></a>
+          {% elif 'data' in category or 'analytics' in category or 'analysis' in category %}
+          <a class="resource-item" href="https://www.kaggle.com/learn" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>Kaggle Learn</strong><span>Hands-on notebooks for data skills.</span></a>
+          <a class="resource-item" href="https://ocw.mit.edu" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>MIT OpenCourseWare</strong><span>Statistics and data science course material.</span></a>
+          <a class="resource-item" href="https://www.datacamp.com" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>DataCamp</strong><span>Guided tracks in SQL, Python, and BI.</span></a>
+          <a class="resource-item" href="https://www.pluralsight.com" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>Pluralsight</strong><span>Data, cloud, and engineering pathways.</span></a>
+          {% else %}
+          <a class="resource-item" href="https://www.classcentral.com" target="_blank" rel="noopener noreferrer"><span class="resource-badge free">Free</span><strong>Class Central</strong><span>Curated catalog of free online courses.</span></a>
+          <a class="resource-item" href="https://www.coursera.org" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>Coursera</strong><span>Career-ready learning programs.</span></a>
+          <a class="resource-item" href="https://www.udemy.com" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>Udemy</strong><span>Skill-specific, fast, practical courses.</span></a>
+          <a class="resource-item" href="https://www.edx.org" target="_blank" rel="noopener noreferrer"><span class="resource-badge paid">Paid</span><strong>edX</strong><span>University-backed structured programs.</span></a>
+          {% endif %}
         </div>
       </section>
     </aside>

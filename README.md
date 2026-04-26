@@ -42,14 +42,14 @@ Visit http://localhost:5000
    - Build Command: `pip install -r requirements.txt`
    - Start Command: `gunicorn app:app`
    - Add environment variable: `SECRET_KEY` → any random string
-   - Optional environment variable: `DATA_FILE` → `/tmp/storage.json` (ephemeral)
+   - Optional environment variable: `DB_FILE` → `/tmp/storage.db` (ephemeral)
 5. Optional but recommended for persistent data:
    - Add a Render Disk and mount it at `/var/data`
-   - Set `DATA_FILE=/var/data/storage.json`
+   - Set `DB_FILE=/var/data/storage.db`
 6. Deploy
 
-> **Note:** Render's free tier uses ephemeral storage — `storage.json` resets on redeploy.
-> For persistent data, swap the JSON file for a free PostgreSQL DB on Render.
+> **Note:** Render's free tier uses ephemeral storage — `storage.db` resets on redeploy without a mounted disk.
+> This app auto-uses `/var/data/storage.db` when a Render Disk is mounted at `/var/data`.
 
 ---
 
@@ -68,7 +68,7 @@ git push heroku main
 ```
 minted/
 ├── app.py              # Main app — routes + models (Account → User, Skill, Job, Income)
-├── storage.json        # Auto-created on first run
+├── storage.db          # SQLite database (auto-created)
 ├── requirements.txt
 ├── Procfile            # For Heroku/Render
 ├── static/

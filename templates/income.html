@@ -19,6 +19,10 @@
         <option value="{{ method }}" {% if vault_filters.payment_method == method %}selected{% endif %}>{{ method }}</option>
       {% endfor %}
     </select>
+    <select name="source">
+      <option value="">All entries</option>
+      <option value="resource_expense" {% if vault_filters.source == 'resource_expense' %}selected{% endif %}>Skill resource expenses</option>
+    </select>
     <select name="job_id">
       <option value="">All jobs</option>
       {% for job in jobs %}
@@ -56,10 +60,16 @@
         <div class="section-title">Reminders</div>
         <div class="task-tags"><span class="task-tag">Vault</span></div>
       </div>
+      <form method="post" action="{{ url_for('add_reminder') }}" class="reminder-form">
+        <input type="hidden" name="next" value="{{ url_for('income') }}">
+        <input type="hidden" name="tag" value="Vault">
+        <input type="text" name="text" placeholder="Add a vault reminder..." maxlength="120" required>
+        <button type="submit" class="btn btn-ghost btn-sm">Add</button>
+      </form>
       <div class="reminder-list">
         {% if reminders %}
           {% for reminder in reminders|reverse %}
-            <div class="reminder-item"><strong>{{ reminder.text }}</strong><span>{{ reminder.tag }}</span></div>
+            <div class="reminder-item"><strong>{{ reminder.text }}</strong><span>{{ reminder.tag }}</span><form method="post" action="{{ url_for('delete_reminder', reminder_id=reminder.id) }}" class="reminder-delete"><input type="hidden" name="next" value="{{ url_for('income') }}"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form></div>
           {% endfor %}
         {% else %}
           <div class="reminder-empty">No vault reminders yet.</div>
