@@ -74,10 +74,13 @@
 
 html {
   scroll-behavior: smooth;
+  min-height: 0;
+  height: fit-content;
 }
 
 body {
   min-height: 0;
+  height: fit-content;
   font-family: var(--sans);
   font-size: 16px;
   line-height: 1.65;
