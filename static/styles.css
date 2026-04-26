@@ -297,8 +297,8 @@ body {
 }
 
 .home-hero {
-  min-height: calc(100dvh - 136px);
-  height: auto;
+  min-height: 0;
+  height: fit-content;
   padding: 22px;
 }
 
@@ -311,6 +311,7 @@ body {
 .home-layout {
   display: grid;
   gap: 12px;
+  align-content: start;
 }
 
 .home-top-row {
