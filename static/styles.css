@@ -1218,6 +1218,16 @@ label {
   top: 96px;
 }
 
+.jobs-side {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.jobs-side .resource-grid {
+  grid-template-columns: 1fr;
+}
+
 .skills-side .resource-grid {
   grid-template-columns: 1fr;
 }
