@@ -297,32 +297,28 @@ body {
 }
 
 .home-hero {
-  min-height: calc(100dvh - 154px);
+  min-height: 0;
   height: auto;
-  display: flex;
   padding: clamp(20px, 2.6vw, 28px);
 }
 
 .home-hero .hero-inner {
   width: min(1280px, 100%);
-  min-height: 100%;
-  height: 100%;
-  flex: 1;
+  min-height: 0;
+  height: auto;
 }
 
 .home-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.16fr);
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto;
   gap: 14px;
   grid-template-areas:
     "copy chart"
-    "gap chart"
     "cards cards";
-  flex: 1;
-  min-height: 100%;
-  height: 100%;
-  align-content: stretch;
+  min-height: 0;
+  height: auto;
+  align-content: start;
   align-items: start;
 }
 
@@ -336,12 +332,12 @@ body {
 
 .home-layout > .feature-row {
   grid-area: cards;
-  align-self: end;
+  align-self: start;
 }
 
 .home-stage-tall {
   height: auto;
-  min-height: 372px;
+  min-height: 0;
   animation: chart-column-breathe 6.4s ease-in-out infinite;
 }
 
@@ -360,8 +356,11 @@ body {
 }
 
 .home-hero .hero-stage {
-  min-height: 372px;
-  padding: 14px;
+  min-height: 0;
+  padding: 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 .home-hero .hero-stage-card {
