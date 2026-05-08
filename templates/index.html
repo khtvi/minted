@@ -83,56 +83,37 @@
 </div>
 
 <section class="home-secondary" aria-label="Get started quickly">
-    <div class="home-engage-grid">
-        <article class="home-path-card">
-            <div class="home-mini-title">Choose Your Path</div>
-            <p class="home-mini-copy">Whether you are starting fresh or checking in, jump directly to the flow you need.</p>
-            <div class="home-path-actions">
-                <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">New Here</a>
-                <a href="{{ url_for('login') }}" class="btn btn-ghost btn-sm">Returning User</a>
-            </div>
-            <ul class="home-path-list">
-                <li>Set your first 3 skills and track study hours.</li>
-                <li>Log applications and monitor response rate.</li>
-                <li>Record income and expenses in your vault.</li>
-            </ul>
-        </article>
+    <article class="home-path-card">
+        <div class="home-mini-title">Start In 60 Seconds</div>
+        <p class="home-mini-copy">Create an account, add one skill, then log your first application or income entry.</p>
+        <div class="home-path-actions">
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">Create Account</a>
+            <a href="{{ url_for('login') }}" class="btn btn-ghost btn-sm">Login</a>
+        </div>
+    </article>
 
-        <article class="home-flow-card">
-            <div class="home-mini-title">Workflow Preview</div>
-            <details class="home-flow-item" open>
-                <summary>1. Open your skill bank</summary>
-                <p>Add a skill, set level, and deposit study hours as your growth capital.</p>
-            </details>
-            <details class="home-flow-item">
-                <summary>2. Build your job ledger</summary>
-                <p>Capture every application and update stages to see what converts.</p>
-            </details>
-            <details class="home-flow-item">
-                <summary>3. Track your income vault</summary>
-                <p>Log freelance deposits, expenses, payment method, and running balance.</p>
-            </details>
-            <details class="home-flow-item">
-                <summary>4. Export and review</summary>
-                <p>Download CSV or PDF snapshots for weekly review and planning.</p>
-            </details>
-        </article>
-    </div>
-
-    <div class="home-faq" aria-label="Home page frequently asked questions">
-        <details class="home-faq-item">
-            <summary>Can I use Minted even if I have no current job applications?</summary>
-            <p>Yes. Start with skills only, then add applications when you begin applying.</p>
-        </details>
-        <details class="home-faq-item">
-            <summary>Can I track both full-time and freelance progress?</summary>
-            <p>Yes. Job Ledger tracks applications while Income Vault tracks project cash flow.</p>
-        </details>
-        <details class="home-faq-item">
-            <summary>How often should I update it?</summary>
-            <p>Quick daily entries plus a weekly review works best for momentum.</p>
-        </details>
-    </div>
+    <details class="home-more">
+        <summary>See workflow + common questions</summary>
+        <div class="home-more-grid">
+            <article class="home-more-block">
+                <div class="home-mini-title">Workflow</div>
+                <ol class="home-steps">
+                    <li>Open Skill Bank and add your first skill.</li>
+                    <li>Log applications in Job Ledger and update stages.</li>
+                    <li>Track freelance cash flow in Income Vault.</li>
+                    <li>Export CSV/PDF for weekly review.</li>
+                </ol>
+            </article>
+            <article class="home-more-block">
+                <div class="home-mini-title">Quick Answers</div>
+                <ul class="home-qa">
+                    <li><strong>No applications yet?</strong> Start with skills first.</li>
+                    <li><strong>Full-time + freelance?</strong> Yes, both are supported.</li>
+                    <li><strong>Best update rhythm?</strong> Daily quick logs, weekly review.</li>
+                </ul>
+            </article>
+        </div>
+    </details>
 </section>
 {% endblock %}
 
