@@ -302,14 +302,13 @@ body {
 }
 
 .home-page .site-main {
-  display: flex;
-  align-items: stretch;
+  display: block;
 }
 
 .home-page .home-hero {
   width: 100%;
-  min-height: calc(100vh - 134px);
-  display: flex;
+  min-height: 0;
+  display: block;
 }
 
 .home-hero .hero-inner {
@@ -328,8 +327,8 @@ body {
 
 .home-top-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.16fr);
-  gap: 14px;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 16px;
   align-items: start;
 }
 
@@ -362,7 +361,7 @@ body {
 }
 
 .home-hero .hero-stage-card {
-  width: min(96%, 620px);
+  width: min(94%, 560px);
 }
 
 .home-hero .feature-row {
@@ -411,17 +410,16 @@ body {
 
 .home-secondary {
   width: min(1280px, 100%);
-  margin: 18px auto 0;
+  margin: 14px auto 0;
   display: grid;
-  gap: 10px;
+  gap: 0;
 }
 
 .home-path-card,
-.home-more,
-.home-more-block {
+.home-path-card {
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.38);
   padding: 16px;
 }
 
@@ -445,59 +443,6 @@ body {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-}
-
-.home-more {
-  padding: 0;
-  overflow: hidden;
-}
-
-.home-more summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 12px 16px;
-  cursor: pointer;
-  font-family: var(--display);
-  font-size: 14px;
-  letter-spacing: 0.04em;
-  color: var(--accent);
-  background: rgba(255, 255, 255, 0.58);
-}
-
-.home-more summary::-webkit-details-marker {
-  display: none;
-}
-
-.home-more-grid {
-  padding: 12px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.home-more-block {
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.55);
-}
-
-.home-steps,
-.home-qa {
-  margin-top: 8px;
-  padding-left: 18px;
-  display: grid;
-  gap: 6px;
-}
-
-.home-steps li,
-.home-qa li {
-  color: var(--text-muted);
-  font-size: 12px;
-  line-height: 1.35;
-}
-
-.home-qa li strong {
-  color: var(--text);
-  font-weight: 600;
 }
 
 .home-hero .feature-box {
@@ -2872,10 +2817,6 @@ tbody tr:hover {
 
   .home-secondary {
     margin-top: 14px;
-  }
-
-  .home-more-grid {
-    grid-template-columns: 1fr;
   }
 
   .skill-layout {
