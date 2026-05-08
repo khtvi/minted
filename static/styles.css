@@ -321,7 +321,7 @@ body {
 .home-layout {
   display: grid;
   gap: 20px;
-  align-content: space-between;
+  align-content: start;
   width: 100%;
   min-height: calc(100vh - 190px);
 }
@@ -380,6 +380,86 @@ body {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
+}
+
+.home-balance-band {
+  margin-top: 6px;
+  display: grid;
+  gap: 16px;
+  padding: 2px 0 4px;
+}
+
+.home-balance-copy {
+  max-width: 760px;
+}
+
+.home-balance-copy .section-kicker,
+.balance-card-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.home-balance-copy h2 {
+  margin-top: 8px;
+  font-family: var(--display);
+  font-size: clamp(28px, 3.8vw, 46px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+}
+
+.home-balance-copy p {
+  margin-top: 12px;
+  max-width: 690px;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.home-balance-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.balance-card {
+  min-height: 170px;
+  padding: 18px 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.52));
+  box-shadow: 0 8px 14px rgba(20, 54, 86, 0.08);
+}
+
+.balance-card h3 {
+  margin-top: 10px;
+  font-family: var(--display);
+  font-size: 24px;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+}
+
+.balance-card p {
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.balance-card:nth-child(1) {
+  background: linear-gradient(180deg, rgba(219, 228, 240, 0.9), rgba(219, 228, 240, 0.68));
+}
+
+.balance-card:nth-child(2) {
+  background: linear-gradient(180deg, rgba(220, 232, 216, 0.92), rgba(220, 232, 216, 0.7));
+}
+
+.balance-card:nth-child(3) {
+  background: linear-gradient(180deg, rgba(236, 230, 207, 0.92), rgba(236, 230, 207, 0.7));
 }
 
 .proof-pill {
