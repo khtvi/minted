@@ -12,6 +12,11 @@
                     <a href="{{ url_for('register') }}" class="btn btn-primary">Start Building</a>
                     <a href="{{ url_for('login') }}" class="btn btn-ghost">I Have an Account</a>
                 </div>
+                <div class="hero-cta-links" aria-hidden="false">
+                    <a href="{{ url_for('welcome') }}" class="cta-link">Take a quick tour</a>
+                    <a href="{{ url_for('add_skill') }}" class="cta-link">Add a skill</a>
+                    <a href="{{ url_for('dashboard') }}" class="cta-link">View demo dashboard</a>
+                </div>
             </section>
 
             <aside class="hero-stage home-stage-tall" aria-label="Product capability preview">
@@ -81,16 +86,5 @@
 
     </div>
 </div>
-
-<section class="home-secondary" aria-label="Get started quickly">
-    <article class="home-path-card">
-        <div class="home-mini-title">Start In 60 Seconds</div>
-        <p class="home-mini-copy">Create an account, add one skill, then log your first application or income entry.</p>
-        <div class="home-path-actions">
-            <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">Create Account</a>
-            <a href="{{ url_for('login') }}" class="btn btn-ghost btn-sm">Login</a>
-        </div>
-    </article>
-</section>
 {% endblock %}
 

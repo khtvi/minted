@@ -297,17 +297,18 @@ body {
 .home-hero {
   min-height: 0;
   height: fit-content;
-  padding: 22px;
+  padding: 28px;
   margin-inline: auto;
 }
 
 .home-page .site-main {
   display: block;
+  min-height: calc(100vh - 110px);
 }
 
 .home-page .home-hero {
   width: 100%;
-  min-height: 0;
+  min-height: calc(100vh - 130px);
   display: block;
 }
 
@@ -319,16 +320,16 @@ body {
 
 .home-layout {
   display: grid;
-  gap: 12px;
-  align-content: start;
+  gap: 20px;
+  align-content: space-between;
   width: 100%;
-  min-height: 100%;
+  min-height: calc(100vh - 190px);
 }
 
 .home-top-row {
   display: grid;
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-  gap: 16px;
+  gap: 22px;
   align-items: start;
 }
 
@@ -343,9 +344,9 @@ body {
 }
 
 .home-hero .hero-main p {
-  margin-top: 8px;
-  max-width: 540px;
-  line-height: 1.5;
+  margin-top: 14px;
+  max-width: 620px;
+  line-height: 1.55;
 }
 
 .home-hero .hero-actions {
@@ -406,43 +407,6 @@ body {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-}
-
-.home-secondary {
-  width: min(1280px, 100%);
-  margin: 14px auto 0;
-  display: grid;
-  gap: 0;
-}
-
-.home-path-card,
-.home-path-card {
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.38);
-  padding: 16px;
-}
-
-.home-mini-title {
-  font-family: var(--display);
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--accent);
-}
-
-.home-mini-copy {
-  margin-top: 5px;
-  color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-.home-path-actions {
-  margin-top: 12px;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .home-hero .feature-box {
@@ -550,10 +514,35 @@ body {
 }
 
 .hero-actions {
-  margin-top: 26px;
+  margin-top: 22px;
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
+}
+
+.hero-cta-links {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.cta-link {
+  font-family: var(--display);
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.5);
+  border: 1px solid var(--border);
+}
+
+.cta-link:hover {
+  color: var(--accent);
+  border-color: var(--border-soft);
+  background: rgba(255,255,255,0.7);
 }
 
 .hero-stage {
@@ -562,10 +551,10 @@ body {
   background:
     linear-gradient(120deg, rgba(15, 18, 15, 0.48), rgba(15, 18, 15, 0.2)),
     linear-gradient(145deg, rgba(94, 102, 89, 0.92), rgba(145, 151, 137, 0.82));
-  min-height: 380px;
+  min-height: 320px;
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 22px;
   position: relative;
   overflow: hidden;
   opacity: 1;
@@ -2797,6 +2786,8 @@ tbody tr:hover {
 
   .home-layout {
     gap: 10px;
+    min-height: 0;
+    align-content: start;
   }
 
   .home-top-row {
@@ -2815,10 +2806,6 @@ tbody tr:hover {
     grid-template-columns: 1fr;
   }
 
-  .home-secondary {
-    margin-top: 14px;
-  }
-
   .skill-layout {
     grid-template-columns: 1fr;
   }
@@ -2832,6 +2819,10 @@ tbody tr:hover {
 @media (max-width: 880px) {
   .site-main {
     padding: 28px 18px 18px;
+  }
+
+  .home-page .site-main {
+    min-height: 0;
   }
 
   .home-page .home-hero {
