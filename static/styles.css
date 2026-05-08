@@ -390,7 +390,7 @@ body {
 }
 
 .home-balance-copy {
-  max-width: 760px;
+  max-width: 860px;
 }
 
 .home-balance-copy .section-kicker,
@@ -405,8 +405,8 @@ body {
 .home-balance-copy h2 {
   margin-top: 8px;
   font-family: var(--display);
-  font-size: clamp(28px, 3.8vw, 46px);
-  line-height: 1;
+  font-size: clamp(26px, 3.2vw, 40px);
+  line-height: 0.98;
   letter-spacing: -0.02em;
   color: var(--accent);
 }
