@@ -410,10 +410,17 @@ body {
 }
 
 .home-engage-grid {
-  margin-top: 10px;
+  margin-top: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 10px;
+  gap: 14px;
+}
+
+.home-secondary {
+  width: min(1280px, 100%);
+  margin: 18px auto 0;
+  display: grid;
+  gap: 14px;
 }
 
 .home-path-card,
@@ -421,8 +428,8 @@ body {
 .home-faq-item {
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.58);
-  padding: 14px;
+  background: rgba(255, 255, 255, 0.46);
+  padding: 16px;
 }
 
 .home-mini-title {
@@ -441,17 +448,17 @@ body {
 }
 
 .home-path-actions {
-  margin-top: 10px;
+  margin-top: 12px;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
 .home-path-list {
-  margin-top: 10px;
+  margin-top: 12px;
   list-style: none;
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 .home-path-list li {
@@ -479,7 +486,7 @@ body {
 }
 
 .home-flow-item + .home-flow-item {
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .home-flow-item summary {
@@ -503,13 +510,13 @@ body {
 }
 
 .home-faq {
-  margin-top: 10px;
+  margin-top: 0;
   display: grid;
   gap: 8px;
 }
 
 .home-faq-item {
-  padding: 10px 12px;
+  padding: 12px 14px;
 }
 
 .home-faq-item summary {
@@ -2904,6 +2911,10 @@ tbody tr:hover {
 
   .home-engage-grid {
     grid-template-columns: 1fr;
+  }
+
+  .home-secondary {
+    margin-top: 14px;
   }
 
   .skill-layout {
