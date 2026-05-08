@@ -7,7 +7,13 @@ from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet
 from datetime import datetime, timedelta
 from functools import wraps
-import json, os, re, csv, io, uuid, time
+import csv
+import io
+import json
+import os
+import re
+import time
+import uuid
 from storage import SQLiteUserStore
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -16,8 +22,24 @@ app = Flask(
     template_folder=os.path.join(BASE_DIR, "templates"),
     static_folder=os.path.join(BASE_DIR, "static"),
 )
+
+
+def is_production_environment():
+    return (
+        os.environ.get("FLASK_ENV", "").strip().lower() == "production"
+        or os.environ.get("APP_ENV", "").strip().lower() in {"prod", "production"}
+        or os.environ.get("ENVIRONMENT", "").strip().lower() in {"prod", "production"}
+        or os.environ.get("RENDER", "").strip().lower() == "true"
+    )
+
+
 _secret_key = os.environ.get("SECRET_KEY", "").strip()
 if not _secret_key:
+    if is_production_environment():
+        raise RuntimeError(
+            "SECRET_KEY env var is required in production. "
+            "Set SECRET_KEY to a long random value before starting the app."
+        )
     import warnings
     warnings.warn(
         "SECRET_KEY env var is not set. Using an insecure default — set it in production.",
@@ -151,6 +173,7 @@ def safe_next_url(url, fallback):
 
 
 
+def normalize_date(value):
     if not value:
         return None
     try:

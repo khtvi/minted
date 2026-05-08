@@ -35,18 +35,24 @@ class SQLiteUserStore:
         return requested_path
 
     def _connect(self):
+        connection = None
         try:
             connection = sqlite3.connect(self.db_path, timeout=30)
+            connection.execute("PRAGMA journal_mode=WAL")
+            connection.execute("PRAGMA synchronous=NORMAL")
+            connection.execute("PRAGMA busy_timeout=30000")
+            return connection
         except sqlite3.OperationalError as exc:
+            if connection is not None:
+                connection.close()
             if self._is_open_db_error(exc) and self.db_path != self._fallback_db_path:
                 self.db_path = self._fallback_db_path
-                connection = sqlite3.connect(self.db_path, timeout=30)
-            else:
-                raise
-        connection.execute("PRAGMA journal_mode=WAL")
-        connection.execute("PRAGMA synchronous=NORMAL")
-        connection.execute("PRAGMA busy_timeout=30000")
-        return connection
+                fallback_connection = sqlite3.connect(self.db_path, timeout=30)
+                fallback_connection.execute("PRAGMA journal_mode=WAL")
+                fallback_connection.execute("PRAGMA synchronous=NORMAL")
+                fallback_connection.execute("PRAGMA busy_timeout=30000")
+                return fallback_connection
+            raise
 
     def _run_with_retry(self, operation):
         last_error = None

@@ -74,13 +74,11 @@
 
 html {
   scroll-behavior: smooth;
-  min-height: 0;
-  height: fit-content;
+  min-height: 100%;
 }
 
 body {
-  min-height: 0;
-  height: fit-content;
+  min-height: 100vh;
   font-family: var(--sans);
   font-size: 16px;
   line-height: 1.65;
@@ -95,6 +93,7 @@ body {
 
 .site-shell {
   width: 100%;
+  min-height: 100vh;
   margin: 0;
   border: 0;
   border-radius: 0;
@@ -102,6 +101,8 @@ body {
   background: transparent;
   box-shadow: none;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .top-header {
@@ -238,6 +239,7 @@ body {
 }
 
 .site-main {
+  flex: 1;
   width: 100%;
   max-width: 1540px;
   margin: 0 auto;
@@ -299,6 +301,17 @@ body {
   margin-inline: auto;
 }
 
+.home-page .site-main {
+  display: flex;
+  align-items: stretch;
+}
+
+.home-page .home-hero {
+  width: 100%;
+  min-height: calc(100vh - 134px);
+  display: flex;
+}
+
 .home-hero .hero-inner {
   width: min(1280px, 100%);
   min-height: 0;
@@ -309,6 +322,8 @@ body {
   display: grid;
   gap: 12px;
   align-content: start;
+  width: 100%;
+  min-height: 100%;
 }
 
 .home-top-row {
@@ -354,6 +369,44 @@ body {
   margin-top: 2px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
+}
+
+.home-proof-strip {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid var(--border-soft);
+  border-radius: 18px;
+  background: linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.55),
+      rgba(255, 255, 255, 0.35)
+    ),
+    var(--surface-alt);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.proof-pill {
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 12px 14px;
+}
+
+.proof-value {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.proof-text {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-muted);
 }
 
 .home-hero .feature-box {
@@ -2722,6 +2775,10 @@ tbody tr:hover {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .home-proof-strip {
+    grid-template-columns: 1fr;
+  }
+
   .skill-layout {
     grid-template-columns: 1fr;
   }
@@ -2735,6 +2792,10 @@ tbody tr:hover {
 @media (max-width: 880px) {
   .site-main {
     padding: 28px 18px 18px;
+  }
+
+  .home-page .home-hero {
+    min-height: 0;
   }
 
   .home-hero {

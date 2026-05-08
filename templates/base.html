@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   {% block head %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
   <div class="site-shell">
   <header class="top-header">
     <nav class="top-nav" aria-label="Primary">

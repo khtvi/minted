@@ -5,3 +5,6 @@ __pycache__/
 *.egg-info/
 .DS_Store
 storage.json
+storage.db
+.data/
+.uv-cache/
