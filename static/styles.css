@@ -389,8 +389,15 @@ body {
   padding: 2px 0 4px;
 }
 
+.home-balance-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+  gap: 16px;
+  align-items: start;
+}
+
 .home-balance-copy {
-  max-width: 860px;
+  max-width: 100%;
 }
 
 .home-balance-copy .section-kicker,
@@ -417,6 +424,42 @@ body {
   color: var(--text-muted);
   font-size: 15px;
   line-height: 1.7;
+}
+
+.home-balance-side {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 8px 14px rgba(20, 54, 86, 0.06);
+}
+
+.balance-side-item {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid var(--border-soft);
+}
+
+.balance-side-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.balance-side-item strong {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--display);
+  font-size: 18px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--accent);
 }
 
 .home-balance-grid {
@@ -460,6 +503,16 @@ body {
 
 .balance-card:nth-child(3) {
   background: linear-gradient(180deg, rgba(236, 230, 207, 0.92), rgba(236, 230, 207, 0.7));
+}
+
+@media (max-width: 980px) {
+  .home-balance-top {
+    grid-template-columns: 1fr;
+  }
+
+  .home-balance-copy p {
+    max-width: 100%;
+  }
 }
 
 .proof-pill {
