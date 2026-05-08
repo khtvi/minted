@@ -79,6 +79,57 @@
             <div class="proof-pill"><span class="proof-value">PHP 28k</span><span class="proof-text">vault balance</span></div>
         </section>
 
+        <section class="home-engage-grid" aria-label="Get started quickly">
+            <article class="home-path-card">
+                <div class="home-mini-title">Choose Your Path</div>
+                <p class="home-mini-copy">Whether you are starting fresh or checking in, jump directly to the flow you need.</p>
+                <div class="home-path-actions">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">New Here</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-ghost btn-sm">Returning User</a>
+                </div>
+                <ul class="home-path-list">
+                    <li>Set your first 3 skills and track study hours.</li>
+                    <li>Log applications and monitor response rate.</li>
+                    <li>Record income and expenses in your vault.</li>
+                </ul>
+            </article>
+
+            <article class="home-flow-card">
+                <div class="home-mini-title">Workflow Preview</div>
+                <details class="home-flow-item" open>
+                    <summary>1. Open your skill bank</summary>
+                    <p>Add a skill, set level, and deposit study hours as your growth capital.</p>
+                </details>
+                <details class="home-flow-item">
+                    <summary>2. Build your job ledger</summary>
+                    <p>Capture every application and update stages to see what converts.</p>
+                </details>
+                <details class="home-flow-item">
+                    <summary>3. Track your income vault</summary>
+                    <p>Log freelance deposits, expenses, payment method, and running balance.</p>
+                </details>
+                <details class="home-flow-item">
+                    <summary>4. Export and review</summary>
+                    <p>Download CSV or PDF snapshots for weekly review and planning.</p>
+                </details>
+            </article>
+        </section>
+
+        <section class="home-faq" aria-label="Home page frequently asked questions">
+            <details class="home-faq-item">
+                <summary>Can I use Minted even if I have no current job applications?</summary>
+                <p>Yes. Start with skills only, then add applications when you begin applying.</p>
+            </details>
+            <details class="home-faq-item">
+                <summary>Can I track both full-time and freelance progress?</summary>
+                <p>Yes. Job Ledger tracks applications while Income Vault tracks project cash flow.</p>
+            </details>
+            <details class="home-faq-item">
+                <summary>How often should I update it?</summary>
+                <p>Quick daily entries plus a weekly review works best for momentum.</p>
+            </details>
+        </section>
+
     </div>
 </div>
 {% endblock %}

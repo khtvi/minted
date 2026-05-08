@@ -409,6 +409,129 @@ body {
   letter-spacing: 0.04em;
 }
 
+.home-engage-grid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.home-path-card,
+.home-flow-card,
+.home-faq-item {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.58);
+  padding: 14px;
+}
+
+.home-mini-title {
+  font-family: var(--display);
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+}
+
+.home-mini-copy {
+  margin-top: 5px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.home-path-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.home-path-list {
+  margin-top: 10px;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.home-path-list li {
+  position: relative;
+  padding-left: 14px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.home-path-list li::before {
+  content: "+";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-family: var(--display);
+}
+
+.home-flow-item {
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.65);
+  padding: 8px 10px;
+}
+
+.home-flow-item + .home-flow-item {
+  margin-top: 8px;
+}
+
+.home-flow-item summary {
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+}
+
+.home-flow-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.home-flow-item p {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.home-faq {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.home-faq-item {
+  padding: 10px 12px;
+}
+
+.home-faq-item summary {
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--display);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+
+.home-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.home-faq-item p {
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .home-hero .feature-box {
   min-height: 132px;
   padding: 16px 16px;
@@ -2776,6 +2899,10 @@ tbody tr:hover {
   }
 
   .home-proof-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .home-engage-grid {
     grid-template-columns: 1fr;
   }
 
