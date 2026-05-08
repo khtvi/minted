@@ -1,4 +1,5 @@
 ﻿from flask import Flask, render_template, request, url_for, session, flash, redirect, Response
+from flask_wtf.csrf import CSRFProtect
 from werkzeug.security import generate_password_hash, check_password_hash
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.pagesizes import letter
@@ -6,7 +7,7 @@ from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet
 from datetime import datetime, timedelta
 from functools import wraps
-import json, os, csv, io, uuid, time
+import json, os, re, csv, io, uuid, time
 from storage import SQLiteUserStore
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -15,13 +16,22 @@ app = Flask(
     template_folder=os.path.join(BASE_DIR, "templates"),
     static_folder=os.path.join(BASE_DIR, "static"),
 )
-app.secret_key = os.environ.get("SECRET_KEY", "minted-dev-key-changeme")
+_secret_key = os.environ.get("SECRET_KEY", "").strip()
+if not _secret_key:
+    import warnings
+    warnings.warn(
+        "SECRET_KEY env var is not set. Using an insecure default — set it in production.",
+        stacklevel=1,
+    )
+    _secret_key = "minted-dev-key-changeme"
+app.secret_key = _secret_key
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
     SESSION_COOKIE_SECURE=os.environ.get("SESSION_COOKIE_SECURE", "").strip() == "1",
     PERMANENT_SESSION_LIFETIME=timedelta(hours=12),
 )
+csrf = CSRFProtect(app)
 
 
 def running_on_render():
@@ -127,13 +137,20 @@ PAYMENT_METHODS = [
     "Auto-Linked",
 ]
 PASSWORD_MIN_LEN = 8
-PASSWORD_MAX_LEN = 10
+PASSWORD_MAX_LEN = 128
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]{2,}$")
 LOGIN_WINDOW_SECONDS = 5 * 60
 MAX_LOGIN_ATTEMPTS = 20
 FAILED_LOGIN_ATTEMPTS = {}
 
 
-def normalize_date(value):
+def safe_next_url(url, fallback):
+    if url and url.startswith("/") and not url.startswith("//"):
+        return url
+    return fallback
+
+
+
     if not value:
         return None
     try:
@@ -212,7 +229,7 @@ class Skill:
         reflect_resource_cost=False,
         resource_txn_id="",
     ):
-        self.id = skill_id if skill_id else str(uuid.uuid4())[:8]
+        self.id = skill_id if skill_id else str(uuid.uuid4())
         self.name = name
         self.category = category
         self.level = level if level in SKILL_LEVELS else "Beginner"
@@ -312,7 +329,7 @@ class JobApplication:
     STATUSES = ["Sent", "Viewed", "Responded", "Interviewed", "Offer", "Rejected"]
 
     def __init__(self, company, role, date=None, job_id=None):
-        self.id = job_id if job_id else str(uuid.uuid4())[:8]
+        self.id = job_id if job_id else str(uuid.uuid4())
         self.company = company
         self.role = role
         self.date_applied = date if date else datetime.now().strftime("%Y-%m-%d")
@@ -378,7 +395,7 @@ class IncomeTransaction:
         job_id="",
         payment_method="Other",
     ):
-        self.id = txn_id if txn_id else str(uuid.uuid4())[:8]
+        self.id = txn_id if txn_id else str(uuid.uuid4())
         self.type = txn_type if txn_type in VALID_TXN_TYPES else "income"
         self.amount = float(amount)
         self.description = description
@@ -419,8 +436,8 @@ class IncomeTransaction:
 
 
 class User:
-    def __init__(self, username, pin, user_id=None, is_hashed=False, email=None, name=""):
-        self.id = user_id if user_id else str(uuid.uuid4())[:8]
+    def __init__(self, username, pin, user_id=None, is_hashed=False, email=None, name="", is_admin=False):
+        self.id = user_id if user_id else str(uuid.uuid4())
         self.username = username
         self.email = email if email else username
         self.name = name
@@ -430,6 +447,7 @@ class User:
         self.income_txns = []
         self.reminders = []
         self.tour_completed = False
+        self.is_admin = is_admin
         self.created_at = datetime.now().strftime("%Y-%m-%d")
 
     def verify_pin(self, pin):
@@ -508,7 +526,7 @@ class User:
             return None
         safe_tag = tag if tag in REMINDER_TAGS else "General"
         reminder = {
-            "id": str(uuid.uuid4())[:8],
+            "id": str(uuid.uuid4()),
             "text": label,
             "tag": safe_tag,
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
@@ -542,6 +560,7 @@ class User:
             "income_txns": [txn.to_dict() for txn in self.income_txns],
             "reminders": list(self.reminders),
             "tour_completed": self.tour_completed,
+            "is_admin": self.is_admin,
         }
 
     @staticmethod
@@ -559,6 +578,7 @@ class User:
         user.jobs = [JobApplication.from_dict(item) for item in data.get("jobs", [])]
         user.income_txns = [IncomeTransaction.from_dict(item) for item in data.get("income_txns", [])]
         user.tour_completed = bool(data.get("tour_completed", False))
+        user.is_admin = bool(data.get("is_admin", False))
         raw_reminders = data.get("reminders", [])
         if isinstance(raw_reminders, list):
             cleaned = []
@@ -570,7 +590,7 @@ class User:
                     continue
                 cleaned.append(
                     {
-                        "id": str(item.get("id") or str(uuid.uuid4())[:8]),
+                        "id": str(item.get("id") or str(uuid.uuid4())),
                         "text": text,
                         "tag": item.get("tag") if item.get("tag") in REMINDER_TAGS else "General",
                         "created_at": str(item.get("created_at", "")),
@@ -720,7 +740,7 @@ def login_required(route):
 def index():
     user = current_user()
     if user:
-        if user.username.lower() == "admin":
+        if user.is_admin:
             return redirect(url_for("admin"))
         return redirect(url_for("dashboard"))
     return render_template("index.html")
@@ -737,7 +757,7 @@ def register():
             flash("Email and PIN are required.", "error")
             return redirect(url_for("register"))
 
-        if "@" not in email or "." not in email:
+        if not EMAIL_RE.match(email):
             flash("Please enter a valid email address.", "error")
             return redirect(url_for("register"))
 
@@ -784,7 +804,7 @@ def login():
             session["display_name"] = user.name or user.username
             session.permanent = True
             flash(f"Welcome back, {user.name or user.username}!", "success")
-            if user.username.lower() == "admin":
+            if user.is_admin:
                 return redirect(url_for("admin"))
             if not user.name:
                 return redirect(url_for("welcome"))
@@ -887,11 +907,11 @@ def add_reminder():
     next_url = request.form.get("next", "").strip()
     if not text:
         flash("Reminder text is required.", "error")
-        return redirect(next_url or url_for("dashboard"))
+        return redirect(safe_next_url(next_url, url_for("dashboard")))
     user.add_reminder(text, tag)
     save_users()
     flash("Reminder added.", "success")
-    return redirect(next_url or url_for("dashboard"))
+    return redirect(safe_next_url(next_url, url_for("dashboard")))
 
 
 @app.route("/reminders/<reminder_id>/delete", methods=["POST"])
@@ -904,11 +924,12 @@ def delete_reminder(reminder_id):
         flash("Reminder deleted.", "success")
     else:
         flash("Reminder not found.", "error")
-    return redirect(next_url or url_for("dashboard"))
+    return redirect(safe_next_url(next_url, url_for("dashboard")))
 
 
 @app.route("/tour/complete", methods=["POST"])
 @login_required
+@csrf.exempt
 def complete_tour():
     user = current_user()
     if user:
@@ -1950,10 +1971,10 @@ def download_pdf():
 @login_required
 def admin():
     user = current_user()
-    if user.username.lower() != "admin":
+    if not user.is_admin:
         flash("Access denied.", "error")
         return redirect(url_for("dashboard"))
-    visible_users = [item for item in users if item.username.lower() != "admin"]
+    visible_users = [item for item in users if not item.is_admin]
     return render_template("admin.html", users=visible_users)
 
 
