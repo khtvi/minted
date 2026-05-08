@@ -67,6 +67,7 @@
                     <div class="entry-menu-list">
                       <a href="{{ url_for('edit_job', job_id=job.id) }}">Edit</a>
                       <form method="post" action="{{ url_for('delete_job', job_id=job.id) }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" onclick="return confirm('Remove this application?')">Delete</button>
                       </form>
                     </div>
@@ -97,6 +98,7 @@
                   <div class="job-vault">Vault: Not linked</div>
                 {% endif %}
                 <form method="post" action="{{ url_for('update_job', job_id=job.id) }}" class="job-status-mobile">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                   <select name="status" aria-label="Update status for {{ job.company }}">
                     {% for status in statuses %}
                       <option value="{{ status }}" {% if job.status == status %}selected{% endif %}>{{ status }}</option>
@@ -106,6 +108,7 @@
                 </form>
                 <div class="job-actions">
                   <form method="post" action="{{ url_for('link_job_income', job_id=job.id) }}" class="job-link-form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <select name="txn_id">
                       <option value="">No link</option>
                       {% for txn in user.income_txns|reverse %}
@@ -116,6 +119,7 @@
                   </form>
                   {% if not job.income_txn_id %}
                     <form method="post" action="{{ url_for('send_job_income', job_id=job.id) }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                       <button type="submit" class="btn btn-ghost btn-sm">Send to Vault</button>
                     </form>
                   {% endif %}
@@ -140,6 +144,7 @@
         <div class="task-tags"><span class="task-tag">Jobs</span></div>
       </div>
       <form method="post" action="{{ url_for('add_reminder') }}" class="reminder-form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" name="next" value="{{ url_for('jobs') }}">
         <input type="hidden" name="tag" value="Jobs">
         <input type="text" name="text" placeholder="Add a job reminder..." maxlength="120" required>
@@ -148,7 +153,8 @@
       <div class="reminder-list">
         {% if reminders %}
           {% for reminder in reminders|reverse %}
-            <div class="reminder-item"><strong>{{ reminder.text }}</strong><span>{{ reminder.tag }}</span><form method="post" action="{{ url_for('delete_reminder', reminder_id=reminder.id) }}" class="reminder-delete"><input type="hidden" name="next" value="{{ url_for('jobs') }}"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form></div>
+            <div class="reminder-item"><strong>{{ reminder.text }}</strong><span>{{ reminder.tag }}</span><form method="post" action="{{ url_for('delete_reminder', reminder_id=reminder.id) }}" class="reminder-delete">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="next" value="{{ url_for('jobs') }}"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form></div>
           {% endfor %}
         {% else %}
           <div class="reminder-empty">No job reminders yet.</div>
@@ -179,8 +185,10 @@
     let draggedCard = null;
 
     const updateStatus = (jobId, status) => {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "";
       const data = new FormData();
       data.append("status", status);
+      data.append("csrf_token", csrfToken);
       return fetch(`/jobs/${jobId}/update`, {
         method: "POST",
         headers: { "X-Requested-With": "fetch" },

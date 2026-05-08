@@ -6,6 +6,7 @@
     <div class="auth-title">Create Account</div>
     <div class="auth-sub">Start tracking your career capital today.</div>
     <form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" id="email" name="email" placeholder="you@email.com" required autofocus>
@@ -16,9 +17,9 @@
           type="password"
           id="pin"
           name="pin"
-          placeholder="8 to 10 characters"
+          placeholder="At least 8 characters"
           minlength="8"
-          maxlength="10"
+          maxlength="128"
           required
         >
       </div>
@@ -30,11 +31,11 @@
           name="confirm_pin"
           placeholder="Repeat your password"
           minlength="8"
-          maxlength="10"
+          maxlength="128"
           required
         >
       </div>
-      <div class="form-hint">Password length must be 8 to 10 characters.</div>
+      <div class="form-hint">Password must be at least 8 characters.</div>
       <button type="submit" class="btn btn-primary w-full">Create Account</button>
     </form>
     <div class="auth-link">Already have an account? <a href="{{ url_for('login') }}">Log In</a></div>
